@@ -1,0 +1,27 @@
+{
+	"Server":{
+		"Port":"3000"
+	},
+	"DB":{	  
+			"server": "127.0.0.1",
+			"port": "5433",
+			"database": "postgres",
+			"username": "postgres",
+			"password": "Aa123456",
+			"parameter":{
+				"charset": "utf8",
+				"parseTime": "True",
+				"loc": "Local"
+			}	,		
+			"maxidleconns": 5,
+			"maxopenconns": 5,
+			"connmaxlifetime": 90
+	},
+	"Hello":{
+		"Show":"I'm server 1"
+	},
+	"GCP":{
+		"ProjectID":"123545",
+		"LogName": "cloud-native"
+	}				
+}
