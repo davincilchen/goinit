@@ -1,9 +1,9 @@
 {
 	"DB":{	  
 			"server": "127.0.0.1",
-			"port": "5433",
-			"database": "postgres",
-			"username": "postgres",
+			"port": "3007",
+			"database": "xr_cube",
+			"username": "root",
 			"password": "Aa123456",
 			"parameter":{
 				"charset": "utf8",
