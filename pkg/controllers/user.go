@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"central/pkg/app/users/usecase"
 	"encoding/json"
 	"net/http"
+	"xr-central/pkg/app/users/usecase"
 
 	"github.com/gin-gonic/gin"
 )

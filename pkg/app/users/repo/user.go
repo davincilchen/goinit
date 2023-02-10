@@ -1,8 +1,8 @@
 package repo
 
 import (
-	"central/pkg/db"
-	"central/pkg/models"
+	"xr-central/pkg/db"
+	"xr-central/pkg/models"
 )
 
 type User struct {

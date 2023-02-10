@@ -1,10 +1,10 @@
 package usecase
 
 import (
-	"central/pkg/app/users/repo"
-	"central/pkg/models"
-	"central/pkg/token"
 	"fmt"
+	"xr-central/pkg/app/users/repo"
+	"xr-central/pkg/models"
+	"xr-central/pkg/token"
 
 	"golang.org/x/crypto/bcrypt"
 )

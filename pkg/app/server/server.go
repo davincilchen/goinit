@@ -1,9 +1,9 @@
 package server
 
 import (
-	"central/pkg/config"
-	"central/pkg/db"
 	"log"
+	"xr-central/pkg/config"
+	"xr-central/pkg/db"
 )
 
 type Server struct {
@@ -20,7 +20,7 @@ func New(cfg *config.Config) *Server {
 
 func (t *Server) Serve() {
 
-	_, err := db.GormOpen(&t.Config.DB)
+	_, err := db.GormOpen(&t.Config.DB, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,5 +36,6 @@ func (t *Server) Serve() {
 	r := Router()
 	r.Run(addr)
 
-	CloseLogger()
+	log.Printf("======= Server Exit =======\n")
+	//CloseLogger()
 }

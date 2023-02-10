@@ -1,4 +1,4 @@
-module central
+module xr-central
 
 go 1.18
 

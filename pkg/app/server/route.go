@@ -1,7 +1,7 @@
 package server
 
 import (
-	"central/pkg/controllers"
+	"xr-central/pkg/controllers"
 
 	"github.com/gin-gonic/gin"
 )

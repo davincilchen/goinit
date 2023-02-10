@@ -1,16 +1,19 @@
 package main
 
 import (
-	"central/pkg/app/users/usecase"
-	"central/pkg/config"
-	"central/pkg/db"
-	"central/pkg/models"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
+	"time"
+	"xr-central/pkg/app/users/usecase"
+	"xr-central/pkg/config"
+	"xr-central/pkg/db"
+	"xr-central/pkg/models"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 const confPath = "./config.json"
@@ -23,22 +26,49 @@ func main() {
 		log.Fatal(err)
 	}
 
-	d, err := db.GormOpen(&cfg.DB)
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold:             time.Second,   // Slow SQL threshold
+			LogLevel:                  logger.Silent, // Log level
+			IgnoreRecordNotFoundError: true,          // Ignore ErrRecordNotFound error for logger
+			Colorful:                  false,         // Disable color
+		},
+	)
+
+	l := db.Logger{
+		Logger: newLogger,
+	}
+	d, err := db.GormOpen(&cfg.DB, &l)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	migration(d)
 
-	err = seed()
-	if err != nil {
-		log.Fatal(err)
+	loadSeed := false
+	for _, v := range os.Args {
+		if v == "loadseed" {
+			loadSeed = true
+		}
 	}
+	fmt.Println("loadSeed ", loadSeed)
+	if loadSeed {
+		err = seed()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
 }
 
 func migration(db *gorm.DB) {
 
 	log.Println("Run DB Migration --> Start")
+
+	db.AutoMigrate(&models.Edge{})
+	db.AutoMigrate(&models.Streaming{})
+	db.AutoMigrate(&models.EdgeStreaming{})
 
 	//db.AutoMigrate(&models.User{})
 

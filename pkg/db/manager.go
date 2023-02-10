@@ -8,6 +8,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var DB *gorm.DB
@@ -25,7 +26,11 @@ type Config struct {
 	ConnMaxLifetime int               `json:"connmaxlifetime" env:"CONN_MAX_LIFETIME" envDefault:"90"`
 }
 
-func ConnectPostgres(cfg *Config) (*gorm.DB, error) {
+type Logger struct {
+	Logger logger.Interface
+}
+
+func ConnectPostgres(cfg *Config, l *Logger) (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable TimeZone=Asia/Taipei",
 		cfg.Addr, cfg.Port, cfg.Username, cfg.Password, cfg.Database)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -39,7 +44,7 @@ func ConnectPostgres(cfg *Config) (*gorm.DB, error) {
 	return db, nil
 }
 
-func ConnectMySql(c *Config) (*gorm.DB, error) {
+func ConnectMySql(c *Config, l *Logger) (*gorm.DB, error) {
 
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 		c.Username, c.Password,
@@ -52,7 +57,12 @@ func ConnectMySql(c *Config) (*gorm.DB, error) {
 	}
 	baseURL.RawQuery = MapToQueryString(c.Parameter)
 	dataSource := fmt.Sprint(baseURL)
-	return gorm.Open(mysql.Open(dataSource), &gorm.Config{})
+
+	gormCfg := &gorm.Config{}
+	if l != nil {
+		gormCfg.Logger = l.Logger
+	}
+	return gorm.Open(mysql.Open(dataSource), gormCfg)
 
 }
 
@@ -66,9 +76,9 @@ func MapToQueryString(m map[string]string) string {
 	return params.Encode()
 }
 
-func GormOpen(cfg *Config) (*gorm.DB, error) {
+func GormOpen(cfg *Config, l *Logger) (*gorm.DB, error) {
 
-	db, err := ConnectMySql(cfg)
+	db, err := ConnectMySql(cfg, l)
 	if err != nil {
 		return nil, err
 	}
