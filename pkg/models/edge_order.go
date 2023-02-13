@@ -4,10 +4,11 @@ package models
 type EdgeOrder struct {
 	GormModel
 	IP       string `gorm:"type:char(32);not null"`
-	Status   int    `gorm:"default:0;not null"` //0: init
-	EdgeID   int
+	Status   int    `gorm:"type:int unsigned;default:0;not null"` //0: init
+	EdgeID   int    `gorm:"not null"`
 	Edge     Edge
-	DeviceID int
+	DeviceID int `gorm:"not null"`
 	Device   Device
-	AppID    int
+	AppID    int `gorm:"not null"`
+	App      App
 }

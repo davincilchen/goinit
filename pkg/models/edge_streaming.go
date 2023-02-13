@@ -2,9 +2,10 @@ package models
 
 //Status   int    `gorm:"type:tinyint unsigned;not null"`
 type EdgeStreaming struct {
-	StreamingID uint
+	GormModel
+	StreamingID uint `gorm:"not null"`
 	Streaming   Streaming
-	EdgeID      uint
+	EdgeID      uint `gorm:"not null"`
 	Edge        Edge
 	Status      int `gorm:"type:tinyint unsigned;default:0;not null"`
 }
