@@ -13,8 +13,8 @@ func (t *User) CreateUser(user *models.User) (*models.User, error) {
 	out := &models.User{}
 	*out = *user
 
-	dbc := ddb.Where("name = ?",
-		out.Name).
+	dbc := ddb.Where("account = ?",
+		out.Account).
 		FirstOrCreate(&out) //TODO:  return error if user is exist
 
 	if dbc.Error != nil {
