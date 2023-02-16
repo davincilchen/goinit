@@ -1,6 +1,7 @@
 {
-	"User":{	  
-			"name": "admin",
+	"User":{
+			"name": "admin",	  
+			"account": "admin",
 			"password": "Aa123456"
 	}
 }

@@ -75,7 +75,7 @@ func migration(db *gorm.DB) {
 
 	db.AutoMigrate(&models.Platform{})
 	db.AutoMigrate(&models.App{})
-	//db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{})
 
 	log.Println("Run DB Migration --> Done")
 
