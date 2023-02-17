@@ -83,8 +83,13 @@ func loadSeed(path string) ([]models.User, error) {
 		return nil, err
 	}
 
+	type LoopUsers struct {
+		models.User
+		Count int `json:"count"`
+	}
 	type Seed struct {
-		Users []models.User `json:"Users"`
+		Users     []models.User `json:"Users"`
+		LoopUsers []LoopUsers   `json:"LoopUsers"`
 	}
 
 	var seed Seed
@@ -94,5 +99,16 @@ func loadSeed(path string) ([]models.User, error) {
 		return nil, err
 	}
 
+	for _, v := range seed.LoopUsers {
+		fmt.Println(v)
+		for i := 0; i < v.Count; i++ {
+			u := v.User
+			no := fmt.Sprintf("%d", i+1)
+			u.Name = u.Name + no
+			u.Account = u.Account + no
+			u.Password = u.Password + no
+			seed.Users = append(seed.Users, u)
+		}
+	}
 	return seed.Users, nil
 }

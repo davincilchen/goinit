@@ -1,16 +1,40 @@
 {
 	"Users":[
 				{
-					"name": "admin",	  
+					"name": "compal",	  
+					"account": "compaladmin",
+					"password": "super123456",
+					"role": 1000
+				},
+				{
+					"name": "AD",	  
 					"account": "admin",
-					"password": "Aa123456"
+					"password": "super123456",
+					"role": 1000
 				},			
 				{
-					"name": "admin2",	  
-					"account": "admin2",
-					"password": "Aa123456"
-					
+					"name": "operater",	  
+					"account": "operater",
+					"password": "Aa123456",
+					"role": 100
 				}			
-			]
+			],
+	"LoopUsers":[
+		{
+			"count": 8,	
+			"name": "palyer",	  
+			"account": "palyer",
+			"password": "p123456",
+			"role": 0
+		},
+		{
+			"count": 8,	
+			"name": "test",	  
+			"account": "test",
+			"password": "p123456",
+			"role": 0
+		}
+	]
+
 	
 }
