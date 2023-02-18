@@ -44,6 +44,19 @@ func ConnectPostgres(cfg *Config, l *Logger) (*gorm.DB, error) {
 	return db, nil
 }
 
+func ConnectMySqlWithoutDB(c *Config, l *Logger) (*gorm.DB, error) {
+
+	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/",
+		c.Username, c.Password,
+		c.Addr, c.Port)
+
+	gormCfg := &gorm.Config{}
+	if l != nil {
+		gormCfg.Logger = l.Logger
+	}
+	return gorm.Open(mysql.Open(dataSourceName), gormCfg)
+
+}
 func ConnectMySql(c *Config, l *Logger) (*gorm.DB, error) {
 
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
@@ -92,4 +105,23 @@ func GormOpen(cfg *Config, l *Logger) (*gorm.DB, error) {
 
 	DB = db
 	return db, nil
+}
+
+func GormOpenWithoutDB(cfg *Config, l *Logger) (*gorm.DB, error) {
+	db, err := ConnectMySqlWithoutDB(cfg, l)
+	return db, err
+}
+
+func GormCreateDB(cfg *Config, l *Logger) error {
+	db, err := GormOpenWithoutDB(cfg, l)
+
+	if err != nil {
+		return err
+	}
+
+	s := fmt.Sprintf("CREATE DATABASE %s CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;",
+		cfg.Database)
+
+	dbc := db.Exec(s)
+	return dbc.Error
 }
