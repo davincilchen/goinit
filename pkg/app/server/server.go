@@ -20,7 +20,17 @@ func New(cfg *config.Config) *Server {
 
 func (t *Server) Serve() {
 
-	_, err := db.GormOpen(&t.Config.DB, nil)
+	dbConn, err := db.GormOpen(&t.Config.DB, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	sqlDB, err := dbConn.DB()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = sqlDB.Ping()
 	if err != nil {
 		log.Fatal(err)
 	}
