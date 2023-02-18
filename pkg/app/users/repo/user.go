@@ -3,13 +3,18 @@ package repo
 import (
 	"xr-central/pkg/db"
 	"xr-central/pkg/models"
+
+	"gorm.io/gorm"
 )
 
 type User struct {
 }
 
+func GetDB() *gorm.DB {
+	return db.MainDB
+}
 func (t *User) CreateUser(user *models.User) (*models.User, error) {
-	ddb := db.DB
+	ddb := GetDB()
 	out := &models.User{}
 	*out = *user
 
@@ -25,7 +30,7 @@ func (t *User) CreateUser(user *models.User) (*models.User, error) {
 }
 
 func (t *User) GetUser(name string) (*models.User, error) {
-	ddb := db.DB
+	ddb := GetDB()
 	out := &models.User{}
 
 	dbc := ddb.Where("name = ?",

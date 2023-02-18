@@ -38,10 +38,11 @@ func main() {
 	l := db.Logger{
 		Logger: newLogger,
 	}
-	_, err = db.GormOpen(&cfg.DB, &l)
+	ddb, err := db.GormOpen(&cfg.DB, &l)
 	if err != nil {
 		log.Fatal(err)
 	}
+	db.MainDB = ddb
 
 	fmt.Println("LoadSeed --> Start")
 

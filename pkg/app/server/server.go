@@ -24,6 +24,7 @@ func (t *Server) Serve() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	db.MainDB = dbConn
 
 	sqlDB, err := dbConn.DB()
 	if err != nil {
