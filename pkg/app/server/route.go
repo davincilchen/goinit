@@ -6,30 +6,35 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var show = "show nothing"
-
 func Router() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 
 	router.Use(Logger, gin.Recovery())
 
+	router.GET("/exit", exit)
 	router.GET("/info", info)
 	router.POST("/login", controllers.Login)
+	router.POST("/logout", controllers.Logout)
 
 	// .. //
-	user := router.Group("/user") //本人
-	user.POST("/deposit", controllers.Deposit)
-	user.POST("/withdrawal", controllers.Withdraw)
-
-	users := router.Group("/users")
-	users.POST("/:id/deposit", controllers.DepositTo)
-	users.POST("/:id/withdrawal", controllers.WithdrawFrom)
-
+	edges := router.Group("/edges")
+	edges.POST("/apps/:id/order", controllers.NewOrder)
+	edges.DELETE("/order", controllers.ReleaseOrder)
+	edges.GET("/resume_app", controllers.ResumeApp)
+	edges.POST("/start_app", controllers.StartApp)
+	edges.POST("/stop_app", controllers.StopApp)
+	edges.GET("/status", controllers.EdgeStatus)
 	return router
 }
 
 func info(c *gin.Context) {
+	c.JSON(200, gin.H{ // response json
+		"version": "0.0.0.1",
+	})
+}
+
+func exit(c *gin.Context) {
 	c.JSON(200, gin.H{ // response json
 		"version": "0.0.0.1",
 	})

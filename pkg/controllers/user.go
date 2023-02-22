@@ -88,3 +88,9 @@ func AuthWhenPlayerLogin(ctx *gin.Context) {
 	response.Data = data
 	ctx.JSON(http.StatusOK, response)
 }
+
+// .. //
+
+func Logout(ctx *gin.Context) {
+
+}

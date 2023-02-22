@@ -36,10 +36,6 @@ func (t *Server) Serve() {
 		log.Fatal(err)
 	}
 
-	if t.Config.Hello.Show != "" {
-		show = t.Config.Hello.Show
-	}
-
 	//InitLogger("", t.Config.GCP.ProjectID, t.Config.GCP.LogName)
 
 	addr := ":" + t.Config.Server.Port
