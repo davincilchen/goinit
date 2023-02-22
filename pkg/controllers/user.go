@@ -36,10 +36,9 @@ func Login(ctx *gin.Context) {
 }
 
 type LoginResponse struct {
-	ID      uint
-	Name    string
-	Balance uint64
-	Token   string
+	ID    uint
+	Name  string
+	Token string
 }
 
 type LoginParams struct {

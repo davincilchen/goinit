@@ -14,7 +14,7 @@ func Router() *gin.Engine {
 
 	router.Use(Logger, gin.Recovery())
 
-	router.GET("/hello", hello)
+	router.GET("/info", info)
 	router.POST("/login", controllers.Login)
 
 	// .. //
@@ -29,8 +29,8 @@ func Router() *gin.Engine {
 	return router
 }
 
-func hello(c *gin.Context) {
+func info(c *gin.Context) {
 	c.JSON(200, gin.H{ // response json
-		"message": "Hello" + ",  " + show,
+		"version": "0.0.0.1",
 	})
 }
