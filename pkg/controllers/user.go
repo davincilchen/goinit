@@ -92,5 +92,8 @@ func AuthWhenPlayerLogin(ctx *gin.Context) {
 // .. //
 
 func Logout(ctx *gin.Context) {
+	response := ResBody{}
+	response.ResCode = RES_OK
 
+	ctx.JSON(http.StatusOK, response)
 }

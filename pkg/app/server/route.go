@@ -14,17 +14,21 @@ func Router() *gin.Engine {
 
 	router.GET("/exit", exit)
 	router.GET("/info", info)
+	//router.GET("/edges/status", info)
+	//router.GET("/app/usage_satus", info)
 	router.POST("/login", controllers.Login)
 	router.POST("/logout", controllers.Logout)
 
 	// .. //
-	edges := router.Group("/edges")
-	edges.POST("/apps/:id/order", controllers.NewOrder)
-	edges.DELETE("/order", controllers.ReleaseOrder)
-	edges.GET("/resume_app", controllers.ResumeApp)
+	edges := router.Group("/devices")
+	edges.POST("/login", controllers.Login)
+	edges.POST("/logout", controllers.Logout)
+	edges.POST("/apps/:id/reserve", controllers.NewOrder)
+	edges.DELETE("/reserve", controllers.ReleaseOrder)
+	edges.GET("/resume", controllers.DeviceResume)
 	edges.POST("/start_app", controllers.StartApp)
 	edges.POST("/stop_app", controllers.StopApp)
-	edges.GET("/status", controllers.EdgeStatus)
+	edges.GET("/edge_status", controllers.EdgeStatus)
 	return router
 }
 

@@ -7,8 +7,8 @@ const (
 
 	RES_ERROR_UNKNOWN         ResCode = 200
 	RES_ERROR_BAD_REQUEST     ResCode = 201
-	RES_INVALID_USER_PASSWORD ResCode = 202
-	RES_INVALID_USER_TOKEN    ResCode = 203
+	RES_INVALID_USER_TOKEN    ResCode = 202
+	RES_INVALID_USER_PASSWORD ResCode = 203
 )
 
 type ResError struct {
