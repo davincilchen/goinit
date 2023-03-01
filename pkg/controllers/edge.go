@@ -26,7 +26,7 @@ import (
 // }
 
 type NewOrderResp struct {
-	GameServerIP string `json:"gameServerIP"`
+	GameServerIP string `json:"game_server_ip"`
 }
 
 func NewOrder(ctx *gin.Context) { //TODO:
@@ -47,12 +47,11 @@ func ReleaseOrder(ctx *gin.Context) { //TODO:
 }
 
 func DeviceResume(ctx *gin.Context) { //TODO:
-	type User struct {
-		NameWantAcc string
-	}
+	response := ResBody{}
+	response.ResCode = RES_EDGE_LOST
 
-	user := User{NameWantAcc: "45"}
-	ctx.JSON(200, user)
+	ctx.JSON(http.StatusOK, response)
+
 }
 
 type StartAppResp struct {
@@ -69,7 +68,10 @@ type StopAppResp struct {
 }
 
 func StopApp(ctx *gin.Context) { //TODO:
+	response := ResBody{}
+	response.ResCode = RES_OK
 
+	ctx.JSON(http.StatusOK, response)
 }
 
 type EdgeStatusResp struct {

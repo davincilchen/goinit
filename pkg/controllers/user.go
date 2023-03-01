@@ -35,7 +35,7 @@ func Login(ctx *gin.Context) {
 	AuthWhenPlayerLogin(ctx)
 }
 
-type LoginResponse struct {
+type LoginResponse struct { //:TODO for device login
 	ID    uint
 	Name  string
 	Token string
