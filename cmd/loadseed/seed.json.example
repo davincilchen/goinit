@@ -22,8 +22,8 @@
 	"LoopUsers":[
 		{
 			"count": 8,	
-			"name": "palyer",	  
-			"account": "palyer",
+			"name": "player",	  
+			"account": "player",
 			"password": "p123456",
 			"role": 0
 		},
@@ -32,7 +32,7 @@
 			"name": "test",	  
 			"account": "test",
 			"password": "p123456",
-			"role": 0
+			"role": 1
 		}
 	]
 

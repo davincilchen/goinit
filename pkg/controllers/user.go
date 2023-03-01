@@ -42,7 +42,7 @@ type LoginResponse struct {
 }
 
 type LoginParams struct {
-	Name     string
+	Account  string
 	Password string
 }
 
@@ -72,7 +72,7 @@ func AuthWhenPlayerLogin(ctx *gin.Context) {
 	}
 
 	userUCase := usecase.User{}
-	qRet, err := userUCase.Login(param.Name, param.Password)
+	qRet, err := userUCase.Login(param.Account, param.Password)
 	if err != nil {
 		response.ResCode = RES_INVALID_USER_PASSWORD
 		ctx.JSON(http.StatusBadRequest, response)

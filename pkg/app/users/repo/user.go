@@ -29,12 +29,12 @@ func (t *User) CreateUser(user *models.User) (*models.User, error) {
 
 }
 
-func (t *User) GetUser(name string) (*models.User, error) {
+func (t *User) GetUser(account string) (*models.User, error) {
 	ddb := GetDB()
 	out := &models.User{}
 
-	dbc := ddb.Where("name = ?",
-		name).
+	dbc := ddb.Where("account = ?",
+		account).
 		First(&out)
 
 	if dbc.Error != nil {
