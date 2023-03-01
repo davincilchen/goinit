@@ -29,8 +29,6 @@ func Router() *gin.Engine {
 	edges.POST("/start_app", controllers.StartApp)
 	edges.POST("/stop_app", controllers.StopApp)
 	edges.GET("/edge_status", controllers.EdgeStatus)
-
-	//game list
 	return router
 }
 
