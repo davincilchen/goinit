@@ -82,7 +82,11 @@ type EdgeStatusResp struct {
 
 func EdgeStatus(ctx *gin.Context) { //TODO:
 
-	data := EdgeStatusResp{}
+	type Data struct {
+		Edge EdgeStatusResp `json:"edge"`
+	}
+	data := Data{}
+	data.Edge = EdgeStatusResp{}
 
 	response := ResBody{}
 	response.ResCode = RES_OK

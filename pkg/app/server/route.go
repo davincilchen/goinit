@@ -28,7 +28,7 @@ func Router() *gin.Engine {
 	edges.GET("/resume", controllers.DeviceResume)
 	edges.POST("/start_app", controllers.StartApp)
 	edges.POST("/stop_app", controllers.StopApp)
-	edges.GET("/edge_status", controllers.EdgeStatus)
+	edges.POST("/status", controllers.EdgeStatus)
 	return router
 }
 
