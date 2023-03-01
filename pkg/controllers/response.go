@@ -1,5 +1,11 @@
 package controllers
 
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
 type ResCode int
 
 const (
@@ -25,4 +31,28 @@ type ResBody struct {
 	ResCode ResCode     `json:"resp_code"`
 	Error   *ResError   `json:"error,omitempty"`
 	Data    interface{} `json:"data,omitempty"`
+}
+
+func RespBadRequest(ctx *gin.Context) {
+
+	response := ResBody{}
+	response.ResCode = RES_ERROR_BAD_REQUEST
+	ctx.JSON(http.StatusBadRequest, response)
+
+}
+
+func RespInvalidPassword(ctx *gin.Context) {
+
+	response := ResBody{}
+	response.ResCode = RES_INVALID_USER_PASSWORD
+	ctx.JSON(http.StatusBadRequest, response)
+
+}
+
+func RespUnknowError(ctx *gin.Context, err error) {
+
+	response := ResBody{}
+	response.ResCode = RES_ERROR_UNKNOWN
+	ctx.JSON(http.StatusInternalServerError, response)
+
 }

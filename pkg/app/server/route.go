@@ -21,7 +21,7 @@ func Router() *gin.Engine {
 
 	// .. //
 	edges := router.Group("/devices")
-	edges.POST("/login", controllers.Login)
+	edges.POST("/login", controllers.DevLogin)
 	edges.POST("/logout", controllers.Logout)
 	edges.POST("/apps/:id/reserve", controllers.NewOrder)
 	edges.DELETE("/reserve", controllers.ReleaseOrder)
