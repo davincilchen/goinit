@@ -29,6 +29,9 @@ func Router() *gin.Engine {
 	edges.POST("/start_app", controllers.StartApp)
 	edges.POST("/stop_app", controllers.StopApp)
 	edges.POST("/status", controllers.EdgeStatus)
+
+	apps := router.Group("/apps")
+	apps.GET("/", controllers.AppList)
 	return router
 }
 
