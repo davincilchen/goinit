@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"xr-central/pkg/app/errordef"
+	"xr-central/pkg/app/infopass"
 
 	"github.com/gin-gonic/gin"
 )
@@ -40,7 +41,7 @@ func RespBadRequest(ctx *gin.Context, err error) {
 
 	response := FillErrorBody(ctx, err)
 	response.ResCode = RES_ERROR_BAD_REQUEST
-	response.ResCode = RES_ERROR_BAD_REQUEST
+	infopass.CacheError(ctx, err)
 	ctx.JSON(http.StatusBadRequest, response)
 
 }
@@ -69,6 +70,8 @@ func RespUnknowError(ctx *gin.Context, err error) {
 	response := FillErrorBody(ctx, err)
 	resCode, httpCode := getStatusCode(err)
 	response.ResCode = resCode
+	infopass.CacheError(ctx, err)
+
 	ctx.JSON(httpCode, response)
 
 }

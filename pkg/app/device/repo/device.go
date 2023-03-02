@@ -25,11 +25,12 @@ func (t *Device) RegDevice(dev *models.Device) (*models.Device, error) {
 	if dbc.Error != nil {
 		return nil, dbc.Error
 	}
+
 	return out, nil
 
 }
 
-func (t *Device) GetUser(UUID string) (*models.Device, error) {
+func (t *Device) GetDev(UUID string) (*models.Device, error) {
 	ddb := GetDB()
 	out := &models.Device{}
 

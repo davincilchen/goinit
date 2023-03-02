@@ -55,7 +55,7 @@ func DevLogin(ctx *gin.Context) {
 		return
 	}
 
-	d := devUCase.NewDeviceLoginProc(*req.DevInfo.Type, *req.DevInfo.UUID)
+	d := devUCase.NewDeviceLoginProc(*req.DevInfo.Type, *req.DevInfo.UUID, ctx)
 	handle := NewLoginController(ctx, req.UserLoginParams, d.DevLoginSucess)
 	handle.Do()
 

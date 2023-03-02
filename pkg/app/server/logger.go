@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"time"
+	"xr-central/pkg/app/infopass"
 
 	// gcpLogging "cloud.google.com/go/logging"
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,7 @@ type APILog struct {
 	Duration     time.Duration
 	DurationText string
 	InfoTxt      string
+	DBErrorTxt   string
 	ErrorTxt     string
 	Error        error
 }
@@ -56,10 +58,19 @@ func Logger(ctx *gin.Context) {
 
 	log := APILog{}
 
+	theError := infopass.GetError(ctx)
+	theDBError := infopass.GetDBError(ctx)
 	log.RequestURI = ctx.Request.RequestURI
 	log.Method = ctx.Request.Method
 	log.Duration = time.Since(now)
 	log.DurationText = fmt.Sprintf("%v", log.Duration)
+	if theError != nil {
+		log.Error = theError
+		log.ErrorTxt = log.Error.Error()
+	}
+	if theDBError != nil {
+		log.DBErrorTxt = theDBError.Error()
+	}
 
 	logger(log)
 
