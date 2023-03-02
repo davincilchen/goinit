@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 	"time"
-	"xr-central/pkg/app/users/usecase"
+	"xr-central/pkg/app/user/usecase"
 	"xr-central/pkg/config"
 	"xr-central/pkg/db"
 	"xr-central/pkg/models"

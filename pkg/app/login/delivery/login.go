@@ -2,7 +2,7 @@ package delivery
 
 import (
 	"net/http"
-	userUCase "xr-central/pkg/app/users/usecase"
+	userUCase "xr-central/pkg/app/user/usecase"
 	dlv "xr-central/pkg/delivery"
 
 	"github.com/gin-gonic/gin"

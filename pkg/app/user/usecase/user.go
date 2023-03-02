@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"fmt"
-	"xr-central/pkg/app/users/repo"
+	"xr-central/pkg/app/user/repo"
 	"xr-central/pkg/models"
 	"xr-central/pkg/token"
 

@@ -2,7 +2,7 @@ package delivery
 
 // import (
 // 	"xr-central/pkg/app/login/delivery"
-// 	userUCase "xr-central/pkg/app/users/usecase"
+// 	userUCase "xr-central/pkg/app/user/usecase"
 
 // 	"github.com/gin-gonic/gin"
 // )

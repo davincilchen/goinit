@@ -2,7 +2,7 @@ package delivery
 
 import (
 
-	//"xr-central/pkg/app/users/usecase"
+	//"xr-central/pkg/app/user/usecase"
 
 	"net/http"
 
