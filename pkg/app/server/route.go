@@ -1,7 +1,8 @@
 package server
 
 import (
-	"xr-central/pkg/controllers"
+	login "xr-central/pkg/app/login/delivery"
+	"xr-central/pkg/delivery"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,22 +17,22 @@ func Router() *gin.Engine {
 	router.GET("/info", info)
 	//router.GET("/edges/status", info)
 	//router.GET("/app/usage_satus", info)
-	router.POST("/login", controllers.Login)
-	router.POST("/logout", controllers.Logout)
+	router.POST("/login", login.Login)
+	router.POST("/logout", login.Logout)
 
 	// .. //
 	edges := router.Group("/devices")
-	edges.POST("/login", controllers.DevLogin)
-	edges.POST("/logout", controllers.Logout)
-	edges.POST("/apps/:id/reserve", controllers.NewOrder)
-	edges.DELETE("/reserve", controllers.ReleaseOrder)
-	edges.GET("/resume", controllers.DeviceResume)
-	edges.POST("/start_app", controllers.StartApp)
-	edges.POST("/stop_app", controllers.StopApp)
-	edges.POST("/status", controllers.EdgeStatus)
+	edges.POST("/login", login.DevLogin)
+	edges.POST("/logout", login.Logout)
+	edges.POST("/apps/:id/reserve", delivery.NewOrder)
+	edges.DELETE("/reserve", delivery.ReleaseOrder)
+	edges.GET("/resume", delivery.DeviceResume)
+	edges.POST("/start_app", delivery.StartApp)
+	edges.POST("/stop_app", delivery.StopApp)
+	edges.POST("/status", delivery.EdgeStatus)
 
 	apps := router.Group("/apps")
-	apps.GET("/", controllers.AppList)
+	apps.GET("/", delivery.AppList)
 	return router
 }
 

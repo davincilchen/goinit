@@ -1,40 +1,4 @@
-package controllers
-
-import (
-	"net/http"
-	userUCase "xr-central/pkg/app/users/usecase"
-
-	"github.com/gin-gonic/gin"
-)
-
-type UserLoginParams struct {
-	Account  *string
-	Password *string
-}
-
-type LoginResponse struct { //:TODO for device login
-	ID    uint   `json:"user_id"`
-	Name  string `json:"user_name"`
-	Token string
-}
-
-func Login(ctx *gin.Context) {
-	req := &UserLoginParams{}
-	err := getBodyForLogin(ctx, req)
-	if err != nil {
-		RespBadRequest(ctx)
-		return
-	}
-
-	handle := NewLoginController(ctx, *req, UserLoginSucess)
-	handle.Do()
-
-}
-
-func UserLoginSucess(user *userUCase.LoginUser) error {
-
-	return nil
-}
+package delivery
 
 // func getBodyForUserLogin(ctx *gin.Context) (*UserLoginParams, error) {
 
@@ -80,10 +44,3 @@ func UserLoginSucess(user *userUCase.LoginUser) error {
 // }
 
 // .. //
-
-func Logout(ctx *gin.Context) {
-	response := ResBody{}
-	response.ResCode = RES_OK
-
-	ctx.JSON(http.StatusOK, response)
-}
