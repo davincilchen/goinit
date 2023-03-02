@@ -33,9 +33,10 @@ type ResBody struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
-func RespBadRequest(ctx *gin.Context) {
+func RespBadRequest(ctx *gin.Context, err error) {
 
-	response := ResBody{}
+	response := FillErrorBody(ctx, err)
+	response.ResCode = RES_ERROR_BAD_REQUEST
 	response.ResCode = RES_ERROR_BAD_REQUEST
 	ctx.JSON(http.StatusBadRequest, response)
 
@@ -43,7 +44,7 @@ func RespBadRequest(ctx *gin.Context) {
 
 func RespInvalidPassword(ctx *gin.Context) {
 
-	response := ResBody{}
+	response := FillErrorBody(ctx, nil)
 	response.ResCode = RES_INVALID_USER_PASSWORD
 	ctx.JSON(http.StatusBadRequest, response)
 
@@ -51,8 +52,18 @@ func RespInvalidPassword(ctx *gin.Context) {
 
 func RespUnknowError(ctx *gin.Context, err error) {
 
-	response := ResBody{}
+	response := FillErrorBody(ctx, err)
 	response.ResCode = RES_ERROR_UNKNOWN
 	ctx.JSON(http.StatusInternalServerError, response)
 
+}
+
+func FillErrorBody(ctx *gin.Context, err error) *ResBody {
+	resp := &ResBody{}
+	if err != nil {
+		resp.Error = &ResError{
+			Desc: err.Error(),
+		}
+	}
+	return resp
 }

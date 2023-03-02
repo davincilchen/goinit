@@ -1,6 +1,7 @@
 package delivery
 
 import (
+	"fmt"
 	"net/http"
 	userUCase "xr-central/pkg/app/user/usecase"
 	dlv "xr-central/pkg/delivery"
@@ -43,7 +44,13 @@ func DevLogin(ctx *gin.Context) {
 	req := &DevLoginParams{}
 	err := dlv.GetBodyFromRawData(ctx, req)
 	if err != nil {
-		dlv.RespBadRequest(ctx)
+		dlv.RespBadRequest(ctx, err)
+		return
+	}
+
+	if req.DevInfo.Type == nil || req.DevInfo.UUID == nil {
+		e := fmt.Errorf("nil Type or UUID")
+		dlv.RespBadRequest(ctx, e)
 		return
 	}
 
@@ -70,7 +77,8 @@ func (t *LoginController) Do() {
 
 	ctx := t.ctx
 	if t.loginParams.Account == nil || t.loginParams.Password == nil {
-		dlv.RespBadRequest(ctx)
+		e := fmt.Errorf("nil Account or Password")
+		dlv.RespBadRequest(ctx, e)
 		return
 	}
 
@@ -93,12 +101,12 @@ func (t *LoginController) authWhenLogin() *userUCase.LoginUser {
 
 	param := t.loginParams
 	user := userUCase.User{}
-	qRet, err := user.Login(*param.Account, *param.Password)
+	ret, err := user.Login(*param.Account, *param.Password)
 	if err != nil {
 		return nil
 	}
 
-	return qRet
+	return ret
 
 }
 
@@ -131,7 +139,7 @@ func Login(ctx *gin.Context) {
 	req := &UserLoginParams{}
 	err := dlv.GetBodyFromRawData(ctx, req)
 	if err != nil {
-		dlv.RespBadRequest(ctx)
+		dlv.RespBadRequest(ctx, err)
 		return
 	}
 
