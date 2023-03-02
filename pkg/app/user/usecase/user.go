@@ -14,6 +14,10 @@ var userRepo repo.User
 type User struct {
 }
 
+func NewUser() *User {
+	return &User{}
+}
+
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err

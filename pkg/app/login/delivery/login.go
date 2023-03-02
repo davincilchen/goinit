@@ -3,6 +3,7 @@ package delivery
 import (
 	"fmt"
 	"net/http"
+	devUCase "xr-central/pkg/app/device/usecase"
 	userUCase "xr-central/pkg/app/user/usecase"
 	dlv "xr-central/pkg/delivery"
 
@@ -35,7 +36,7 @@ type DevLoginResponse struct {
 type LoginResponse struct { //:TODO for device login
 	ID    uint   `json:"user_id"`
 	Name  string `json:"user_name"`
-	Token string
+	Token string `json:"token"`
 }
 
 // ======================================== //
@@ -54,7 +55,8 @@ func DevLogin(ctx *gin.Context) {
 		return
 	}
 
-	handle := NewLoginController(ctx, req.UserLoginParams, DevLoginSucess)
+	d := devUCase.NewDeviceLoginProc(*req.DevInfo.Type, *req.DevInfo.UUID)
+	handle := NewLoginController(ctx, req.UserLoginParams, d.DevLoginSucess)
 	handle.Do()
 
 }
