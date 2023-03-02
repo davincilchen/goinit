@@ -27,11 +27,27 @@ func (t *DeviceLoginProc) DevLoginSucess(user *userUCase.LoginUser) error {
 
 	fmt.Printf("%+v\n", t)
 
+	//TODO: save ip and login/logout
 	device, err := deviceRepo.RegDevice(&t.Device)
 	if err != nil {
 		return err
 	}
 
+	loginDev := LoginDevice{
+		Device: device,
+		User:   user,
+	}
+
 	fmt.Printf("%+v\n", device)
-	return nil
+
+	manager := GetDeviceManager()
+	return manager.Add(&loginDev)
+
+}
+
+// ============================================= //
+type LoginDevice struct {
+	Edge   *models.Edge //not nil when post reserve
+	Device *models.Device
+	User   *userUCase.LoginUser
 }

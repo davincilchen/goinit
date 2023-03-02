@@ -3,6 +3,8 @@ package delivery
 import (
 	"net/http"
 
+	"xr-central/pkg/app/errordef"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +17,7 @@ const (
 	RES_EDGE_LOST         ResCode = 101
 	RES_INVALID_STEAM_VR  ResCode = 102
 	RES_CLOUDXR_UNCONNECT ResCode = 103
+	RES_REPEATED_LOGIN    ResCode = 104
 
 	RES_ERROR_UNKNOWN         ResCode = 200
 	RES_ERROR_BAD_REQUEST     ResCode = 201
@@ -50,11 +53,23 @@ func RespInvalidPassword(ctx *gin.Context) {
 
 }
 
+func getStatusCode(err error) (ResCode, int) {
+
+	//logrus.Error(err)
+	switch err {
+	case errordef.ErrRepeatedLogin:
+		return RES_REPEATED_LOGIN, http.StatusBadRequest
+	default:
+		return RES_ERROR_UNKNOWN, http.StatusInternalServerError
+	}
+}
+
 func RespUnknowError(ctx *gin.Context, err error) {
 
 	response := FillErrorBody(ctx, err)
-	response.ResCode = RES_ERROR_UNKNOWN
-	ctx.JSON(http.StatusInternalServerError, response)
+	resCode, httpCode := getStatusCode(err)
+	response.ResCode = resCode
+	ctx.JSON(httpCode, response)
 
 }
 
