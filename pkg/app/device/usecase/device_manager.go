@@ -47,7 +47,35 @@ func (t *DeviceManager) Add(dev *LoginDevice) error {
 	return nil
 }
 
-func (t *DeviceManager) Get(uuid string) error {
+func (t *DeviceManager) GetByUUID(token string) *LoginDevice {
 
+	t.mux.RLock()
+	defer t.mux.RUnlock()
+
+	dev, ok := t.deviceUUIDMap[token]
+	if ok {
+		return dev
+	}
 	return nil
+}
+
+func (t *DeviceManager) GetByToken(uuid string) *LoginDevice {
+
+	t.mux.RLock()
+	defer t.mux.RUnlock()
+
+	dev, ok := t.deviceTokenMap[uuid]
+	if ok {
+		return dev
+	}
+	return nil
+}
+
+func (t *DeviceManager) Delete(dev *LoginDevice) {
+
+	t.mux.Lock()
+	defer t.mux.Unlock()
+
+	delete(t.deviceTokenMap, dev.User.Token)
+	delete(t.deviceUUIDMap, dev.Device.UUID)
 }
