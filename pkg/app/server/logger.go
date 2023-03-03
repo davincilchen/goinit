@@ -72,7 +72,7 @@ func Logger(ctx *gin.Context) {
 	log.Duration = time.Since(now)
 	log.DurationText = fmt.Sprintf("%v", log.Duration)
 
-	//log.RequestBody, _ = GetRequestBodyInGin(ctx)
+	log.RequestBody, _ = infopass.GetRequestBodyInGin(ctx)
 	log.SessionToken = infopass.GetSessionToken(ctx)
 	log.DevData = devUCase.GetCacheDevice(ctx)
 	// log.PlayerSession, _ = GetPlayerSessionInGin(ctx)

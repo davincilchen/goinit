@@ -19,6 +19,7 @@ const (
 	RES_INVALID_STEAM_VR  ResCode = 102
 	RES_CLOUDXR_UNCONNECT ResCode = 103
 	RES_REPEATED_LOGIN    ResCode = 104
+	RES_REPEATED_RESERVE  ResCode = 105
 
 	RES_ERROR_UNKNOWN         ResCode = 200
 	RES_ERROR_BAD_REQUEST     ResCode = 201
@@ -68,13 +69,15 @@ func getStatusCode(err error) (ResCode, int) {
 	//logrus.Error(err)
 	switch err {
 	case errordef.ErrRepeatedLogin:
-		return RES_REPEATED_LOGIN, http.StatusBadRequest
+		return RES_REPEATED_LOGIN, http.StatusOK
+	case errordef.ErrRepeatedReserve:
+		return RES_REPEATED_RESERVE, http.StatusOK
 	default:
 		return RES_ERROR_UNKNOWN, http.StatusInternalServerError
 	}
 }
 
-func RespUnknowError(ctx *gin.Context, err error) {
+func RespError(ctx *gin.Context, err error) {
 
 	response := FillErrorBody(ctx, err)
 	resCode, httpCode := getStatusCode(err)

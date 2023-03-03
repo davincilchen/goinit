@@ -1,6 +1,7 @@
 package delivery
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	devUCase "xr-central/pkg/app/device/usecase"
@@ -61,11 +62,6 @@ func DevLogin(ctx *gin.Context) {
 
 }
 
-func DevLoginSucess(user *userUCase.LoginUser) error {
-
-	return nil
-}
-
 // ======================================== //
 
 type LoginController struct {
@@ -93,7 +89,7 @@ func (t *LoginController) Do() {
 	err := t.fnSuccess(loginUser)
 
 	if err != nil {
-		dlv.RespUnknowError(ctx, err) //TODO:
+		dlv.RespError(ctx, err) //TODO:
 		return
 	}
 	LoginSucessReponse(ctx, loginUser)
@@ -159,9 +155,15 @@ func UserLoginSucess(user *userUCase.LoginUser) error {
 func DevLogout(ctx *gin.Context) {
 
 	dev := devUCase.GetCacheDevice(ctx)
+	if dev == nil {
+		e := errors.New("GetCacheDevice Nil")
+		dlv.RespError(ctx, e)
+		return
+	}
+
 	err := dev.Logout()
 	if err != nil {
-		dlv.RespUnknowError(ctx, err)
+		dlv.RespError(ctx, err)
 		return
 	}
 	response := dlv.ResBody{}

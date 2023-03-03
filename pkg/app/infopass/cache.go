@@ -1,5 +1,9 @@
 package infopass
 
+import (
+	"fmt"
+)
+
 type any = interface{}
 
 type InfoCache interface {
@@ -79,4 +83,25 @@ func GetSessionToken(ctx InfoCache) *string {
 		}
 	}
 	return nil
+}
+
+func CacheRequestBodyInGin(ctx InfoCache, requestBody *string) {
+	ctx.Set(GinKeyRequestBody, requestBody)
+}
+
+func GetRequestBodyInGin(ctx InfoCache) (*string, error) {
+
+	info, ok := ctx.Get(GinKeyRequestBody)
+	if !ok {
+		err := fmt.Errorf("GinKeyRequestBody is not find")
+		return nil, err
+	}
+
+	r, ok := info.(*string)
+	if !ok {
+		err := fmt.Errorf("trans GinKeyRequestBody.(*string) failed from cache")
+		return nil, err
+	}
+
+	return r, nil
 }

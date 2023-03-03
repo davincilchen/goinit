@@ -3,5 +3,6 @@ package errordef
 import "errors"
 
 var (
-	ErrRepeatedLogin = errors.New("repeated login")
+	ErrRepeatedLogin   = errors.New("repeated login")
+	ErrRepeatedReserve = errors.New("repeated reserve")
 )
