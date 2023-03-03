@@ -2,10 +2,14 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
+	"sync"
 	"xr-central/pkg/app/device/repo"
 	"xr-central/pkg/app/infopass"
-	userUCase "xr-central/pkg/app/user/usecase"
 	"xr-central/pkg/models"
+
+	errDef "xr-central/pkg/app/errordef"
+	userUCase "xr-central/pkg/app/user/usecase"
 )
 
 var deviceRepo repo.Device
@@ -48,9 +52,10 @@ func (t *DeviceLoginProc) DevLoginSucess(user *userUCase.LoginUser) error {
 
 // ============================================= //
 type LoginDevice struct {
-	Edge   *models.Edge //not nil when post reserve
-	Device *models.Device
-	User   *userUCase.LoginUser
+	edgeMux sync.RWMutex
+	edge    *models.Edge //not nil when post reserve
+	Device  *models.Device
+	User    *userUCase.LoginUser
 }
 
 func (t *LoginDevice) Logout() error {
@@ -60,4 +65,27 @@ func (t *LoginDevice) Logout() error {
 	manager := GetDeviceManager()
 	manager.Delete(t)
 	return nil
+}
+
+func (t *LoginDevice) NewOrder(appID int) (*string, error) {
+	if t.User == nil {
+		return nil, errors.New("nil user for login device")
+	}
+	if t.IsReserve() {
+		return nil, errDef.ErrRepeatedReserve
+	}
+
+	fmt.Println("appID", appID)
+
+	// manager := GetDeviceManager()
+	// manager.Delete(t)
+	return nil, nil
+}
+
+func (t *LoginDevice) IsReserve() bool {
+	t.edgeMux.Lock()
+	defer t.edgeMux.Unlock()
+
+	return t.edge != nil
+
 }

@@ -1,10 +1,12 @@
 package server
 
 import (
-	loginDlv "xr-central/pkg/app/login/delivery"
 	"xr-central/pkg/delivery"
 
 	"github.com/gin-gonic/gin"
+
+	edgedlv "xr-central/pkg/app/edge/delivery"
+	loginDlv "xr-central/pkg/app/login/delivery"
 )
 
 func Router() *gin.Engine {
@@ -28,12 +30,12 @@ func Router() *gin.Engine {
 	devSession.Use(AuthDevSession)
 
 	devSession.POST("/logout", loginDlv.DevLogout)
-	devSession.POST("/apps/:id/reserve", delivery.NewOrder)
-	devSession.DELETE("/reserve", delivery.ReleaseOrder)
-	devSession.GET("/resume", delivery.DeviceResume)
-	devSession.POST("/start_app", delivery.StartApp)
-	devSession.POST("/stop_app", delivery.StopApp)
-	devSession.POST("/status", delivery.EdgeStatus)
+	devSession.POST("/apps/:id/reserve", edgedlv.NewOrder)
+	devSession.DELETE("/reserve", edgedlv.ReleaseOrder)
+	devSession.GET("/resume", edgedlv.DeviceResume)
+	devSession.POST("/start_app", edgedlv.StartApp)
+	devSession.POST("/stop_app", edgedlv.StopApp)
+	devSession.POST("/status", edgedlv.EdgeStatus)
 
 	// .. //
 	apps := router.Group("/apps")

@@ -72,6 +72,9 @@ func getStatusCode(err error) (ResCode, int) {
 		return RES_REPEATED_LOGIN, http.StatusOK
 	case errordef.ErrRepeatedReserve:
 		return RES_REPEATED_RESERVE, http.StatusOK
+	case errordef.ErrUrlParamError:
+		return RES_ERROR_BAD_REQUEST, http.StatusNotFound
+
 	default:
 		return RES_ERROR_UNKNOWN, http.StatusInternalServerError
 	}

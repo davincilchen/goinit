@@ -1,8 +1,9 @@
-package deilvery
+package delivery
 
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -24,12 +25,21 @@ func NewOrder(ctx *gin.Context) { //TODO:
 		return
 	}
 
-	if dev.Edge != nil {
-		dlv.RespError(ctx, errDef.ErrRepeatedReserve)
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		dlv.RespError(ctx, errDef.ErrUrlParamError)
 		return
 	}
 
-	data := NewOrderResp{}
+	ip, err := dev.NewOrder(id)
+	if err != nil || ip == nil {
+		dlv.RespError(ctx, err)
+		return
+	}
+
+	data := NewOrderResp{
+		GameServerIP: *ip,
+	}
 
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK
