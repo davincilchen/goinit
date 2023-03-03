@@ -8,6 +8,7 @@ import (
 	"xr-central/pkg/app/infopass"
 	"xr-central/pkg/models"
 
+	edgeUCase "xr-central/pkg/app/edge/usecase"
 	errDef "xr-central/pkg/app/errordef"
 	userUCase "xr-central/pkg/app/user/usecase"
 )
@@ -53,7 +54,7 @@ func (t *DeviceLoginProc) DevLoginSucess(user *userUCase.LoginUser) error {
 // ============================================= //
 type LoginDevice struct {
 	edgeMux sync.RWMutex
-	edge    *models.Edge //not nil when post reserve
+	edge    *edgeUCase.Edge //not nil when post reserve
 	Device  *models.Device
 	User    *userUCase.LoginUser
 }
@@ -77,9 +78,15 @@ func (t *LoginDevice) NewOrder(appID int) (*string, error) {
 
 	fmt.Println("appID", appID)
 
-	// manager := GetDeviceManager()
-	// manager.Delete(t)
-	return nil, nil
+	manager := edgeUCase.GetEdgeManager()
+	edge, err := manager.Reserve(appID)
+	if err != nil {
+		return nil, err
+	}
+
+	t.AttachEdge(edge)
+
+	return &edge.IP, nil
 }
 
 func (t *LoginDevice) IsReserve() bool {
@@ -87,5 +94,11 @@ func (t *LoginDevice) IsReserve() bool {
 	defer t.edgeMux.Unlock()
 
 	return t.edge != nil
+}
 
+func (t *LoginDevice) AttachEdge(edge *edgeUCase.Edge) {
+	t.edgeMux.Lock()
+	defer t.edgeMux.Unlock()
+
+	t.edge = edge
 }

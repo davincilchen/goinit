@@ -25,7 +25,6 @@ type APILog struct {
 	RequestBody  *string `json:"requestBody"`
 	SessionToken *string `json:"sessionToken"`
 	DevData      interface{}
-	SessionData  interface{}
 }
 
 // type Gcp struct {
