@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"fmt"
+	"errors"
 	"xr-central/pkg/app/device/repo"
 	"xr-central/pkg/app/infopass"
 	userUCase "xr-central/pkg/app/user/usecase"
@@ -29,8 +29,6 @@ func NewDeviceLoginProc(Type int, UUID string,
 
 func (t *DeviceLoginProc) DevLoginSucess(user *userUCase.LoginUser) error {
 
-	fmt.Printf("2023aaa %+v\n", t)
-
 	//TODO: save ip and login/logout
 	device, err := deviceRepo.RegDevice(&t.Device)
 	if err != nil {
@@ -43,8 +41,6 @@ func (t *DeviceLoginProc) DevLoginSucess(user *userUCase.LoginUser) error {
 		User:   user,
 	}
 
-	fmt.Printf("2023aaa %+v\n", device)
-
 	manager := GetDeviceManager()
 	return manager.Add(&loginDev)
 
@@ -55,4 +51,13 @@ type LoginDevice struct {
 	Edge   *models.Edge //not nil when post reserve
 	Device *models.Device
 	User   *userUCase.LoginUser
+}
+
+func (t *LoginDevice) Logout() error {
+	if t.User == nil {
+		return errors.New("nil user for login device")
+	}
+	manager := GetDeviceManager()
+	manager.Delete(t)
+	return nil
 }

@@ -18,7 +18,7 @@ const (
 	GinKeyHttpStatusCode = "HttpStatusCode"
 	GinKeyResponse       = "Response"
 	GinKeyHandleContext  = "HandleContext"
-	GinKeySppplier       = "Supplier"
+	//GinKeyDevice         = "Device"
 )
 
 func CacheError(ctx InfoCache, err error) {

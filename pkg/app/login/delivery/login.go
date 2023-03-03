@@ -156,6 +156,19 @@ func UserLoginSucess(user *userUCase.LoginUser) error {
 }
 
 // ======================================== //
+func DevLogout(ctx *gin.Context) {
+
+	dev := devUCase.GetCacheDevice(ctx)
+	err := dev.Logout()
+	if err != nil {
+		dlv.RespUnknowError(ctx, err)
+		return
+	}
+	response := dlv.ResBody{}
+	response.ResCode = dlv.RES_OK
+
+	ctx.JSON(http.StatusOK, response)
+}
 
 func Logout(ctx *gin.Context) {
 	response := dlv.ResBody{}

@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"time"
+	devUCase "xr-central/pkg/app/device/usecase"
 	"xr-central/pkg/app/infopass"
 
 	// gcpLogging "cloud.google.com/go/logging"
@@ -20,8 +21,9 @@ type APILog struct {
 	ErrorTxt     string
 	Error        error
 
-	RequestBody  *string     `json:"requestBody"`
-	SessionToken *string     `json:"sessionToken"`
+	RequestBody  *string `json:"requestBody"`
+	SessionToken *string `json:"sessionToken"`
+	DevData      interface{}
 	SessionData  interface{} `json:"sessionData"`
 }
 
@@ -71,6 +73,7 @@ func Logger(ctx *gin.Context) {
 
 	//log.RequestBody, _ = GetRequestBodyInGin(ctx)
 	log.SessionToken = infopass.GetSessionToken(ctx)
+	log.DevData = devUCase.GetCacheDevice(ctx)
 	// log.PlayerSession, _ = GetPlayerSessionInGin(ctx)
 
 	if theError != nil {

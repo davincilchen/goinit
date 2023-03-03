@@ -2,79 +2,14 @@ package server
 
 import (
 	"fmt"
+	deviceUCase "xr-central/pkg/app/device/usecase"
 	"xr-central/pkg/app/infopass"
 	dlv "xr-central/pkg/delivery"
 
 	"github.com/gin-gonic/gin"
 )
 
-// func ResponseRequestError(ctx *gin.Context, err error) {
-// 	CacheErrorInGin(ctx, err)
-// 	response := MakeResponseWithError(RES_ERROR_BAD_REQUEST, "", err.Error())
-
-// 	CacheResponseInGin(ctx, response)
-// 	code := http.StatusBadRequest
-// 	CacheHttpStatusCodeInGin(ctx, code)
-// 	ctx.JSON(code, response)
-// 	ctx.Abort()
-
-// }
-
-// func ResponseAuthError(ctx *gin.Context, err *AuthError) {
-// 	CacheErrorInGin(ctx, err)
-// 	response := MakeResponseWithError(RES_ERROR_BAD_REQUEST,
-// 		"", err.DescForResponse)
-// 	if err.Code == AUTH_ERROR_AUTH_SESSION_TOKEN || err.Code == AUTH_ERROR_AUTH_FAILED {
-// 		response.ResCode = RES_USER_INVALID_TOKEN
-// 	} else if err.Code == AUTH_ERROR_AUTH_PLAYER_TOKEN {
-// 		response.ResCode = RES_AUTHENTICATE_TOKEN_FAILED
-// 	}
-
-// 	CacheResponseInGin(ctx, response)
-// 	code := http.StatusUnauthorized
-// 	CacheHttpStatusCodeInGin(ctx, code)
-// 	ctx.JSON(code, response)
-// 	ctx.Abort()
-
-// }
-
 // ===================== //
-
-// func AuthWhenDevelopLogin(ctx *gin.Context) {
-// 	login, err := getBodyDevelopLogin(ctx)
-// 	if err != nil {
-// 		ResponseRequestError(ctx, err)
-// 		return
-// 	}
-
-// 	session, errAuth := manager.AuthDevelop(login)
-// 	if errAuth != nil {
-// 		ResponseAuthError(ctx, errAuth)
-// 		return
-// 	}
-
-// 	ctx.Set(GinKeySessionToken, session.GetUUID())
-// 	cachePlayerSessionInGin(ctx, session)
-// }
-
-// func AuthWhenPlayerLogin(ctx *gin.Context) {
-// 	login, err := getBodyLogin(ctx)
-// 	if err != nil {
-// 		ResponseRequestError(ctx, err)
-// 		return
-// 	}
-// 	ctx.Set(GinKeyLoginInfo, login)
-
-// 	supplier, errAuth := AuthSupplier(&login.LoginSupplier)
-
-// 	if errAuth != nil {
-// 		ResponseAuthError(ctx, errAuth)
-// 		return
-// 	}
-
-// 	CacheSupplierInGin(ctx, supplier)
-
-// }
 
 func getSessionToken(ctx *gin.Context) (string, error) {
 
@@ -107,6 +42,10 @@ func AuthDevSession(ctx *gin.Context) {
 		return
 	}
 	infopass.CacheSessionToken(ctx, sessionToken)
+	ok := deviceUCase.AuthDeviceToken(ctx, sessionToken)
+	if !ok {
+		dlv.RespUnauthorized(ctx, err)
+	}
 }
 
 // func auth(ctx *gin.Context, allowOffline bool) {

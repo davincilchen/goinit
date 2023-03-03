@@ -1,7 +1,7 @@
 package server
 
 import (
-	login "xr-central/pkg/app/login/delivery"
+	loginDlv "xr-central/pkg/app/login/delivery"
 	"xr-central/pkg/delivery"
 
 	"github.com/gin-gonic/gin"
@@ -17,23 +17,23 @@ func Router() *gin.Engine {
 	router.GET("/info", info)
 	//router.GET("/edges/status", info)
 	//router.GET("/app/usage_satus", info)
-	router.POST("/login", login.Login)
-	router.POST("/logout", login.Logout)
+	router.POST("/login", loginDlv.Login)
+	router.POST("/logout", loginDlv.Logout)
 
 	// .. //
-	edges := router.Group("/devices")
-	edges.POST("/login", login.DevLogin)
-	edges.POST("/logout", login.Logout)
+	dev := router.Group("/devices")
+	dev.POST("/login", loginDlv.DevLogin)
 
-	edgesSession := router.Group("/devices")
-	edgesSession.Use(AuthDevSession)
+	devSession := router.Group("/devices")
+	devSession.Use(AuthDevSession)
 
-	edgesSession.POST("/apps/:id/reserve", delivery.NewOrder)
-	edgesSession.DELETE("/reserve", delivery.ReleaseOrder)
-	edgesSession.GET("/resume", delivery.DeviceResume)
-	edgesSession.POST("/start_app", delivery.StartApp)
-	edgesSession.POST("/stop_app", delivery.StopApp)
-	edgesSession.POST("/status", delivery.EdgeStatus)
+	devSession.POST("/logout", loginDlv.DevLogout)
+	devSession.POST("/apps/:id/reserve", delivery.NewOrder)
+	devSession.DELETE("/reserve", delivery.ReleaseOrder)
+	devSession.GET("/resume", delivery.DeviceResume)
+	devSession.POST("/start_app", delivery.StartApp)
+	devSession.POST("/stop_app", delivery.StopApp)
+	devSession.POST("/status", delivery.EdgeStatus)
 
 	// .. //
 	apps := router.Group("/apps")
