@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 	devUCase "xr-central/pkg/app/device/usecase"
@@ -24,7 +25,7 @@ type APILog struct {
 	RequestBody  *string `json:"requestBody"`
 	SessionToken *string `json:"sessionToken"`
 	DevData      interface{}
-	SessionData  interface{} `json:"sessionData"`
+	SessionData  interface{}
 }
 
 // type Gcp struct {
@@ -103,8 +104,20 @@ func logger(log APILog) {
 	// 	fmt.Println(log)
 	// 	return
 	// }
+	fmt.Println()
 	s := fmt.Sprintf("%#v", log)
 	fmt.Println(s)
+
+	if log.SessionToken != nil {
+		s := fmt.Sprintf("SessionToken %#v", *log.SessionToken)
+		fmt.Println(s)
+	}
+
+	//if log.DevData != nil { 無法檢查interface, 這裡可以不檢查
+	b, err := json.Marshal(log.DevData)
+	if err == nil {
+		fmt.Println("DevData:", string(b))
+	}
 
 	// gcp.stdLogger.Println(s)
 
