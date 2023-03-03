@@ -46,12 +46,12 @@ func RespBadRequest(ctx *gin.Context, err error) {
 
 }
 
-func RespInvalidToken(ctx *gin.Context, err error) {
+func RespUnauthorized(ctx *gin.Context, err error) {
 
 	response := FillErrorBody(ctx, err)
 	response.ResCode = RES_INVALID_USER_TOKEN
 	infopass.CacheError(ctx, err)
-	ctx.JSON(http.StatusBadRequest, response)
+	ctx.JSON(http.StatusUnauthorized, response)
 	ctx.Abort()
 }
 

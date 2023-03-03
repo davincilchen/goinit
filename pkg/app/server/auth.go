@@ -79,13 +79,15 @@ import (
 func getSessionToken(ctx *gin.Context) (string, error) {
 
 	key := "authorization"
-	_, ok := ctx.Request.Header[key]
-
-	if !ok {
-		return "", fmt.Errorf("getSessionToken failed")
-	}
+	// _, ok := ctx.Request.Header[key] //authorization 取不到//"X-Session-Token"可以
+	// if !ok {
+	// 	return "", fmt.Errorf("getSessionToken failed")
+	// }
 
 	authorization := ctx.GetHeader(key)
+	if authorization == "" {
+		return "", fmt.Errorf("getSessionToken failed")
+	}
 
 	// s := strings.Split(authorization, "Bearer ")
 	// if len(s) < 2 {
@@ -101,7 +103,7 @@ func getSessionToken(ctx *gin.Context) (string, error) {
 func AuthDevSession(ctx *gin.Context) {
 	sessionToken, err := getSessionToken(ctx)
 	if err != nil {
-		dlv.RespInvalidToken(ctx, err)
+		dlv.RespUnauthorized(ctx, err)
 		return
 	}
 	infopass.CacheSessionToken(ctx, sessionToken)
