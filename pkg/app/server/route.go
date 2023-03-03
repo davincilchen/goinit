@@ -24,13 +24,18 @@ func Router() *gin.Engine {
 	edges := router.Group("/devices")
 	edges.POST("/login", login.DevLogin)
 	edges.POST("/logout", login.Logout)
-	edges.POST("/apps/:id/reserve", delivery.NewOrder)
-	edges.DELETE("/reserve", delivery.ReleaseOrder)
-	edges.GET("/resume", delivery.DeviceResume)
-	edges.POST("/start_app", delivery.StartApp)
-	edges.POST("/stop_app", delivery.StopApp)
-	edges.POST("/status", delivery.EdgeStatus)
 
+	edgesSession := router.Group("/devices")
+	edgesSession.Use(AuthDevSession)
+
+	edgesSession.POST("/apps/:id/reserve", delivery.NewOrder)
+	edgesSession.DELETE("/reserve", delivery.ReleaseOrder)
+	edgesSession.GET("/resume", delivery.DeviceResume)
+	edgesSession.POST("/start_app", delivery.StartApp)
+	edgesSession.POST("/stop_app", delivery.StopApp)
+	edgesSession.POST("/status", delivery.EdgeStatus)
+
+	// .. //
 	apps := router.Group("/apps")
 	apps.GET("/", delivery.AppList)
 	return router

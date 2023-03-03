@@ -4,6 +4,7 @@ import (
 
 	//"xr-central/pkg/app/user/usecase"
 
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -30,6 +31,7 @@ type NewOrderResp struct {
 }
 
 func NewOrder(ctx *gin.Context) { //TODO:
+	fmt.Println("--------------")
 	data := NewOrderResp{}
 
 	response := ResBody{}

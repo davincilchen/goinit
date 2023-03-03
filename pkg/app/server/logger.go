@@ -19,6 +19,10 @@ type APILog struct {
 	DBErrorTxt   string
 	ErrorTxt     string
 	Error        error
+
+	RequestBody  *string     `json:"requestBody"`
+	SessionToken *string     `json:"sessionToken"`
+	SessionData  interface{} `json:"sessionData"`
 }
 
 // type Gcp struct {
@@ -64,6 +68,11 @@ func Logger(ctx *gin.Context) {
 	log.Method = ctx.Request.Method
 	log.Duration = time.Since(now)
 	log.DurationText = fmt.Sprintf("%v", log.Duration)
+
+	//log.RequestBody, _ = GetRequestBodyInGin(ctx)
+	log.SessionToken = infopass.GetSessionToken(ctx)
+	// log.PlayerSession, _ = GetPlayerSessionInGin(ctx)
+
 	if theError != nil {
 		log.Error = theError
 		log.ErrorTxt = log.Error.Error()

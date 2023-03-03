@@ -29,7 +29,10 @@ func CacheError(ctx InfoCache, err error) {
 }
 
 func GetError(ctx InfoCache) error {
-	err, _ := ctx.Get(GinKeyError)
+	err, exist := ctx.Get(GinKeyError)
+	if !exist {
+		return nil
+	}
 	if err != nil {
 		e, ok := err.(error)
 		if ok {
@@ -47,11 +50,32 @@ func CacheDBError(ctx InfoCache, err error) {
 }
 
 func GetDBError(ctx InfoCache) error {
-	err, _ := ctx.Get(GinKeyDBError)
+	err, exist := ctx.Get(GinKeyDBError)
+	if !exist {
+		return nil
+	}
 	if err != nil {
 		e, ok := err.(error)
 		if ok {
 			return e
+		}
+	}
+	return nil
+}
+
+func CacheSessionToken(ctx InfoCache, sessionToken string) {
+	ctx.Set(GinKeySessionToken, sessionToken)
+}
+
+func GetSessionToken(ctx InfoCache) *string {
+	ret, exist := ctx.Get(GinKeySessionToken)
+	if !exist {
+		return nil
+	}
+	if ret != nil {
+		e, ok := ret.(string)
+		if ok {
+			return &e
 		}
 	}
 	return nil
