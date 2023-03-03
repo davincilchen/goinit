@@ -65,16 +65,25 @@ func RespInvalidPassword(ctx *gin.Context) {
 }
 
 func getStatusCode(err error) (ResCode, int) {
-
 	//logrus.Error(err)
 	switch err {
+	case errordef.ErrNoResource:
+		return RES_NO_RESOURCE, http.StatusOK
+	case errordef.ErrEdgeLost:
+		return RES_EDGE_LOST, http.StatusOK
+	case errordef.ErrInvalidStramVR:
+		return RES_INVALID_STEAM_VR, http.StatusOK
+	case errordef.ErrCloudXRUnconect:
+		return RES_CLOUDXR_UNCONNECT, http.StatusOK
+
 	case errordef.ErrRepeatedLogin:
 		return RES_REPEATED_LOGIN, http.StatusOK
 	case errordef.ErrRepeatedReserve:
 		return RES_REPEATED_RESERVE, http.StatusOK
+		//
 	case errordef.ErrUrlParamError:
 		return RES_ERROR_BAD_REQUEST, http.StatusNotFound
-
+		//
 	default:
 		return RES_ERROR_UNKNOWN, http.StatusInternalServerError
 	}
