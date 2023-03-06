@@ -37,12 +37,17 @@ func (t *Edge) Release() error {
 	err := t.eHttp.Release()
 
 	var online *bool
-	if err == errDef.ErrEdgeLost {
-		tmp := false
-		online = &tmp
+	if err != nil {
+		if err == errDef.ErrEdgeLost {
+			tmp := false
+			online = &tmp
+		} else {
+			status = models.STATUS_FAIL
+		}
 	} else {
 		status = models.STATUS_FREE
 	}
+
 	t.updateStatus(status, online)
 	return err
 
@@ -79,15 +84,21 @@ func (t *Edge) StartAPP() error {
 
 	status = models.STATUS_RX_START_APP
 	t.updateStatus(status, nil)
+
 	err := t.eHttp.StartAPP()
 
 	var online *bool
-	if err == errDef.ErrEdgeLost {
-		tmp := false
-		online = &tmp
+	if err != nil {
+		if err == errDef.ErrEdgeLost {
+			tmp := false
+			online = &tmp
+		} else {
+			status = models.STATUS_FAIL
+		}
+	} else {
+		status = models.STATUS_PLAYING
 	}
 
-	status = models.STATUS_PLAYING
 	t.updateStatus(status, online)
 	return err
 }
@@ -105,12 +116,18 @@ func (t *Edge) StopAPP() error {
 	err := t.eHttp.StopAPP()
 
 	var online *bool
-	if err == errDef.ErrEdgeLost {
-		tmp := false
-		online = &tmp
+	if err != nil {
+		if err == errDef.ErrEdgeLost {
+			tmp := false
+			online = &tmp
+
+		} else {
+			status = models.STATUS_FAIL
+		}
+	} else {
+		status = models.STATUS_RESERVE_XR_CONNECT
 	}
 
-	status = models.STATUS_RESERVE_XR_CONNECT
 	t.updateStatus(status, online)
 
 	return err
