@@ -13,11 +13,11 @@ import (
 	devUCase "xr-central/pkg/app/device/usecase"
 )
 
-type NewOrderResp struct {
+type NewReserveResp struct {
 	GameServerIP string `json:"game_server_ip"`
 }
 
-func NewOrder(ctx *gin.Context) { //TODO:
+func NewReserve(ctx *gin.Context) { //TODO:
 	dev := devUCase.GetCacheDevice(ctx)
 	if dev == nil {
 		e := errors.New("GetCacheDevice Nil")
@@ -31,13 +31,13 @@ func NewOrder(ctx *gin.Context) { //TODO:
 		return
 	}
 
-	ip, err := dev.NewOrder(id)
+	ip, err := dev.NewReserve(id)
 	if err != nil || ip == nil {
 		dlv.RespError(ctx, err)
 		return
 	}
 
-	data := NewOrderResp{
+	data := NewReserveResp{
 		GameServerIP: *ip,
 	}
 
@@ -48,7 +48,7 @@ func NewOrder(ctx *gin.Context) { //TODO:
 	ctx.JSON(http.StatusOK, response)
 }
 
-func ReleaseOrder(ctx *gin.Context) { //TODO:
+func ReleaseReserve(ctx *gin.Context) { //TODO:
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK
 

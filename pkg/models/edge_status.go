@@ -1,4 +1,4 @@
-package usecase
+package models
 
 type EdgeStatus int
 
@@ -11,4 +11,5 @@ const (
 	STATUS_START_APP              EdgeStatus = 150
 	STATUS_APP_RUNNING            EdgeStatus = 160
 	STATUS_PLAYING                EdgeStatus = 170
+	//suspend?
 )

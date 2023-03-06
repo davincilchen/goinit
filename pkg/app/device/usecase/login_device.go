@@ -68,7 +68,7 @@ func (t *LoginDevice) Logout() error {
 	return nil
 }
 
-func (t *LoginDevice) NewOrder(appID int) (*string, error) {
+func (t *LoginDevice) NewReserve(appID int) (*string, error) {
 	if t.User == nil {
 		return nil, errors.New("nil user for login device")
 	}

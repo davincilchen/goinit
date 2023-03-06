@@ -30,8 +30,8 @@ func Router() *gin.Engine {
 	devSession.Use(AuthDevSession)
 
 	devSession.POST("/logout", loginDlv.DevLogout)
-	devSession.POST("/apps/:id/reserve", edgedlv.NewOrder)
-	devSession.DELETE("/reserve", edgedlv.ReleaseOrder)
+	devSession.POST("/apps/:id/reserve", edgedlv.NewReserve)
+	devSession.DELETE("/reserve", edgedlv.ReleaseReserve)
 	devSession.GET("/resume", edgedlv.DeviceResume)
 	devSession.POST("/start_app", edgedlv.StartApp)
 	devSession.POST("/stop_app", edgedlv.StopApp)

@@ -26,13 +26,13 @@ import (
 // 	return &info, nil
 // }
 
-type NewOrderResp struct {
+type NewReserveResp struct {
 	GameServerIP string `json:"game_server_ip"`
 }
 
-func NewOrder(ctx *gin.Context) { //TODO:
+func NewReserve(ctx *gin.Context) { //TODO:
 	fmt.Println("--------------")
-	data := NewOrderResp{}
+	data := NewReserveResp{}
 
 	response := ResBody{}
 	response.ResCode = RES_OK
@@ -41,7 +41,7 @@ func NewOrder(ctx *gin.Context) { //TODO:
 	ctx.JSON(http.StatusOK, response)
 }
 
-func ReleaseOrder(ctx *gin.Context) { //TODO:
+func ReleaseReserve(ctx *gin.Context) { //TODO:
 	response := ResBody{}
 	response.ResCode = RES_OK
 
