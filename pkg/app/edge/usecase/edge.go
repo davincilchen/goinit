@@ -32,13 +32,16 @@ func NewEdge() *Edge {
 
 func (t *Edge) Release() error {
 
-	status := models.STATUS_FREE
+	status := models.STATUS_RX_RELEASE
+	t.updateStatus(status, nil)
 	err := t.eHttp.Release()
 
 	var online *bool
 	if err == errDef.ErrEdgeLost {
 		tmp := false
 		online = &tmp
+	} else {
+		status = models.STATUS_FREE
 	}
 	t.updateStatus(status, online)
 	return err
@@ -61,9 +64,21 @@ func (t *Edge) GetStatus() error {
 	return nil
 }
 
-func (t *Edge) StartAPP() error {
-	status := models.STATUS_START_APP // or
+func (t *Edge) GetCacheStatus() (models.EdgeStatus, bool) {
+	t.mux.RLock()
+	defer t.mux.RUnlock()
 
+	return t.Status, t.Online
+}
+
+func (t *Edge) StartAPP() error {
+	status, _ := t.GetCacheStatus()
+	if status != models.STATUS_RESERVE_XR_CONNECT {
+		return errDef.ErrCloudXRUnconect
+	}
+
+	status = models.STATUS_RX_START_APP
+	t.updateStatus(status, nil)
 	err := t.eHttp.StartAPP()
 
 	var online *bool
@@ -72,13 +87,21 @@ func (t *Edge) StartAPP() error {
 		online = &tmp
 	}
 
+	status = models.STATUS_PLAYING
 	t.updateStatus(status, online)
 	return err
 }
 
 func (t *Edge) StopAPP() error {
 
-	status := models.STATUS_RESERVE_XR_CONNECT // or
+	status, _ := t.GetCacheStatus()
+	if status != models.STATUS_PLAYING {
+		return errDef.ErrNotPlaying
+	}
+
+	status = models.STATUS_RX_STOP_APP
+	t.updateStatus(status, nil)
+
 	err := t.eHttp.StopAPP()
 
 	var online *bool
@@ -87,6 +110,7 @@ func (t *Edge) StopAPP() error {
 		online = &tmp
 	}
 
+	status = models.STATUS_RESERVE_XR_CONNECT
 	t.updateStatus(status, online)
 
 	return err

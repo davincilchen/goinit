@@ -7,6 +7,7 @@ var (
 	ErrEdgeLost        = errors.New("edge lost")
 	ErrInvalidStramVR  = errors.New("invalid steam VR")
 	ErrCloudXRUnconect = errors.New("cloudXR unconnect")
+	ErrNotPlaying      = errors.New("not playing")
 
 	ErrRepeatedLogin   = errors.New("repeated login")
 	ErrRepeatedReserve = errors.New("repeated reserve")
