@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"sync"
-	"xr-central/pkg/app/device/repo"
+	repo "xr-central/pkg/app/device/repo/mysql"
 	"xr-central/pkg/app/infopass"
 	"xr-central/pkg/models"
 

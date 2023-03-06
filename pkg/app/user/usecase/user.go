@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"fmt"
-	"xr-central/pkg/app/user/repo"
+	repo "xr-central/pkg/app/user/repo/mysql"
 	"xr-central/pkg/models"
 	"xr-central/pkg/token"
 
