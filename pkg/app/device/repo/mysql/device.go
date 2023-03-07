@@ -1,4 +1,5 @@
-package repo
+//package repo
+package mysql
 
 import (
 	"xr-central/pkg/db"

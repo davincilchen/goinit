@@ -1,8 +1,14 @@
 package usecase
 
-import "xr-central/pkg/models"
+import (
+	"fmt"
+	repo "xr-central/pkg/app/edge/repo/mysql"
+	"xr-central/pkg/models"
+)
 
 type EdgeManager struct {
+	//TODO: lock
+	edges []*Edge
 }
 
 var manager *EdgeManager
@@ -16,6 +22,19 @@ func newEdgeManager() *EdgeManager {
 func GetEdgeManager() *EdgeManager {
 	if manager == nil {
 		manager = newEdgeManager()
+		manager.edges = make([]*Edge, 0)
+		e := repo.Edge{}
+		es, err := e.LoadEdges()
+		if err != nil {
+			fmt.Printf("LoadEdges error %s\n", err.Error())
+		} else {
+			fmt.Printf("LoadEdges count %d\n", len(es))
+			for i, v := range es {
+				fmt.Printf("%d %#v\n", i, v)
+				manager.edges = append(manager.edges, NewEdge(v))
+			}
+		}
+
 	}
 	return manager
 }
