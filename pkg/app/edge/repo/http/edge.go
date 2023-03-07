@@ -13,7 +13,7 @@ func (t *Edge) SetURL(url string) {
 	t.URL = url
 }
 
-func (t *Edge) Reserve(appID int) error {
+func (t *Edge) Reserve() error {
 	return nil
 }
 
@@ -37,7 +37,7 @@ func (t *Edge) Status() error {
 	return nil
 }
 
-func (t *Edge) StartAPP() error {
+func (t *Edge) StartAPP(appID int) error {
 
 	return nil
 }

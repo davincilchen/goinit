@@ -31,3 +31,9 @@ func PostJSON(url string, requestBody interface{}, retries int) (
 
 	return RequestCUDJSONVersion(http.MethodPost, url, requestBody, retries)
 }
+
+func Post(url string) (
+	res *http.Response, err error) {
+
+	return HttpDo(http.MethodPost, url)
+}

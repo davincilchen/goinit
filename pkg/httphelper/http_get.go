@@ -40,12 +40,12 @@ func Get(url string) (res *http.Response, err error) {
 	res, err = client.Get(url)
 
 	if res == nil {
-		NilResponseLog(APICommentNormalV, http.MethodGet, url, "", time.Now().Sub(now), err)
+		NilResponseLog(APICommentNormalV, http.MethodGet, url, "", time.Since(now), err)
 		if err == nil {
 			err = fmt.Errorf("url:%s,  method:%s,  response is nil", url, http.MethodGet)
 		}
-	} else {
-		ResponseLog(APICommentNormalV, "", res, time.Now().Sub(now), err) //no error if http 405
+	} else { //no error if http 405
+		ResponseLog(APICommentNormalV, "", res, time.Since(now), err)
 	}
 
 	return

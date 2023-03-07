@@ -37,9 +37,9 @@ func RequestCUDJSONVersion(method, url string, requestBody interface{}, retries 
 
 	response, err := RequestCUDJSON(method, url, reqBody, retries)
 	if response == nil { //no error if http 405
-		NilResponseLog(APICommentNormalV, method, url, string(reqBody), time.Now().Sub(now), err)
+		NilResponseLog(APICommentNormalV, method, url, string(reqBody), time.Since(now), err)
 	} else {
-		ResponseLog(APICommentNormalV, string(reqBody), response, time.Now().Sub(now), err)
+		ResponseLog(APICommentNormalV, string(reqBody), response, time.Since(now), err)
 	}
 
 	return response, err
@@ -76,5 +76,39 @@ func RequestCUDJSON(method, url string, requestBody []byte, retries int) (resp *
 	// 	return resp, err
 	// }
 
+	return resp, err
+}
+
+// ========================= //
+// 			No Body			 //
+// ========================= //
+func HttpDo(method, url string) (
+	*http.Response, error) {
+	//resp *http.Response, reqHeader string, err error) {
+	now := time.Now()
+
+	response, err := httpDo(method, url)
+	if response == nil { //no error if http 405
+		NilResponseLog(APICommentNormalV, method, url, "", time.Since(now), err)
+
+	} else {
+		ResponseLog(APICommentNormalV, "", response, time.Since(now), err)
+	}
+
+	return response, err
+}
+
+func httpDo(method, url string) (
+	resp *http.Response, err error) {
+	//resp *http.Response, reqHeader string, err error) {
+
+	req, err := http.NewRequest(method, url, nil)
+	if err != nil {
+		return nil, err
+	}
+	resp, err = client.Do(req)
+	if err != nil {
+		return nil, err
+	}
 	return resp, err
 }

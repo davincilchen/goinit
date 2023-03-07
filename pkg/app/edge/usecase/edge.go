@@ -11,10 +11,10 @@ import (
 
 type HttpEdge interface {
 	SetURL(url string)
-	Reserve(appID int) error
+	Reserve() error
 	Release() error
 	Resume() error
-	StartAPP() error
+	StartAPP(appID int) error
 	StopAPP() error
 	GetStatus() error
 }
@@ -43,7 +43,7 @@ func (t *Edge) GetURL() string {
 	return t.IP
 }
 
-func (t *Edge) Reserve(appID int) error {
+func (t *Edge) Reserve() error {
 
 	//online由每次reg時確認,減少api時間
 	ok := t.updateStatusWhen(models.STATUS_FREE, models.STATUS_RESERVE_INIT)
@@ -51,7 +51,7 @@ func (t *Edge) Reserve(appID int) error {
 		return errDef.ErrNoResource
 	}
 
-	err := t.eHttp.Reserve(appID)
+	err := t.eHttp.Reserve()
 
 	status := models.STATUS_RESERVE_XR_NOT_CONNECT
 	var online *bool
@@ -119,7 +119,7 @@ func (t *Edge) GetCacheStatus() (models.EdgeStatus, bool) {
 	return t.Status, t.Online
 }
 
-func (t *Edge) StartAPP() error {
+func (t *Edge) StartAPP(appID int) error {
 
 	ok := t.updateStatusWhen(models.STATUS_RESERVE_XR_CONNECT,
 		models.STATUS_RX_START_APP)
@@ -127,7 +127,7 @@ func (t *Edge) StartAPP() error {
 		return errDef.ErrCloudXRUnconect
 	}
 
-	err := t.eHttp.StartAPP()
+	err := t.eHttp.StartAPP(appID)
 
 	status := models.STATUS_PLAYING
 	var online *bool
