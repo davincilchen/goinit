@@ -46,7 +46,7 @@ func main() {
 
 	fmt.Println("LoadSeed --> Start")
 
-	err = seed()
+	err = saveSeed()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -54,17 +54,22 @@ func main() {
 	fmt.Println("LoadSeed --> Done")
 }
 
-func seed() error {
+type Seed struct {
+	Users     []models.User
+	Platforms []models.Platform
+}
+
+func saveSeed() error {
 
 	fmt.Println("Seed: Create User --> Start")
 
-	users, err := loadSeed(seedPath)
+	s, err := loadSeed(seedPath)
 	if err != nil {
 		return err
 	}
 
 	IO := usecase.User{}
-	for _, user := range users {
+	for _, user := range s.Users {
 		u, err := IO.Register(&user) //char(32) will be error
 		if err != nil {
 			fmt.Printf("err =%s, for Register User: %+v", err.Error(), u)
@@ -78,7 +83,7 @@ func seed() error {
 	return nil
 }
 
-func loadSeed(path string) ([]models.User, error) {
+func loadSeed(path string) (*Seed, error) {
 	buf, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -88,19 +93,21 @@ func loadSeed(path string) ([]models.User, error) {
 		models.User
 		Count int `json:"count"`
 	}
-	type Seed struct {
+	type TmpSeed struct {
 		Users     []models.User `json:"Users"`
 		LoopUsers []LoopUsers   `json:"LoopUsers"`
 	}
 
-	var seed Seed
+	var tmpSeed TmpSeed
 
-	err = json.Unmarshal(buf, &seed)
+	err = json.Unmarshal(buf, &tmpSeed)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, v := range seed.LoopUsers {
+	seed := &Seed{}
+
+	for _, v := range tmpSeed.LoopUsers {
 		fmt.Println(v)
 		for i := 0; i < v.Count; i++ {
 			u := v.User
@@ -108,8 +115,10 @@ func loadSeed(path string) ([]models.User, error) {
 			u.Name = u.Name + no
 			u.Account = u.Account + no
 			u.Password = u.Password + no
-			seed.Users = append(seed.Users, u)
+			tmpSeed.Users = append(seed.Users, u)
 		}
 	}
-	return seed.Users, nil
+
+	seed.Users = tmpSeed.Users
+	return seed, nil
 }

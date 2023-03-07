@@ -7,6 +7,7 @@ import (
 
 	edgedlv "xr-central/pkg/app/edge/delivery"
 	loginDlv "xr-central/pkg/app/login/delivery"
+	"xr-central/pkg/deliveryfake" //just for test. TODO: remove
 )
 
 func Router() *gin.Engine {
@@ -40,6 +41,11 @@ func Router() *gin.Engine {
 	// .. //
 	apps := router.Group("/apps")
 	apps.GET("/", delivery.AppList)
+
+	// .. //fake for test // TODO: remove
+	router.POST("/start_app", deliveryfake.FakeStartApp)
+	router.POST("/stop_app", deliveryfake.FakeStopApp)
+
 	return router
 }
 

@@ -1,11 +1,10 @@
-package delivery
+package deliveryfake
 
 import (
-
-	//"xr-central/pkg/app/user/usecase"
-
 	"fmt"
 	"net/http"
+
+	"xr-central/pkg/delivery"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,27 +29,27 @@ type NewReserveResp struct {
 	GameServerIP string `json:"game_server_ip"`
 }
 
-func NewReserve(ctx *gin.Context) { //TODO:
+func FakeNewReserve(ctx *gin.Context) { //TODO:
 	fmt.Println("--------------")
 	data := NewReserveResp{}
 
-	response := ResBody{}
-	response.ResCode = RES_OK
+	response := delivery.ResBody{}
+	response.ResCode = delivery.RES_OK
 	response.Data = data
 
 	ctx.JSON(http.StatusOK, response)
 }
 
-func ReleaseReserve(ctx *gin.Context) { //TODO:
-	response := ResBody{}
-	response.ResCode = RES_OK
+func FakeReleaseReserve(ctx *gin.Context) { //TODO:
+	response := delivery.ResBody{}
+	response.ResCode = delivery.RES_OK
 
 	ctx.JSON(http.StatusOK, response)
 }
 
-func DeviceResume(ctx *gin.Context) { //TODO:
-	response := ResBody{}
-	response.ResCode = RES_EDGE_LOST
+func FakeDeviceResume(ctx *gin.Context) { //TODO:
+	response := delivery.ResBody{}
+	response.ResCode = delivery.RES_EDGE_LOST
 
 	ctx.JSON(http.StatusOK, response)
 
@@ -59,9 +58,9 @@ func DeviceResume(ctx *gin.Context) { //TODO:
 type StartAppResp struct {
 }
 
-func StartApp(ctx *gin.Context) { //TODO:
-	response := ResBody{}
-	response.ResCode = RES_OK
+func FakeStartApp(ctx *gin.Context) { //TODO:
+	response := delivery.ResBody{}
+	response.ResCode = delivery.RES_OK
 
 	ctx.JSON(http.StatusOK, response)
 }
@@ -69,9 +68,9 @@ func StartApp(ctx *gin.Context) { //TODO:
 type StopAppResp struct {
 }
 
-func StopApp(ctx *gin.Context) { //TODO:
-	response := ResBody{}
-	response.ResCode = RES_OK
+func FakeStopApp(ctx *gin.Context) { //TODO:
+	response := delivery.ResBody{}
+	response.ResCode = delivery.RES_OK
 
 	ctx.JSON(http.StatusOK, response)
 }
@@ -90,8 +89,8 @@ func EdgeStatus(ctx *gin.Context) { //TODO:
 	data := Data{}
 	data.Edge = EdgeStatusResp{}
 
-	response := ResBody{}
-	response.ResCode = RES_OK
+	response := delivery.ResBody{}
+	response.ResCode = delivery.RES_OK
 	response.Data = data
 
 	ctx.JSON(http.StatusOK, response)
