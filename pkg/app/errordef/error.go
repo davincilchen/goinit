@@ -8,6 +8,7 @@ var (
 	ErrInvalidStramVR  = errors.New("invalid steam VR")
 	ErrCloudXRUnconect = errors.New("cloudXR unconnect")
 	ErrNotPlaying      = errors.New("not playing")
+	ErrAlreadyFree     = errors.New("already free")
 
 	ErrRepeatedLogin   = errors.New("repeated login")
 	ErrRepeatedReserve = errors.New("repeated reserve")

@@ -32,7 +32,12 @@ func NewEdge() *Edge {
 
 func (t *Edge) Release() error {
 
-	status := models.STATUS_RX_RELEASE
+	status, _ := t.GetCacheStatus()
+	if status == models.STATUS_FREE {
+		return errDef.ErrAlreadyFree
+	}
+
+	status = models.STATUS_RX_RELEASE
 	t.updateStatus(status, nil)
 	err := t.eHttp.Release()
 
@@ -120,7 +125,6 @@ func (t *Edge) StopAPP() error {
 		if err == errDef.ErrEdgeLost {
 			tmp := false
 			online = &tmp
-
 		} else {
 			status = models.STATUS_FAIL
 		}
