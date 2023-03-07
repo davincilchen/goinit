@@ -2,7 +2,8 @@ package http
 
 // import "xr-central/pkg/models"
 import (
-	errDef "xr-central/pkg/app/errordef"
+	"fmt"
+	httph "xr-central/pkg/httphelper"
 )
 
 type Edge struct {
@@ -14,12 +15,15 @@ func (t *Edge) SetURL(url string) {
 }
 
 func (t *Edge) Reserve() error {
-	return nil
+	url := fmt.Sprintf("%s//reserve", t.URL)
+	_, err := httph.Post(url)
+	return err
 }
 
 func (t *Edge) Release() error {
-
-	return nil
+	url := fmt.Sprintf("%s//reserve", t.URL)
+	_, err := httph.Delete(url)
+	return err
 }
 
 func (t *Edge) Resume() error {
@@ -38,12 +42,16 @@ func (t *Edge) Status() error {
 }
 
 func (t *Edge) StartAPP(appID int) error {
-
-	return nil
+	url := fmt.Sprintf("%s//%d//start_app", t.URL, appID)
+	_, err := httph.Post(url)
+	return err
 }
 
 func (t *Edge) StopAPP() error {
+	url := fmt.Sprintf("%s//stop_app", t.URL)
+	_, err := httph.Post(url)
 
-	return errDef.ErrEdgeLost
+	return err
+	//return errDef.ErrEdgeLost
 	//return nil
 }
