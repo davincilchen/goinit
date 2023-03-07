@@ -8,6 +8,10 @@ import (
 type Edge struct {
 }
 
+func (t *Edge) Reserve(appID int) error {
+	return nil
+}
+
 func (t *Edge) Release() error {
 
 	return nil
