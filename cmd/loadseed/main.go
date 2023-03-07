@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"time"
+	platformRepo "xr-central/pkg/app/platform/repo/mysql"
 	"xr-central/pkg/app/user/usecase"
 	"xr-central/pkg/config"
 	"xr-central/pkg/db"
@@ -68,9 +69,9 @@ func saveSeed() error {
 		return err
 	}
 
-	IO := usecase.User{}
+	uIO := usecase.User{}
 	for _, user := range s.Users {
-		u, err := IO.Register(&user) //char(32) will be error
+		u, err := uIO.Register(&user) //char(32) will be error
 		if err != nil {
 			fmt.Printf("err =%s, for Register User: %+v", err.Error(), u)
 		} else {
@@ -78,8 +79,20 @@ func saveSeed() error {
 		}
 
 	}
-
 	fmt.Println("Seed: Create User  --> Done")
+	fmt.Println("Seed: Create Platform --> Start")
+	pIO := platformRepo.Platform{}
+	for _, platform := range s.Platforms {
+		u, err := pIO.CreatePlatform(&platform) //char(32) will be error
+		if err != nil {
+			fmt.Printf("err =%s, for Create Platform: %+v", err.Error(), u)
+		} else {
+			fmt.Printf("Create Platform: %+v\n", u)
+		}
+
+	}
+
+	fmt.Println("Seed: Create Platform  --> Done")
 	return nil
 }
 
@@ -94,8 +107,9 @@ func loadSeed(path string) (*Seed, error) {
 		Count int `json:"count"`
 	}
 	type TmpSeed struct {
-		Users     []models.User `json:"Users"`
-		LoopUsers []LoopUsers   `json:"LoopUsers"`
+		Users     []models.User     `json:"Users"`
+		LoopUsers []LoopUsers       `json:"LoopUsers"`
+		Platforms []models.Platform `json:"Platforms"`
 	}
 
 	var tmpSeed TmpSeed
@@ -120,5 +134,7 @@ func loadSeed(path string) (*Seed, error) {
 	}
 
 	seed.Users = tmpSeed.Users
+	seed.Platforms =tmpSeed.Platforms
+	
 	return seed, nil
 }
