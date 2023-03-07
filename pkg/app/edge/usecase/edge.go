@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"fmt"
 	"sync"
 	"xr-central/pkg/models"
 
@@ -9,6 +10,7 @@ import (
 )
 
 type HttpEdge interface {
+	SetURL(url string)
 	Reserve(appID int) error
 	Release() error
 	Resume() error
@@ -24,11 +26,21 @@ type Edge struct {
 	eHttp HttpEdge
 }
 
-func NewEdge() *Edge {
+func NewEdge(edge models.Edge) *Edge {
 	e := Edge{
+		Edge:  edge,
 		eHttp: &edgeHttp.Edge{},
 	}
+	e.eHttp.SetURL(e.GetURL())
 	return &e
+}
+
+func (t *Edge) GetURL() string {
+	if t.Port > 0 {
+		return fmt.Sprintf("%s:%d", t.IP, t.Port)
+	}
+
+	return t.IP
 }
 
 func (t *Edge) Reserve(appID int) error {

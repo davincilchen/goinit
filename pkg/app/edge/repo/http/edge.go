@@ -6,6 +6,11 @@ import (
 )
 
 type Edge struct {
+	URL string
+}
+
+func (t *Edge) SetURL(url string) {
+	t.URL = url
 }
 
 func (t *Edge) Reserve(appID int) error {
