@@ -137,6 +137,11 @@ func (t *Edge) StopAPP() error {
 	return err
 }
 
+func (t *Edge) OnXRConnect() {
+	online := true
+	t.updateStatus(models.STATUS_RESERVE_XR_CONNECT, &online)
+}
+
 func (t *Edge) updateStatus(status models.EdgeStatus, online *bool) {
 	t.mux.Lock()
 	defer t.mux.Unlock()
