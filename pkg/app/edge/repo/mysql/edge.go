@@ -27,3 +27,16 @@ func (t *Edge) LoadEdges() ([]models.Edge, error) {
 	return out, nil
 
 }
+
+func (t *Edge) FindEdgesWithAppID(appID int) ([]models.Edge, error) {
+	ddb := GetDB()
+	out := []models.Edge{}
+
+	dbc := ddb.Find(&out)
+
+	if dbc.Error != nil {
+		return nil, dbc.Error
+	}
+	return out, nil
+
+}

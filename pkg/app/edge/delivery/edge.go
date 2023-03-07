@@ -33,7 +33,7 @@ func NewReserve(ctx *gin.Context) { //TODO:
 
 	ip, err := dev.NewReserve(id)
 	if err != nil || ip == nil {
-		dlv.RespError(ctx, err)
+		dlv.RespError(ctx, err) //TODO:
 		return
 	}
 

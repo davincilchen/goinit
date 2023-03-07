@@ -3,7 +3,7 @@ package usecase
 import (
 	"fmt"
 	repo "xr-central/pkg/app/edge/repo/mysql"
-	"xr-central/pkg/models"
+	"xr-central/pkg/app/errordef"
 )
 
 type EdgeManager struct {
@@ -23,8 +23,8 @@ func GetEdgeManager() *EdgeManager {
 	if manager == nil {
 		manager = newEdgeManager()
 		manager.edges = make([]*Edge, 0)
-		e := repo.Edge{}
-		es, err := e.LoadEdges()
+		eRepo := repo.Edge{}
+		es, err := eRepo.LoadEdges()
 		if err != nil {
 			fmt.Printf("LoadEdges error %s\n", err.Error())
 		} else {
@@ -40,11 +40,20 @@ func GetEdgeManager() *EdgeManager {
 }
 
 func (t *EdgeManager) Reserve(appID int) (*Edge, error) {
+	eRepo := repo.Edge{}
+	edges, err := eRepo.FindEdgesWithAppID(appID)
 
-	edge := &Edge{}
-	//don't need lock it's new
-	edge.Status = models.STATUS_RESERVE_INIT //lock
-	//edge.Status = models.STATUS_RESERVE_PROCESSS       //lock
-	edge.Status = models.STATUS_RESERVE_XR_NOT_CONNECT //lock
+	if err != nil {
+		return nil, err
+	}
+	if len(edges) == 0 {
+		return nil, errordef.ErrNoResource
+	}
+
+	// edge := &Edge{}
+	// //don't need lock it's new
+	// edge.Status = models.STATUS_RESERVE_INIT //lock
+	// //edge.Status = models.STATUS_RESERVE_PROCESSS       //lock
+	// edge.Status = models.STATUS_RESERVE_XR_NOT_CONNECT //lock
 	return nil, nil
 }

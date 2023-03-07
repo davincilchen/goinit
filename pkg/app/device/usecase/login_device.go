@@ -76,7 +76,7 @@ func (t *LoginDevice) NewReserve(appID int) (*string, error) {
 		return nil, errDef.ErrRepeatedReserve
 	}
 
-	fmt.Println("appID", appID)
+	fmt.Println("appID", appID) //TODO remove
 
 	manager := edgeUCase.GetEdgeManager()
 	edge, err := manager.Reserve(appID)
