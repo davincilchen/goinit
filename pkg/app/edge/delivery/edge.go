@@ -21,19 +21,19 @@ func NewReserve(ctx *gin.Context) { //TODO:
 	dev := devUCase.GetCacheDevice(ctx)
 	if dev == nil {
 		e := errors.New("GetCacheDevice Nil")
-		dlv.RespError(ctx, e)
+		dlv.RespError(ctx, e, nil)
 		return
 	}
 
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
-		dlv.RespError(ctx, errDef.ErrUrlParamError)
+		dlv.RespError(ctx, errDef.ErrUrlParamError, nil)
 		return
 	}
 
 	ip, err := dev.NewReserve(id)
 	if err != nil || ip == nil {
-		dlv.RespError(ctx, err) //TODO:
+		dlv.RespError(ctx, errDef.ErrNoResource, err)
 		return
 	}
 

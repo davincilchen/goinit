@@ -13,6 +13,7 @@ type InfoCache interface {
 
 const (
 	GinKeyError          = "Error"
+	GinKeyAdvError       = "AdvError"
 	GinKeyDBError        = "DBError"
 	GinKeyInfo           = "Info"
 	GinKeyLoginInfo      = "LoginInfo"
@@ -34,6 +35,27 @@ func CacheError(ctx InfoCache, err error) {
 
 func GetError(ctx InfoCache) error {
 	err, exist := ctx.Get(GinKeyError)
+	if !exist {
+		return nil
+	}
+	if err != nil {
+		e, ok := err.(error)
+		if ok {
+			return e
+		}
+	}
+	return nil
+}
+
+func CacheAdvError(ctx InfoCache, err error) {
+	if err == nil {
+		return
+	}
+	ctx.Set(GinKeyAdvError, err)
+}
+
+func GetAdvError(ctx InfoCache) error {
+	err, exist := ctx.Get(GinKeyAdvError)
 	if !exist {
 		return nil
 	}

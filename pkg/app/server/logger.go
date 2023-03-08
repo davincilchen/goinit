@@ -20,7 +20,7 @@ type APILog struct {
 	InfoTxt      string
 	DBErrorTxt   string
 	ErrorTxt     string
-	Error        error
+	AdvErrorTxt  string
 
 	RequestBody  *string `json:"requestBody"`
 	SessionToken *string `json:"sessionToken"`
@@ -65,6 +65,7 @@ func Logger(ctx *gin.Context) {
 	log := APILog{}
 
 	theError := infopass.GetError(ctx)
+	theAdvError := infopass.GetAdvError(ctx)
 	theDBError := infopass.GetDBError(ctx)
 	log.RequestURI = ctx.Request.RequestURI
 	log.Method = ctx.Request.Method
@@ -77,8 +78,10 @@ func Logger(ctx *gin.Context) {
 	// log.PlayerSession, _ = GetPlayerSessionInGin(ctx)
 
 	if theError != nil {
-		log.Error = theError
-		log.ErrorTxt = log.Error.Error()
+		log.ErrorTxt = theError.Error()
+	}
+	if theError != nil {
+		log.AdvErrorTxt = theAdvError.Error()
 	}
 	if theDBError != nil {
 		log.DBErrorTxt = theDBError.Error()

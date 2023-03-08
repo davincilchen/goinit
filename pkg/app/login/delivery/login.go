@@ -89,7 +89,7 @@ func (t *LoginController) Do() {
 	err := t.fnSuccess(loginUser)
 
 	if err != nil {
-		dlv.RespError(ctx, err) //TODO:
+		dlv.RespError(ctx, err, nil) //TODO:
 		return
 	}
 	LoginSucessReponse(ctx, loginUser)
@@ -157,13 +157,13 @@ func DevLogout(ctx *gin.Context) {
 	dev := devUCase.GetCacheDevice(ctx)
 	if dev == nil {
 		e := errors.New("GetCacheDevice Nil")
-		dlv.RespError(ctx, e)
+		dlv.RespError(ctx, e, nil)
 		return
 	}
 
 	err := dev.Logout()
 	if err != nil {
-		dlv.RespError(ctx, err)
+		dlv.RespError(ctx, err, nil)
 		return
 	}
 	response := dlv.ResBody{}

@@ -89,13 +89,13 @@ func getStatusCode(err error) (ResCode, int) {
 	}
 }
 
-func RespError(ctx *gin.Context, err error) {
+func RespError(ctx *gin.Context, err, advErr error) {
 
 	response := FillErrorBody(ctx, err)
 	resCode, httpCode := getStatusCode(err)
 	response.ResCode = resCode
 	infopass.CacheError(ctx, err)
-
+	infopass.CacheAdvError(ctx, advErr)
 	ctx.JSON(httpCode, response)
 
 }
