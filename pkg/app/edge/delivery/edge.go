@@ -49,6 +49,14 @@ func NewReserve(ctx *gin.Context) { //TODO:
 }
 
 func ReleaseReserve(ctx *gin.Context) { //TODO:
+	dev := devUCase.GetCacheDevice(ctx)
+	if dev == nil {
+		e := errors.New("GetCacheDevice Nil")
+		dlv.RespError(ctx, e, nil)
+		return
+	}
+
+	dev.ReleaseReserve()
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK
 

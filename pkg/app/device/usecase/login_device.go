@@ -85,8 +85,21 @@ func (t *LoginDevice) NewReserve(appID int) (*string, error) {
 	}
 
 	t.AttachEdge(edge)
+	e := edge.GetInfo()
+	return &e.IP, nil
+}
 
-	return &edge.IP, nil
+func (t *LoginDevice) ReleaseReserve() error {
+	t.edgeMux.Lock()
+	defer t.edgeMux.Unlock()
+
+	if t.edge == nil {
+		return nil
+	}
+
+	t.edge.ReleaseReserve()
+	t.edge = nil
+	return nil
 }
 
 func (t *LoginDevice) IsReserve() bool {

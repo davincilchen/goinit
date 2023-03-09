@@ -14,8 +14,8 @@ func (t *Edge) SetURL(url string) {
 	t.URL = url
 }
 
-func (t *Edge) Reserve() error {
-	url := fmt.Sprintf("%s//reserve", t.URL)
+func (t *Edge) Reserve(appID int) error {
+	url := fmt.Sprintf("%s//reserve//app//%d", t.URL, appID)
 	_, err := httph.Post(url)
 	return err
 }

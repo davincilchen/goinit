@@ -53,12 +53,13 @@ func migration(db *gorm.DB) {
 	db.AutoMigrate(&models.EdgeStreaming{})
 
 	db.AutoMigrate(&models.Device{})
-	db.AutoMigrate(&models.EdgeOrder{})
+	db.AutoMigrate(&models.EdgeReserve{})
 
+	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Platform{})
 	db.AutoMigrate(&models.AppGenere{})
 	db.AutoMigrate(&models.App{})
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.EdgeApp{})
 
 	fmt.Println("Run DB Migration --> Done")
 

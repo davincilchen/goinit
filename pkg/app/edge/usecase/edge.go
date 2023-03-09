@@ -11,7 +11,7 @@ import (
 
 type HttpEdge interface {
 	SetURL(url string)
-	Reserve() error
+	Reserve(appID int) error
 	Release() error
 	Resume() error
 	StartAPP(appID int) error
@@ -20,15 +20,15 @@ type HttpEdge interface {
 }
 
 type Edge struct {
-	mux sync.Mutex
-	models.Edge
+	mux  sync.Mutex
+	info models.Edge
 
 	eHttp HttpEdge
 }
 
 func NewEdge(edge models.Edge) *Edge {
 	e := Edge{
-		Edge:  edge,
+		info:  edge,
 		eHttp: &edgeHttp.Edge{},
 	}
 	e.eHttp.SetURL(e.GetURL())
@@ -36,14 +36,15 @@ func NewEdge(edge models.Edge) *Edge {
 }
 
 func (t *Edge) GetURL() string {
-	if t.Port > 0 {
-		return fmt.Sprintf("%s:%d", t.IP, t.Port)
+	e := t.info
+	if e.Port > 0 {
+		return fmt.Sprintf("%s:%d", e.IP, e.Port)
 	}
 
-	return t.IP
+	return e.IP
 }
 
-func (t *Edge) Reserve() error {
+func (t *Edge) Reserve(appID int) error {
 
 	//online由每次reg時確認,減少api時間
 	ok := t.updateStatusWhen(models.STATUS_FREE, models.STATUS_RESERVE_INIT)
@@ -51,7 +52,7 @@ func (t *Edge) Reserve() error {
 		return errDef.ErrNoResource
 	}
 
-	err := t.eHttp.Reserve()
+	err := t.eHttp.Reserve(appID)
 
 	status := models.STATUS_RESERVE_XR_NOT_CONNECT
 	var online *bool
@@ -69,7 +70,7 @@ func (t *Edge) Reserve() error {
 
 }
 
-func (t *Edge) Release() error {
+func (t *Edge) ReleaseReserve() error {
 
 	status, _ := t.GetCacheStatus()
 	if status == models.STATUS_FREE {
@@ -116,7 +117,8 @@ func (t *Edge) GetCacheStatus() (models.EdgeStatus, bool) {
 	t.mux.Lock()
 	defer t.mux.Unlock()
 
-	return t.Status, t.Online
+	e := t.info
+	return e.Status, e.Online
 }
 
 func (t *Edge) StartAPP(appID int) error {
@@ -180,10 +182,10 @@ func (t *Edge) updateStatus(status models.EdgeStatus, online *bool) {
 	t.mux.Lock()
 	defer t.mux.Unlock()
 
-	t.Status = status
+	t.info.Status = status
 
 	if online != nil {
-		t.Online = *online
+		t.info.Online = *online
 	}
 }
 
@@ -191,12 +193,12 @@ func (t *Edge) updateStatusWhen(oriStatus, newStatus models.EdgeStatus) bool {
 	t.mux.Lock()
 	defer t.mux.Unlock()
 
-	if !t.Online {
+	if !t.info.Online {
 		return false
 	}
 
-	if t.Status == oriStatus {
-		t.Status = newStatus
+	if t.info.Status == oriStatus {
+		t.info.Status = newStatus
 		return true
 	}
 
@@ -207,6 +209,9 @@ func (t *Edge) setOnline(online bool) {
 	t.mux.Lock()
 	defer t.mux.Unlock()
 
-	t.Online = online
+	t.info.Online = online
+}
 
+func (t *Edge) GetInfo() models.Edge { //副本
+	return t.info
 }

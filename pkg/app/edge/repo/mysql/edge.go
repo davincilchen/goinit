@@ -28,11 +28,11 @@ func (t *Edge) LoadEdges() ([]models.Edge, error) {
 
 }
 
-func (t *Edge) FindEdgesWithAppID(appID int) ([]models.Edge, error) {
+func (t *Edge) FindEdgesWithAppID(appID int) ([]models.EdgeApp, error) {
 	ddb := GetDB()
-	out := []models.Edge{}
+	out := []models.EdgeApp{}
 
-	dbc := ddb.Find(&out)
+	dbc := ddb.Where("app_id = ?", appID).Find(&out)
 
 	if dbc.Error != nil {
 		return nil, dbc.Error
