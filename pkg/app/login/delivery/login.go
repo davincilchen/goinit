@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	devUCase "xr-central/pkg/app/device/usecase"
+	"xr-central/pkg/app/infopass"
 	userUCase "xr-central/pkg/app/user/usecase"
 	dlv "xr-central/pkg/delivery"
 
@@ -56,7 +57,7 @@ func DevLogin(ctx *gin.Context) {
 		return
 	}
 
-	d := devUCase.NewDeviceLoginProc(*req.DevInfo.Type, *req.DevInfo.UUID, ctx)
+	d := devUCase.NewDeviceLoginProc(*req.DevInfo.Type, *req.DevInfo.UUID, infopass.NewDBErrorProc(ctx))
 	handle := NewLoginController(ctx, req.UserLoginParams, d.DevLoginSucess)
 	handle.Do()
 

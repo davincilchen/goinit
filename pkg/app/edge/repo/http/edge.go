@@ -3,11 +3,17 @@ package http
 // import "xr-central/pkg/models"
 import (
 	"fmt"
+	"xr-central/pkg/app/infopass"
 	httph "xr-central/pkg/httphelper"
 )
 
 type Edge struct {
-	URL string
+	URL       string
+	InfoCache infopass.InfoCache
+}
+
+func (t *Edge) SetErrorCache(infoCache infopass.InfoCache) {
+	t.InfoCache = infoCache
 }
 
 func (t *Edge) SetURL(url string) {

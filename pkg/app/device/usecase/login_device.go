@@ -17,11 +17,11 @@ var deviceRepo repo.Device
 
 type DeviceLoginProc struct {
 	Device    models.Device
-	InfoCache infopass.InfoCache
+	InfoCache infopass.DBErrCache
 }
 
 func NewDeviceLoginProc(Type int, UUID string,
-	InfoCache infopass.InfoCache) *DeviceLoginProc {
+	InfoCache infopass.DBErrCache) *DeviceLoginProc {
 	d := &DeviceLoginProc{
 		Device: models.Device{
 			Type: Type,
@@ -37,7 +37,7 @@ func (t *DeviceLoginProc) DevLoginSucess(user *userUCase.LoginUser) error {
 	//TODO: save ip and login/logout
 	device, err := deviceRepo.RegDevice(&t.Device)
 	if err != nil {
-		infopass.CacheDBError(t.InfoCache, err)
+		t.InfoCache.CacheDBError(err)
 		return err
 	}
 

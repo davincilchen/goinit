@@ -11,6 +11,11 @@ type InfoCache interface {
 	Set(key string, value any)
 }
 
+type DBErrCache interface {
+	CacheDBError(error)
+	GetDBError() error
+}
+
 const (
 	GinKeyError          = "Error"
 	GinKeyAdvError       = "AdvError"
@@ -25,6 +30,24 @@ const (
 	GinKeyHandleContext  = "HandleContext"
 	//GinKeyDevice         = "Device"
 )
+
+func NewDBErrorProc(porc InfoCache) *DBErrorProc {
+	return &DBErrorProc{
+		porc: porc,
+	}
+}
+
+type DBErrorProc struct {
+	porc InfoCache
+}
+
+func (t *DBErrorProc) CacheDBError(err error) {
+	CacheDBError(t.porc, err)
+}
+
+func (t *DBErrorProc) GetDBError() error {
+	return GetDBError(t.porc)
+}
 
 func CacheError(ctx InfoCache, err error) {
 	if err == nil {
