@@ -12,7 +12,7 @@ type App struct {
 	ImageURL          string `gorm:"type:varchar(256)"`
 	Developler        string `gorm:"type:varchar(128)"`
 	PublicationStatus int    `gorm:"tinyint unsigned;default:0"` //0:public 1:Private
-	APPGenreID        int    `gorm:"default:0"`
+	APPGenreID        int    `gorm:"default:1;not null"`
 	AppGenre          AppGenre
 	SouceType         int    `gorm:"int unsigned;default:0"`      //0: none //EX:google drive
 	Type              int    `gorm:"type:int unsigned;default:0"` //0: none
