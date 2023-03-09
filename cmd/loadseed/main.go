@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"time"
+	appUCase "xr-central/pkg/app/app/usecase"
 	platformRepo "xr-central/pkg/app/platform/repo/mysql"
 	"xr-central/pkg/app/user/usecase"
 	"xr-central/pkg/config"
@@ -93,6 +94,18 @@ func saveSeed() error {
 	}
 
 	fmt.Println("Seed: Create Platform  --> Done")
+
+	fmt.Println("Seed: Create App genre --> Start")
+
+	appHandle := appUCase.AppHandle{}
+	appGe := &models.AppGenre{
+		Type:  "default",
+		Brief: "default",
+	}
+	appHandle.RegGenre(appGe)
+
+	fmt.Println("Seed: Create App genre  --> Done")
+
 	return nil
 }
 
@@ -134,7 +147,7 @@ func loadSeed(path string) (*Seed, error) {
 	}
 
 	seed.Users = tmpSeed.Users
-	seed.Platforms =tmpSeed.Platforms
-	
+	seed.Platforms = tmpSeed.Platforms
+
 	return seed, nil
 }

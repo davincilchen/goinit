@@ -57,7 +57,7 @@ func migration(db *gorm.DB) {
 
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Platform{})
-	db.AutoMigrate(&models.AppGenere{})
+	db.AutoMigrate(&models.AppGenre{})
 	db.AutoMigrate(&models.App{})
 	db.AutoMigrate(&models.EdgeApp{})
 

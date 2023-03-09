@@ -47,7 +47,7 @@ func GetEdgeManager() *EdgeManager {
 
 func (t *EdgeManager) Reserve(appID int) (*Edge, error) {
 	elist, err := t.FindUnusedEdgesWithAppID(appID)
-
+	fmt.Printf("test pring:[Reserve]: %#v \n", elist)
 	if err != nil {
 		return nil, err
 	}
