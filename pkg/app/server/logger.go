@@ -80,7 +80,7 @@ func Logger(ctx *gin.Context) {
 	if theError != nil {
 		log.ErrorTxt = theError.Error()
 	}
-	if theError != nil {
+	if theAdvError != nil {
 		log.AdvErrorTxt = theAdvError.Error()
 	}
 	if theDBError != nil {

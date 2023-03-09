@@ -11,6 +11,7 @@ import (
 	dlv "xr-central/pkg/delivery"
 
 	devUCase "xr-central/pkg/app/device/usecase"
+	edgeUCase "xr-central/pkg/app/edge/usecase"
 )
 
 type NewReserveResp struct {
@@ -92,18 +93,49 @@ func StopApp(ctx *gin.Context) { //TODO:
 }
 
 type EdgeStatusResp struct {
+	IP     string `json:"ip"`
+	Port   int    `json:"port"`
 	Status int    `json:"status"`
 	Online bool   `json:"online"`
-	IP     string `json:"ip"`
 }
 
-func EdgeStatus(ctx *gin.Context) { //TODO:
+type EdgeListResp struct {
+	Edge []EdgeStatusResp `json:"edge"`
+}
+
+func EdgeStatus(ctx *gin.Context) { //ODO:
 
 	type Data struct {
 		Edge EdgeStatusResp `json:"edge"`
 	}
 	data := Data{}
 	data.Edge = EdgeStatusResp{}
+
+	response := dlv.ResBody{}
+	response.ResCode = dlv.RES_OK
+	response.Data = data
+
+	ctx.JSON(http.StatusOK, response)
+}
+
+func EdgeList(ctx *gin.Context) {
+	manager := edgeUCase.GetEdgeManager()
+	ret := manager.GetEdgeList()
+
+	type Data struct {
+		Edges []EdgeStatusResp `json:"edge_list"`
+	}
+	data := Data{}
+
+	for _, v := range ret {
+		tmp := EdgeStatusResp{
+			IP:     v.IP,
+			Port:   v.Port,
+			Status: int(v.Status),
+			Online: v.Online}
+		data.Edges = append(data.Edges, tmp)
+
+	}
 
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK

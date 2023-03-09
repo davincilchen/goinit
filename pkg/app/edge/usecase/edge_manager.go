@@ -37,8 +37,10 @@ func GetEdgeManager() *EdgeManager {
 			fmt.Printf("LoadEdges count %d\n", len(es))
 			for i, v := range es {
 				fmt.Printf("%d %#v\n", i, v)
-				manager.edges = append(manager.edges, NewEdge(v))
-				manager.edgeMap[int(v.ID)] = NewEdge(v)
+				tmpEdge := NewEdge(v)
+				manager.edgeMap[int(v.ID)] = tmpEdge
+				manager.edges = append(manager.edges, tmpEdge)
+
 			}
 			fmt.Println("==== LoadEdges Done ===")
 		}
@@ -118,4 +120,13 @@ func (t *EdgeManager) getEdge(id int) *Edge {
 		return nil
 	}
 	return e
+}
+
+func (t *EdgeManager) GetEdgeList() []models.Edge {
+
+	ret := make([]models.Edge, 0)
+	for _, v := range t.edges {
+		ret = append(ret, v.GetInfo())
+	}
+	return ret
 }
