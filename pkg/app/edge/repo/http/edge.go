@@ -15,13 +15,15 @@ func (t *Edge) SetURL(url string) {
 }
 
 func (t *Edge) Reserve(appID int) error {
-	url := fmt.Sprintf("%s//reserve//app//%d", t.URL, appID)
-	_, err := httph.Post(url)
+	url := fmt.Sprintf("http://%s//reserve//app//%d", t.URL, appID)
+	resp, err := httph.Post(url)
+	fmt.Println(resp)
+	fmt.Println(err)
 	return err
 }
 
 func (t *Edge) Release() error {
-	url := fmt.Sprintf("%s//reserve", t.URL)
+	url := fmt.Sprintf("http://%s//reserve", t.URL)
 	_, err := httph.Delete(url)
 	return err
 }
@@ -42,13 +44,13 @@ func (t *Edge) Status() error {
 }
 
 func (t *Edge) StartAPP(appID int) error {
-	url := fmt.Sprintf("%s//%d//start_app", t.URL, appID)
+	url := fmt.Sprintf("http://%s//%d//start_app", t.URL, appID)
 	_, err := httph.Post(url)
 	return err
 }
 
 func (t *Edge) StopAPP() error {
-	url := fmt.Sprintf("%s//stop_app", t.URL)
+	url := fmt.Sprintf("http://%s//stop_app", t.URL)
 	_, err := httph.Post(url)
 
 	return err
