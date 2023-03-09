@@ -19,6 +19,7 @@ type APILog struct {
 	DurationText string
 	InfoTxt      string
 	DBErrorTxt   string
+	HttpErrorTxt string
 	ErrorTxt     string
 	AdvErrorTxt  string
 
@@ -67,6 +68,7 @@ func Logger(ctx *gin.Context) {
 	theError := infopass.GetError(ctx)
 	theAdvError := infopass.GetAdvError(ctx)
 	theDBError := infopass.GetDBError(ctx)
+	theHttpError := infopass.GetHttpError(ctx)
 	log.RequestURI = ctx.Request.RequestURI
 	log.Method = ctx.Request.Method
 	log.Duration = time.Since(now)
@@ -85,6 +87,9 @@ func Logger(ctx *gin.Context) {
 	}
 	if theDBError != nil {
 		log.DBErrorTxt = theDBError.Error()
+	}
+	if theHttpError != nil {
+		log.HttpErrorTxt = theHttpError.Error()
 	}
 
 	logger(log)

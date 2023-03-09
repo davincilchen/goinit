@@ -14,6 +14,6 @@ const (
 	STATUS_RX_STOP_APP EdgeStatus = 180
 	STATUS_RX_RELEASE  EdgeStatus = 190
 
-	STATUS_FAIL EdgeStatus = 999
+	STATUS_FAIL EdgeStatus = 999 //TODO: how to process
 	//suspend?
 )

@@ -16,10 +16,16 @@ type DBErrCache interface {
 	GetDBError() error
 }
 
+type HttpErrCache interface {
+	CacheHttpError(error)
+	GetHttpError() error
+}
+
 const (
 	GinKeyError          = "Error"
 	GinKeyAdvError       = "AdvError"
 	GinKeyDBError        = "DBError"
+	GinKeyHttpError      = "HttpError"
 	GinKeyInfo           = "Info"
 	GinKeyLoginInfo      = "LoginInfo"
 	GinKeyPlayerSession  = "PlayerSession"
@@ -47,6 +53,25 @@ func (t *DBErrorProc) CacheDBError(err error) {
 
 func (t *DBErrorProc) GetDBError() error {
 	return GetDBError(t.porc)
+}
+
+// ============== //
+func NewHttpErrorProc(porc InfoCache) *HttpErrorProc {
+	return &HttpErrorProc{
+		porc: porc,
+	}
+}
+
+type HttpErrorProc struct {
+	porc InfoCache
+}
+
+func (t *HttpErrorProc) CacheHttpError(err error) {
+	CacheHttpError(t.porc, err)
+}
+
+func (t *HttpErrorProc) GetHttpError() error {
+	return GetHttpError(t.porc)
 }
 
 func CacheError(ctx InfoCache, err error) {
@@ -100,6 +125,27 @@ func CacheDBError(ctx InfoCache, err error) {
 
 func GetDBError(ctx InfoCache) error {
 	err, exist := ctx.Get(GinKeyDBError)
+	if !exist {
+		return nil
+	}
+	if err != nil {
+		e, ok := err.(error)
+		if ok {
+			return e
+		}
+	}
+	return nil
+}
+
+func CacheHttpError(ctx InfoCache, err error) {
+	if err == nil {
+		return
+	}
+	ctx.Set(GinKeyHttpError, err)
+}
+
+func GetHttpError(ctx InfoCache) error {
+	err, exist := ctx.Get(GinKeyHttpError)
 	if !exist {
 		return nil
 	}

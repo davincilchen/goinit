@@ -5,14 +5,16 @@ import (
 	"sync"
 	repo "xr-central/pkg/app/edge/repo/mysql"
 	"xr-central/pkg/app/errordef"
+	"xr-central/pkg/app/infopass"
 	"xr-central/pkg/models"
 )
 
 type EdgeManager struct {
 	//TODO: lock
-	edges   []*Edge
-	edgeMap map[int]*Edge
-	mux     sync.Mutex
+	edges     []*Edge
+	edgeMap   map[int]*Edge
+	mux       sync.Mutex
+	infoCache infopass.InfoCache
 }
 
 var manager *EdgeManager
@@ -23,11 +25,12 @@ func newEdgeManager() *EdgeManager {
 	return d
 }
 
-func GetEdgeManager() *EdgeManager {
+func GetEdgeManager(infoCache infopass.InfoCache) *EdgeManager {
 	if manager == nil {
 		manager = newEdgeManager()
 		manager.edges = make([]*Edge, 0)
 		manager.edgeMap = make(map[int]*Edge)
+		manager.infoCache = infoCache
 		eRepo := repo.Edge{}
 		es, err := eRepo.LoadEdges()
 		if err != nil {
@@ -37,7 +40,7 @@ func GetEdgeManager() *EdgeManager {
 			fmt.Printf("LoadEdges count %d\n", len(es))
 			for i, v := range es {
 				fmt.Printf("%d %#v\n", i, v)
-				tmpEdge := NewEdge(v)
+				tmpEdge := NewEdge(v, infoCache)
 				manager.edgeMap[int(v.ID)] = tmpEdge
 				manager.edges = append(manager.edges, tmpEdge)
 

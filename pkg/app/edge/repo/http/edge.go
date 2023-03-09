@@ -3,17 +3,23 @@ package http
 // import "xr-central/pkg/models"
 import (
 	"fmt"
+	"net/http"
+	errDef "xr-central/pkg/app/errordef"
 	"xr-central/pkg/app/infopass"
 	httph "xr-central/pkg/httphelper"
 )
 
-type Edge struct {
-	URL       string
-	InfoCache infopass.InfoCache
+func NewEdge(URL string, errCache infopass.HttpErrCache) *Edge {
+	return &Edge{
+		URL:      URL,
+		errCache: errCache,
+	}
+
 }
 
-func (t *Edge) SetErrorCache(infoCache infopass.InfoCache) {
-	t.InfoCache = infoCache
+type Edge struct {
+	URL      string
+	errCache infopass.HttpErrCache
 }
 
 func (t *Edge) SetURL(url string) {
@@ -23,9 +29,19 @@ func (t *Edge) SetURL(url string) {
 func (t *Edge) Reserve(appID int) error {
 	url := fmt.Sprintf("http://%s//reserve//app//%d", t.URL, appID)
 	resp, err := httph.Post(url)
+	if err != nil {
+		fmt.Println(err)
+		t.errCache.CacheHttpError(err)
+		return errDef.ErrEdgeLost
+	}
 	fmt.Println(resp)
-	fmt.Println(err)
-	return err
+	if resp.StatusCode != http.StatusOK {
+		err := fmt.Errorf("resp.StatusCode = %d", resp.StatusCode)
+		t.errCache.CacheHttpError(err)
+		return err
+	}
+
+	return nil
 }
 
 func (t *Edge) Release() error {

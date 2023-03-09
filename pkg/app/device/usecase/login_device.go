@@ -68,7 +68,7 @@ func (t *LoginDevice) Logout() error {
 	return nil
 }
 
-func (t *LoginDevice) NewReserve(appID int) (*string, error) {
+func (t *LoginDevice) NewReserve(ctx infopass.InfoCache, appID int) (*string, error) {
 	if t.User == nil {
 		return nil, errors.New("nil user for login device")
 	}
@@ -78,7 +78,7 @@ func (t *LoginDevice) NewReserve(appID int) (*string, error) {
 
 	fmt.Println("appID", appID) //TODO remove
 
-	manager := edgeUCase.GetEdgeManager()
+	manager := edgeUCase.GetEdgeManager(ctx)
 	edge, err := manager.Reserve(appID)
 	if err != nil {
 		return nil, err

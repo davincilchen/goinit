@@ -32,7 +32,7 @@ func NewReserve(ctx *gin.Context) { //TODO:
 		return
 	}
 
-	ip, err := dev.NewReserve(id)
+	ip, err := dev.NewReserve(ctx, id)
 	if err != nil || ip == nil {
 		if err == errDef.ErrRepeatedReserve {
 			dlv.RespError(ctx, errDef.ErrRepeatedReserve, nil)
@@ -123,7 +123,7 @@ func EdgeStatus(ctx *gin.Context) { //ODO:
 }
 
 func EdgeList(ctx *gin.Context) {
-	manager := edgeUCase.GetEdgeManager()
+	manager := edgeUCase.GetEdgeManager(ctx)
 	ret := manager.GetEdgeList()
 
 	type Data struct {

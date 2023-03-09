@@ -7,6 +7,7 @@ import (
 
 	edgeHttp "xr-central/pkg/app/edge/repo/http"
 	errDef "xr-central/pkg/app/errordef"
+	"xr-central/pkg/app/infopass"
 )
 
 type HttpEdge interface {
@@ -20,18 +21,16 @@ type HttpEdge interface {
 }
 
 type Edge struct {
-	mux  sync.Mutex
-	info models.Edge
-
+	mux   sync.Mutex
+	info  models.Edge
 	eHttp HttpEdge
 }
 
-func NewEdge(edge models.Edge) *Edge {
+func NewEdge(edge models.Edge, ctx infopass.InfoCache) *Edge {
 	e := Edge{
-		info:  edge,
-		eHttp: &edgeHttp.Edge{},
+		info: edge,
 	}
-	e.eHttp.SetURL(e.GetURL())
+	e.eHttp = edgeHttp.NewEdge(e.GetURL(), infopass.NewHttpErrorProc(ctx))
 	return &e
 }
 
