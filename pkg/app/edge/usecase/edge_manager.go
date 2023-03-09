@@ -33,12 +33,14 @@ func GetEdgeManager() *EdgeManager {
 		if err != nil {
 			fmt.Printf("LoadEdges error %s\n", err.Error())
 		} else {
+			fmt.Println("==== LoadEdges Start ===")
 			fmt.Printf("LoadEdges count %d\n", len(es))
 			for i, v := range es {
 				fmt.Printf("%d %#v\n", i, v)
 				manager.edges = append(manager.edges, NewEdge(v))
 				manager.edgeMap[int(v.ID)] = NewEdge(v)
 			}
+			fmt.Println("==== LoadEdges Done ===")
 		}
 
 	}
@@ -47,7 +49,6 @@ func GetEdgeManager() *EdgeManager {
 
 func (t *EdgeManager) Reserve(appID int) (*Edge, error) {
 	elist, err := t.FindUnusedEdgesWithAppID(appID)
-	fmt.Printf("test pring:[Reserve]: %#v \n", elist)
 	if err != nil {
 		return nil, err
 	}
@@ -91,8 +92,9 @@ func (t *EdgeManager) FindUnusedEdgesWithAppID(appID int) ([]*Edge, error) {
 			continue
 		}
 		edges = append(edges, e)
+		fmt.Printf("test pring:[Reserve]: %#v \n", *e)
 	}
-
+	fmt.Printf("test pring:[Reserve]: %#v \n", edges)
 	return edges, nil
 }
 
