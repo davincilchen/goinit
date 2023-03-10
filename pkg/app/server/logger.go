@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
+	"xr-central/pkg/app/ctxcache"
 	devUCase "xr-central/pkg/app/device/usecase"
-	"xr-central/pkg/app/infopass"
 
 	// gcpLogging "cloud.google.com/go/logging"
 	"github.com/gin-gonic/gin"
@@ -65,17 +65,17 @@ func Logger(ctx *gin.Context) {
 
 	log := APILog{}
 
-	theError := infopass.GetError(ctx)
-	theAdvError := infopass.GetAdvError(ctx)
-	theDBError := infopass.GetDBError(ctx)
-	theHttpError := infopass.GetHttpError(ctx)
+	theError := ctxcache.GetError(ctx)
+	theAdvError := ctxcache.GetAdvError(ctx)
+	theDBError := ctxcache.GetDBError(ctx)
+	theHttpError := ctxcache.GetHttpError(ctx)
 	log.RequestURI = ctx.Request.RequestURI
 	log.Method = ctx.Request.Method
 	log.Duration = time.Since(now)
 	log.DurationText = fmt.Sprintf("%v", log.Duration)
 
-	log.RequestBody, _ = infopass.GetRequestBodyInGin(ctx)
-	log.SessionToken = infopass.GetSessionToken(ctx)
+	log.RequestBody, _ = ctxcache.GetRequestBodyInGin(ctx)
+	log.SessionToken = ctxcache.GetSessionToken(ctx)
 	log.DevData = devUCase.GetCacheDevice(ctx)
 	// log.PlayerSession, _ = GetPlayerSessionInGin(ctx)
 

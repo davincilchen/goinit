@@ -7,12 +7,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	errDef "xr-central/pkg/app/errordef"
-	"xr-central/pkg/app/infopass"
-	dlv "xr-central/pkg/delivery"
-
+	"xr-central/pkg/app/ctxcache"
 	devUCase "xr-central/pkg/app/device/usecase"
 	edgeUCase "xr-central/pkg/app/edge/usecase"
+	errDef "xr-central/pkg/app/errordef"
+	dlv "xr-central/pkg/delivery"
 )
 
 type NewReserveResp struct {
@@ -32,7 +31,7 @@ func NewReserve(ctx *gin.Context) { //TODO:
 		dlv.RespError(ctx, errDef.ErrUrlParamError, nil)
 		return
 	}
-	nCtx := infopass.NewContext(ctx)
+	nCtx := ctxcache.NewContext(ctx)
 	ip, err := dev.NewReserve(nCtx, id)
 	if err != nil || ip == nil {
 		if err == errDef.ErrRepeatedReserve {
@@ -62,7 +61,7 @@ func ReleaseReserve(ctx *gin.Context) { //TODO:
 		return
 	}
 
-	dev.ReleaseReserve(infopass.NewContext(ctx))
+	dev.ReleaseReserve(ctxcache.NewContext(ctx))
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK
 

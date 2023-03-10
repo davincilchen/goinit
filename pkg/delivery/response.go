@@ -3,8 +3,8 @@ package delivery
 import (
 	"net/http"
 
+	"xr-central/pkg/app/ctxcache"
 	"xr-central/pkg/app/errordef"
-	"xr-central/pkg/app/infopass"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,7 +42,7 @@ func RespBadRequest(ctx *gin.Context, err error) {
 
 	response := FillErrorBody(ctx, err)
 	response.ResCode = RES_ERROR_BAD_REQUEST
-	infopass.CacheError(ctx, err)
+	ctxcache.CacheError(ctx, err)
 	ctx.JSON(http.StatusBadRequest, response)
 
 }
@@ -51,7 +51,7 @@ func RespUnauthorized(ctx *gin.Context, err error) {
 
 	response := FillErrorBody(ctx, err)
 	response.ResCode = RES_INVALID_USER_TOKEN
-	infopass.CacheError(ctx, err)
+	ctxcache.CacheError(ctx, err)
 	ctx.JSON(http.StatusUnauthorized, response)
 	ctx.Abort()
 }
@@ -94,8 +94,8 @@ func RespError(ctx *gin.Context, err, advErr error) {
 	response := FillErrorBody(ctx, err)
 	resCode, httpCode := getStatusCode(err)
 	response.ResCode = resCode
-	infopass.CacheError(ctx, err)
-	infopass.CacheAdvError(ctx, advErr)
+	ctxcache.CacheError(ctx, err)
+	ctxcache.CacheAdvError(ctx, advErr)
 	ctx.JSON(httpCode, response)
 
 }

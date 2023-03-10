@@ -4,8 +4,8 @@ package http
 import (
 	"fmt"
 	"net/http"
+	"xr-central/pkg/app/ctxcache"
 	errDef "xr-central/pkg/app/errordef"
-	"xr-central/pkg/app/infopass"
 	httph "xr-central/pkg/httphelper"
 )
 
@@ -24,7 +24,7 @@ func (t *Edge) SetURL(url string) {
 	t.URL = url
 }
 
-func (t *Edge) Reserve(ctx infopass.Context, appID int) error {
+func (t *Edge) Reserve(ctx ctxcache.Context, appID int) error {
 	url := fmt.Sprintf("http://%s//reserve//app//%d", t.URL, appID)
 	resp, err := httph.Post(url)
 	if err != nil {
@@ -42,34 +42,34 @@ func (t *Edge) Reserve(ctx infopass.Context, appID int) error {
 	return nil
 }
 
-func (t *Edge) Release(ctx infopass.Context) error {
+func (t *Edge) Release(ctx ctxcache.Context) error {
 	url := fmt.Sprintf("http://%s//reserve", t.URL)
 	_, err := httph.Delete(url)
 	return err
 }
 
-func (t *Edge) Resume(ctx infopass.Context) error {
+func (t *Edge) Resume(ctx ctxcache.Context) error {
 
 	return nil
 }
 
-func (t *Edge) GetStatus(ctx infopass.Context) error {
+func (t *Edge) GetStatus(ctx ctxcache.Context) error {
 
 	return nil
 }
 
-func (t *Edge) Status(ctx infopass.Context) error {
+func (t *Edge) Status(ctx ctxcache.Context) error {
 
 	return nil
 }
 
-func (t *Edge) StartAPP(ctx infopass.Context, appID int) error {
+func (t *Edge) StartAPP(ctx ctxcache.Context, appID int) error {
 	url := fmt.Sprintf("http://%s//%d//start_app", t.URL, appID)
 	_, err := httph.Post(url)
 	return err
 }
 
-func (t *Edge) StopAPP(ctx infopass.Context) error {
+func (t *Edge) StopAPP(ctx ctxcache.Context) error {
 	url := fmt.Sprintf("http://%s//stop_app", t.URL)
 	_, err := httph.Post(url)
 

@@ -4,15 +4,17 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	devUCase "xr-central/pkg/app/device/usecase"
-	"xr-central/pkg/app/infopass"
-	userUCase "xr-central/pkg/app/user/usecase"
-	dlv "xr-central/pkg/delivery"
 
 	"github.com/gin-gonic/gin"
+
+	"xr-central/pkg/app/ctxcache"
+
+	devUCase "xr-central/pkg/app/device/usecase"
+	userUCase "xr-central/pkg/app/user/usecase"
+	dlv "xr-central/pkg/delivery"
 )
 
-type loginSuccess func(*userUCase.LoginUser) error
+type loginSuccess func(ctxcache.Context, *userUCase.LoginUser) error
 
 type UserLoginParams struct {
 	Account  *string
@@ -57,7 +59,7 @@ func DevLogin(ctx *gin.Context) {
 		return
 	}
 
-	d := devUCase.NewDeviceLoginProc(*req.DevInfo.Type, *req.DevInfo.UUID, infopass.NewDBErrPass(ctx))
+	d := devUCase.NewDeviceLoginProc(*req.DevInfo.Type, *req.DevInfo.UUID)
 	handle := NewLoginController(ctx, req.UserLoginParams, d.DevLoginSucess)
 	handle.Do()
 
@@ -87,7 +89,7 @@ func (t *LoginController) Do() {
 		return
 	}
 
-	err := t.fnSuccess(loginUser)
+	err := t.fnSuccess(ctxcache.NewContext(ctx), loginUser)
 
 	if err != nil {
 		dlv.RespError(ctx, err, nil) //TODO:
@@ -147,7 +149,7 @@ func Login(ctx *gin.Context) {
 
 }
 
-func UserLoginSucess(user *userUCase.LoginUser) error {
+func UserLoginSucess(ctx ctxcache.Context, user *userUCase.LoginUser) error {
 
 	return nil
 }

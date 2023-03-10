@@ -3,9 +3,9 @@ package usecase
 import (
 	"fmt"
 	"sync"
+	"xr-central/pkg/app/ctxcache"
 	repo "xr-central/pkg/app/edge/repo/mysql"
 	"xr-central/pkg/app/errordef"
-	"xr-central/pkg/app/infopass"
 	"xr-central/pkg/models"
 )
 
@@ -50,7 +50,7 @@ func GetEdgeManager() *EdgeManager {
 	return manager
 }
 
-func (t *EdgeManager) Reserve(ctx infopass.Context, appID int) (*Edge, error) {
+func (t *EdgeManager) Reserve(ctx ctxcache.Context, appID int) (*Edge, error) {
 	elist, err := t.FindUnusedEdgesWithAppID(appID)
 	if err != nil {
 		return nil, err

@@ -2,11 +2,12 @@ package server
 
 import (
 	"fmt"
-	deviceUCase "xr-central/pkg/app/device/usecase"
-	"xr-central/pkg/app/infopass"
-	dlv "xr-central/pkg/delivery"
+	"xr-central/pkg/app/ctxcache"
 
 	"github.com/gin-gonic/gin"
+
+	deviceUCase "xr-central/pkg/app/device/usecase"
+	dlv "xr-central/pkg/delivery"
 )
 
 // ===================== //
@@ -41,7 +42,7 @@ func AuthDevSession(ctx *gin.Context) {
 		dlv.RespUnauthorized(ctx, err)
 		return
 	}
-	infopass.CacheSessionToken(ctx, sessionToken)
+	ctxcache.CacheSessionToken(ctx, sessionToken)
 	ok := deviceUCase.AuthDeviceToken(ctx, sessionToken)
 	if !ok {
 		dlv.RespUnauthorized(ctx, err)

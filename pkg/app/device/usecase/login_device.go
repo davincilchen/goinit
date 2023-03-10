@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"xr-central/pkg/app/ctxcache"
 	repo "xr-central/pkg/app/device/repo/mysql"
-	"xr-central/pkg/app/infopass"
 	"xr-central/pkg/models"
 
 	edgeUCase "xr-central/pkg/app/edge/usecase"
@@ -29,7 +29,7 @@ func NewDeviceLoginProc(Type int, UUID string) *DeviceLoginProc {
 	return d
 }
 
-func (t *DeviceLoginProc) DevLoginSucess(ctx infopass.Context, user *userUCase.LoginUser) error {
+func (t *DeviceLoginProc) DevLoginSucess(ctx ctxcache.Context, user *userUCase.LoginUser) error {
 
 	//TODO: save ip and login/logout
 	device, err := deviceRepo.RegDevice(&t.Device)
@@ -66,7 +66,7 @@ func (t *LoginDevice) Logout() error {
 	return nil
 }
 
-func (t *LoginDevice) NewReserve(ctx infopass.Context, appID int) (*string, error) {
+func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID int) (*string, error) {
 	if t.User == nil {
 		return nil, errors.New("nil user for login device")
 	}
@@ -87,7 +87,7 @@ func (t *LoginDevice) NewReserve(ctx infopass.Context, appID int) (*string, erro
 	return &e.IP, nil
 }
 
-func (t *LoginDevice) ReleaseReserve(ctx infopass.Context) error {
+func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context) error {
 	t.edgeMux.Lock()
 	defer t.edgeMux.Unlock()
 

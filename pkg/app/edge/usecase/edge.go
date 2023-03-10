@@ -5,19 +5,19 @@ import (
 	"sync"
 	"xr-central/pkg/models"
 
+	"xr-central/pkg/app/ctxcache"
 	edgeHttp "xr-central/pkg/app/edge/repo/http"
 	errDef "xr-central/pkg/app/errordef"
-	"xr-central/pkg/app/infopass"
 )
 
 type HttpEdge interface {
 	SetURL(url string)
-	Reserve(ctx infopass.Context, appID int) error
-	Release(ctx infopass.Context) error
-	Resume(ctx infopass.Context) error
-	StartAPP(ctx infopass.Context, appID int) error
-	StopAPP(ctx infopass.Context) error
-	GetStatus(ctx infopass.Context) error
+	Reserve(ctx ctxcache.Context, appID int) error
+	Release(ctx ctxcache.Context) error
+	Resume(ctx ctxcache.Context) error
+	StartAPP(ctx ctxcache.Context, appID int) error
+	StopAPP(ctx ctxcache.Context) error
+	GetStatus(ctx ctxcache.Context) error
 }
 
 type Edge struct {
@@ -43,7 +43,7 @@ func (t *Edge) GetURL() string {
 	return e.IP
 }
 
-func (t *Edge) Reserve(ctx infopass.Context, appID int) error {
+func (t *Edge) Reserve(ctx ctxcache.Context, appID int) error {
 
 	//online由每次reg時確認,減少api時間
 	ok := t.updateStatusWhen(models.STATUS_FREE, models.STATUS_RESERVE_INIT)
@@ -69,7 +69,7 @@ func (t *Edge) Reserve(ctx infopass.Context, appID int) error {
 
 }
 
-func (t *Edge) ReleaseReserve(ctx infopass.Context) error {
+func (t *Edge) ReleaseReserve(ctx ctxcache.Context) error {
 
 	status, _ := t.GetCacheStatus()
 	if status == models.STATUS_FREE {
@@ -96,7 +96,7 @@ func (t *Edge) ReleaseReserve(ctx infopass.Context) error {
 
 }
 
-func (t *Edge) Resume(ctx infopass.Context) error {
+func (t *Edge) Resume(ctx ctxcache.Context) error {
 
 	err := t.eHttp.Resume(ctx)
 
@@ -120,7 +120,7 @@ func (t *Edge) GetCacheStatus() (models.EdgeStatus, bool) {
 	return e.Status, e.Online
 }
 
-func (t *Edge) StartAPP(ctx infopass.Context, appID int) error {
+func (t *Edge) StartAPP(ctx ctxcache.Context, appID int) error {
 
 	ok := t.updateStatusWhen(models.STATUS_RESERVE_XR_CONNECT,
 		models.STATUS_RX_START_APP)
@@ -145,7 +145,7 @@ func (t *Edge) StartAPP(ctx infopass.Context, appID int) error {
 	return err
 }
 
-func (t *Edge) StopAPP(ctx infopass.Context) error {
+func (t *Edge) StopAPP(ctx ctxcache.Context) error {
 
 	ok := t.updateStatusWhen(models.STATUS_PLAYING,
 		models.STATUS_RX_STOP_APP)
