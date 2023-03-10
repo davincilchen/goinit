@@ -15,7 +15,7 @@ func GetDB() *gorm.DB {
 	return db.MainDB
 }
 
-func (t *Edge) LoadEdges() ([]models.Edge, error) {
+func (t *Edge) GetEdges() ([]models.Edge, error) {
 	ddb := GetDB()
 	out := []models.Edge{}
 

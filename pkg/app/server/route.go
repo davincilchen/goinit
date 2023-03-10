@@ -1,10 +1,9 @@
 package server
 
 import (
-	"xr-central/pkg/delivery"
-
 	"github.com/gin-gonic/gin"
 
+	appdlv "xr-central/pkg/app/app/delivery"
 	edgedlv "xr-central/pkg/app/edge/delivery"
 	loginDlv "xr-central/pkg/app/login/delivery"
 	"xr-central/pkg/deliveryfake" //just for test. TODO: remove
@@ -40,7 +39,7 @@ func Router() *gin.Engine {
 
 	// .. //
 	apps := router.Group("/apps")
-	apps.GET("/", delivery.AppList)
+	apps.GET("/", appdlv.AppList)
 
 	// .. //
 	edges := router.Group("/edges")

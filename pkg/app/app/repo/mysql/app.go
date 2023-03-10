@@ -8,12 +8,13 @@ import (
 	"gorm.io/gorm"
 )
 
-type AppGenre struct {
-}
-
 func GetDB() *gorm.DB {
 	return db.MainDB
 }
+
+type AppGenre struct {
+}
+
 func (t *AppGenre) RegType(dev *models.AppGenre) (*models.AppGenre, error) {
 	ddb := GetDB()
 	out := &models.AppGenre{}
@@ -36,6 +37,22 @@ func (t *AppGenre) Get(id uint) (*models.AppGenre, error) {
 	out.ID = id
 	dbc := ddb.
 		First(&out)
+
+	if dbc.Error != nil {
+		return nil, dbc.Error
+	}
+	return out, nil
+
+}
+
+type App struct {
+}
+
+func (t *App) GetApps() ([]*models.App, error) {
+	ddb := GetDB()
+	out := []*models.App{}
+
+	dbc := ddb.Preload("AppGenre").Find(&out)
 
 	if dbc.Error != nil {
 		return nil, dbc.Error

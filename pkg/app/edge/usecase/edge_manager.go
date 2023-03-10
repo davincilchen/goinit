@@ -30,7 +30,7 @@ func GetEdgeManager() *EdgeManager {
 		manager.edges = make([]*Edge, 0)
 		manager.edgeMap = make(map[int]*Edge)
 		eRepo := repo.Edge{}
-		es, err := eRepo.LoadEdges()
+		es, err := eRepo.GetEdges()
 		if err != nil {
 			fmt.Printf("LoadEdges error %s\n", err.Error())
 		} else {

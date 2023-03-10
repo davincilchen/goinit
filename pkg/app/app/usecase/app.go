@@ -6,6 +6,7 @@ import (
 )
 
 var appGenreRepo repo.AppGenre
+var appRepo repo.App
 
 // ============================================= //
 type AppHandle struct {
@@ -17,4 +18,8 @@ func (t *AppHandle) RegGenre(data *models.AppGenre) (*models.AppGenre, error) {
 
 func (t *AppHandle) GetGenre(id uint) (*models.AppGenre, error) {
 	return appGenreRepo.Get(id)
+}
+
+func (t *AppHandle) GetApps() ([]*models.App, error) {
+	return appRepo.GetApps()
 }
