@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	errDef "xr-central/pkg/app/errordef"
+	"xr-central/pkg/app/infopass"
 	dlv "xr-central/pkg/delivery"
 
 	devUCase "xr-central/pkg/app/device/usecase"
@@ -31,8 +32,8 @@ func NewReserve(ctx *gin.Context) { //TODO:
 		dlv.RespError(ctx, errDef.ErrUrlParamError, nil)
 		return
 	}
-
-	ip, err := dev.NewReserve(ctx, id)
+	nCtx := infopass.NewContext(ctx)
+	ip, err := dev.NewReserve(nCtx, id)
 	if err != nil || ip == nil {
 		if err == errDef.ErrRepeatedReserve {
 			dlv.RespError(ctx, errDef.ErrRepeatedReserve, nil)
@@ -61,7 +62,7 @@ func ReleaseReserve(ctx *gin.Context) { //TODO:
 		return
 	}
 
-	dev.ReleaseReserve()
+	dev.ReleaseReserve(infopass.NewContext(ctx))
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK
 
@@ -123,7 +124,7 @@ func EdgeStatus(ctx *gin.Context) { //ODO:
 }
 
 func EdgeList(ctx *gin.Context) {
-	manager := edgeUCase.GetEdgeManager(ctx)
+	manager := edgeUCase.GetEdgeManager()
 	ret := manager.GetEdgeList()
 
 	type Data struct {

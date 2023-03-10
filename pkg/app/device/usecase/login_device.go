@@ -54,9 +54,10 @@ func (t *DeviceLoginProc) DevLoginSucess(user *userUCase.LoginUser) error {
 // ============================================= //
 type LoginDevice struct {
 	edgeMux sync.RWMutex
-	edge    *edgeUCase.Edge //not nil when post reserve
-	Device  *models.Device
-	User    *userUCase.LoginUser
+	//每次呼叫edge的ctx會不同,不能在new的時候跟著綁
+	edge   *edgeUCase.Edge //not nil when post reserve success
+	Device *models.Device
+	User   *userUCase.LoginUser
 }
 
 func (t *LoginDevice) Logout() error {
@@ -68,7 +69,7 @@ func (t *LoginDevice) Logout() error {
 	return nil
 }
 
-func (t *LoginDevice) NewReserve(ctx infopass.InfoCache, appID int) (*string, error) {
+func (t *LoginDevice) NewReserve(ctx infopass.Context, appID int) (*string, error) {
 	if t.User == nil {
 		return nil, errors.New("nil user for login device")
 	}
@@ -78,8 +79,8 @@ func (t *LoginDevice) NewReserve(ctx infopass.InfoCache, appID int) (*string, er
 
 	fmt.Println("appID", appID) //TODO remove
 
-	manager := edgeUCase.GetEdgeManager(ctx)
-	edge, err := manager.Reserve(appID)
+	manager := edgeUCase.GetEdgeManager()
+	edge, err := manager.Reserve(ctx, appID)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +90,7 @@ func (t *LoginDevice) NewReserve(ctx infopass.InfoCache, appID int) (*string, er
 	return &e.IP, nil
 }
 
-func (t *LoginDevice) ReleaseReserve() error {
+func (t *LoginDevice) ReleaseReserve(ctx infopass.Context) error {
 	t.edgeMux.Lock()
 	defer t.edgeMux.Unlock()
 
@@ -97,7 +98,7 @@ func (t *LoginDevice) ReleaseReserve() error {
 		return nil
 	}
 
-	t.edge.ReleaseReserve()
+	t.edge.ReleaseReserve(ctx)
 	t.edge = nil
 	return nil
 }

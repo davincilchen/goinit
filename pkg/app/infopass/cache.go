@@ -1,25 +1,11 @@
 package infopass
 
 import (
+	"context"
 	"fmt"
 )
 
 type any = interface{}
-
-type InfoCache interface {
-	Get(key string) (value any, exists bool)
-	Set(key string, value any)
-}
-
-type DBErrCache interface {
-	CacheDBError(error)
-	GetDBError() error
-}
-
-type HttpErrCache interface {
-	CacheHttpError(error)
-	GetHttpError() error
-}
 
 const (
 	GinKeyError          = "Error"
@@ -37,42 +23,73 @@ const (
 	//GinKeyDevice         = "Device"
 )
 
-func NewDBErrorProc(porc InfoCache) *DBErrorProc {
-	return &DBErrorProc{
-		porc: porc,
+// =========================================== //
+type InfopassContent interface {
+	context.Context
+}
+
+// =========================================== //
+
+type InfoCache interface {
+	Get(key string) (value any, exists bool)
+	Set(key string, value any)
+}
+
+type DBErrCache interface {
+	CacheDBError(error)
+	GetDBError() error
+}
+
+type HttpErrCache interface {
+	CacheHttpError(error)
+	GetHttpError() error
+}
+
+type Cache interface {
+	DBErrCache
+	HttpErrCache
+}
+
+// =========================================== //
+
+func NewDBErrPass(cache InfoCache) *DBErrPass {
+	return &DBErrPass{
+		cache: cache,
 	}
 }
 
-type DBErrorProc struct {
-	porc InfoCache
+type DBErrPass struct {
+	cache InfoCache
 }
 
-func (t *DBErrorProc) CacheDBError(err error) {
-	CacheDBError(t.porc, err)
+func (t *DBErrPass) CacheDBError(err error) {
+	CacheDBError(t.cache, err)
 }
 
-func (t *DBErrorProc) GetDBError() error {
-	return GetDBError(t.porc)
+func (t *DBErrPass) GetDBError() error {
+	return GetDBError(t.cache)
 }
 
-// ============== //
-func NewHttpErrorProc(porc InfoCache) *HttpErrorProc {
-	return &HttpErrorProc{
-		porc: porc,
+// ========================== //
+func NewHttpErrPass(cache InfoCache) *HttpErrPass {
+	return &HttpErrPass{
+		cache: cache,
 	}
 }
 
-type HttpErrorProc struct {
-	porc InfoCache
+type HttpErrPass struct {
+	cache InfoCache
 }
 
-func (t *HttpErrorProc) CacheHttpError(err error) {
-	CacheHttpError(t.porc, err)
+func (t *HttpErrPass) CacheHttpError(err error) {
+	CacheHttpError(t.cache, err)
 }
 
-func (t *HttpErrorProc) GetHttpError() error {
-	return GetHttpError(t.porc)
+func (t *HttpErrPass) GetHttpError() error {
+	return GetHttpError(t.cache)
 }
+
+// ================================ //
 
 func CacheError(ctx InfoCache, err error) {
 	if err == nil {

@@ -57,7 +57,7 @@ func DevLogin(ctx *gin.Context) {
 		return
 	}
 
-	d := devUCase.NewDeviceLoginProc(*req.DevInfo.Type, *req.DevInfo.UUID, infopass.NewDBErrorProc(ctx))
+	d := devUCase.NewDeviceLoginProc(*req.DevInfo.Type, *req.DevInfo.UUID, infopass.NewDBErrPass(ctx))
 	handle := NewLoginController(ctx, req.UserLoginParams, d.DevLoginSucess)
 	handle.Do()
 

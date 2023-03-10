@@ -9,69 +9,67 @@ import (
 	httph "xr-central/pkg/httphelper"
 )
 
-func NewEdge(URL string, errCache infopass.HttpErrCache) *Edge {
+func NewEdge(URL string) *Edge {
 	return &Edge{
-		URL:      URL,
-		errCache: errCache,
+		URL: URL,
 	}
 
 }
 
 type Edge struct {
-	URL      string
-	errCache infopass.HttpErrCache
+	URL string
 }
 
 func (t *Edge) SetURL(url string) {
 	t.URL = url
 }
 
-func (t *Edge) Reserve(appID int) error {
+func (t *Edge) Reserve(ctx infopass.Context, appID int) error {
 	url := fmt.Sprintf("http://%s//reserve//app//%d", t.URL, appID)
 	resp, err := httph.Post(url)
 	if err != nil {
 		fmt.Println(err)
-		t.errCache.CacheHttpError(err)
+		ctx.CacheHttpError(err)
 		return errDef.ErrEdgeLost
 	}
 	fmt.Println(resp)
 	if resp.StatusCode != http.StatusOK {
 		err := fmt.Errorf("resp.StatusCode = %d", resp.StatusCode)
-		t.errCache.CacheHttpError(err)
+		ctx.CacheHttpError(err)
 		return err
 	}
 
 	return nil
 }
 
-func (t *Edge) Release() error {
+func (t *Edge) Release(ctx infopass.Context) error {
 	url := fmt.Sprintf("http://%s//reserve", t.URL)
 	_, err := httph.Delete(url)
 	return err
 }
 
-func (t *Edge) Resume() error {
+func (t *Edge) Resume(ctx infopass.Context) error {
 
 	return nil
 }
 
-func (t *Edge) GetStatus() error {
+func (t *Edge) GetStatus(ctx infopass.Context) error {
 
 	return nil
 }
 
-func (t *Edge) Status() error {
+func (t *Edge) Status(ctx infopass.Context) error {
 
 	return nil
 }
 
-func (t *Edge) StartAPP(appID int) error {
+func (t *Edge) StartAPP(ctx infopass.Context, appID int) error {
 	url := fmt.Sprintf("http://%s//%d//start_app", t.URL, appID)
 	_, err := httph.Post(url)
 	return err
 }
 
-func (t *Edge) StopAPP() error {
+func (t *Edge) StopAPP(ctx infopass.Context) error {
 	url := fmt.Sprintf("http://%s//stop_app", t.URL)
 	_, err := httph.Post(url)
 

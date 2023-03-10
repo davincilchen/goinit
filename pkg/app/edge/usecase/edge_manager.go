@@ -11,10 +11,9 @@ import (
 
 type EdgeManager struct {
 	//TODO: lock
-	edges     []*Edge
-	edgeMap   map[int]*Edge
-	mux       sync.Mutex
-	infoCache infopass.InfoCache
+	edges   []*Edge
+	edgeMap map[int]*Edge
+	mux     sync.Mutex
 }
 
 var manager *EdgeManager
@@ -25,12 +24,11 @@ func newEdgeManager() *EdgeManager {
 	return d
 }
 
-func GetEdgeManager(infoCache infopass.InfoCache) *EdgeManager {
+func GetEdgeManager() *EdgeManager {
 	if manager == nil {
 		manager = newEdgeManager()
 		manager.edges = make([]*Edge, 0)
 		manager.edgeMap = make(map[int]*Edge)
-		manager.infoCache = infoCache
 		eRepo := repo.Edge{}
 		es, err := eRepo.LoadEdges()
 		if err != nil {
@@ -40,7 +38,7 @@ func GetEdgeManager(infoCache infopass.InfoCache) *EdgeManager {
 			fmt.Printf("LoadEdges count %d\n", len(es))
 			for i, v := range es {
 				fmt.Printf("%d %#v\n", i, v)
-				tmpEdge := NewEdge(v, infoCache)
+				tmpEdge := NewEdge(v)
 				manager.edgeMap[int(v.ID)] = tmpEdge
 				manager.edges = append(manager.edges, tmpEdge)
 
@@ -52,7 +50,7 @@ func GetEdgeManager(infoCache infopass.InfoCache) *EdgeManager {
 	return manager
 }
 
-func (t *EdgeManager) Reserve(appID int) (*Edge, error) {
+func (t *EdgeManager) Reserve(ctx infopass.Context, appID int) (*Edge, error) {
 	elist, err := t.FindUnusedEdgesWithAppID(appID)
 	if err != nil {
 		return nil, err
@@ -61,7 +59,7 @@ func (t *EdgeManager) Reserve(appID int) (*Edge, error) {
 	var edge *Edge
 
 	for _, v := range elist {
-		err := v.Reserve(appID)
+		err := v.Reserve(ctx, appID)
 		if err != nil {
 			continue
 		}

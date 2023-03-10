@@ -12,12 +12,12 @@ import (
 
 type HttpEdge interface {
 	SetURL(url string)
-	Reserve(appID int) error
-	Release() error
-	Resume() error
-	StartAPP(appID int) error
-	StopAPP() error
-	GetStatus() error
+	Reserve(ctx infopass.Context, appID int) error
+	Release(ctx infopass.Context) error
+	Resume(ctx infopass.Context) error
+	StartAPP(ctx infopass.Context, appID int) error
+	StopAPP(ctx infopass.Context) error
+	GetStatus(ctx infopass.Context) error
 }
 
 type Edge struct {
@@ -26,11 +26,11 @@ type Edge struct {
 	eHttp HttpEdge
 }
 
-func NewEdge(edge models.Edge, ctx infopass.InfoCache) *Edge {
+func NewEdge(edge models.Edge) *Edge {
 	e := Edge{
 		info: edge,
 	}
-	e.eHttp = edgeHttp.NewEdge(e.GetURL(), infopass.NewHttpErrorProc(ctx))
+	e.eHttp = edgeHttp.NewEdge(e.GetURL())
 	return &e
 }
 
@@ -43,7 +43,7 @@ func (t *Edge) GetURL() string {
 	return e.IP
 }
 
-func (t *Edge) Reserve(appID int) error {
+func (t *Edge) Reserve(ctx infopass.Context, appID int) error {
 
 	//online由每次reg時確認,減少api時間
 	ok := t.updateStatusWhen(models.STATUS_FREE, models.STATUS_RESERVE_INIT)
@@ -51,7 +51,7 @@ func (t *Edge) Reserve(appID int) error {
 		return errDef.ErrNoResource
 	}
 
-	err := t.eHttp.Reserve(appID)
+	err := t.eHttp.Reserve(ctx, appID)
 
 	status := models.STATUS_RESERVE_XR_NOT_CONNECT
 	var online *bool
@@ -69,7 +69,7 @@ func (t *Edge) Reserve(appID int) error {
 
 }
 
-func (t *Edge) ReleaseReserve() error {
+func (t *Edge) ReleaseReserve(ctx infopass.Context) error {
 
 	status, _ := t.GetCacheStatus()
 	if status == models.STATUS_FREE {
@@ -78,7 +78,7 @@ func (t *Edge) ReleaseReserve() error {
 
 	status = models.STATUS_RX_RELEASE
 	t.updateStatus(status, nil)
-	err := t.eHttp.Release()
+	err := t.eHttp.Release(ctx)
 
 	status = models.STATUS_FREE
 	var online *bool
@@ -96,9 +96,9 @@ func (t *Edge) ReleaseReserve() error {
 
 }
 
-func (t *Edge) Resume() error {
+func (t *Edge) Resume(ctx infopass.Context) error {
 
-	err := t.eHttp.Resume()
+	err := t.eHttp.Resume(ctx)
 
 	if err == errDef.ErrEdgeLost {
 		t.setOnline(false)
@@ -120,7 +120,7 @@ func (t *Edge) GetCacheStatus() (models.EdgeStatus, bool) {
 	return e.Status, e.Online
 }
 
-func (t *Edge) StartAPP(appID int) error {
+func (t *Edge) StartAPP(ctx infopass.Context, appID int) error {
 
 	ok := t.updateStatusWhen(models.STATUS_RESERVE_XR_CONNECT,
 		models.STATUS_RX_START_APP)
@@ -128,7 +128,7 @@ func (t *Edge) StartAPP(appID int) error {
 		return errDef.ErrCloudXRUnconect
 	}
 
-	err := t.eHttp.StartAPP(appID)
+	err := t.eHttp.StartAPP(ctx, appID)
 
 	status := models.STATUS_PLAYING
 	var online *bool
@@ -145,7 +145,7 @@ func (t *Edge) StartAPP(appID int) error {
 	return err
 }
 
-func (t *Edge) StopAPP() error {
+func (t *Edge) StopAPP(ctx infopass.Context) error {
 
 	ok := t.updateStatusWhen(models.STATUS_PLAYING,
 		models.STATUS_RX_STOP_APP)
@@ -153,7 +153,7 @@ func (t *Edge) StopAPP() error {
 		return errDef.ErrNotPlaying
 	}
 
-	err := t.eHttp.StopAPP()
+	err := t.eHttp.StopAPP(ctx)
 
 	status := models.STATUS_RESERVE_XR_CONNECT
 	var online *bool
