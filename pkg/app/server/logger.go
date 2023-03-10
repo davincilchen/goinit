@@ -111,7 +111,7 @@ func logger(log APILog) {
 	// 	fmt.Println(log)
 	// 	return
 	// }
-	fmt.Println()
+
 	s := fmt.Sprintf("%#v", log)
 	fmt.Println(s)
 
@@ -125,7 +125,7 @@ func logger(log APILog) {
 	if err == nil {
 		fmt.Println("DevData:", string(b))
 	}
-
+	fmt.Println()
 	// gcp.stdLogger.Println(s)
 
 	// //defer gcp.logger.Flush() // Ensure the entry is written.

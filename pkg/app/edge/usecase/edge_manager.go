@@ -95,7 +95,7 @@ func (t *EdgeManager) FindUnusedEdgesWithAppID(appID int) ([]*Edge, error) {
 			continue
 		}
 		edges = append(edges, e)
-		fmt.Println("test print:[Reserve List] IP: ", e.info.IP, e.info.Port)
+		fmt.Printf("[Reserve List for APP = %d] IP:%s : %d \n", appID, e.info.IP, e.info.Port)
 	}
 
 	return edges, nil
