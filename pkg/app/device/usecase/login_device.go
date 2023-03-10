@@ -16,28 +16,25 @@ import (
 var deviceRepo repo.Device
 
 type DeviceLoginProc struct {
-	Device    models.Device
-	InfoCache infopass.DBErrCache
+	Device models.Device
 }
 
-func NewDeviceLoginProc(Type int, UUID string,
-	InfoCache infopass.DBErrCache) *DeviceLoginProc {
+func NewDeviceLoginProc(Type int, UUID string) *DeviceLoginProc {
 	d := &DeviceLoginProc{
 		Device: models.Device{
 			Type: Type,
 			UUID: UUID,
 		},
-		InfoCache: InfoCache,
 	}
 	return d
 }
 
-func (t *DeviceLoginProc) DevLoginSucess(user *userUCase.LoginUser) error {
+func (t *DeviceLoginProc) DevLoginSucess(ctx infopass.Context, user *userUCase.LoginUser) error {
 
 	//TODO: save ip and login/logout
 	device, err := deviceRepo.RegDevice(&t.Device)
 	if err != nil {
-		t.InfoCache.CacheDBError(err)
+		ctx.CacheDBError(err)
 		return err
 	}
 
