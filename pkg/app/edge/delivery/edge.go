@@ -12,6 +12,7 @@ import (
 	edgeUCase "xr-central/pkg/app/edge/usecase"
 	errDef "xr-central/pkg/app/errordef"
 	dlv "xr-central/pkg/delivery"
+	"xr-central/pkg/models"
 )
 
 type NewReserveResp struct {
@@ -96,24 +97,41 @@ func StopApp(ctx *gin.Context) { //TODO:
 	ctx.JSON(http.StatusOK, response)
 }
 
+type EdgeInfo struct {
+	IP     string            `json:"ip"`
+	Port   int               `json:"port"`
+	Status models.EdgeStatus `json:"status"`
+	Online bool              `json:"online"`
+}
+
 type EdgeStatusResp struct {
-	IP     string `json:"ip"`
-	Port   int    `json:"port"`
-	Status int    `json:"status"`
-	Online bool   `json:"online"`
+	Edge *EdgeInfo `json:"edge"`
 }
 
 type EdgeListResp struct {
-	Edge []EdgeStatusResp `json:"edge"`
+	Edges []EdgeInfo `json:"edges"`
 }
 
-func EdgeStatus(ctx *gin.Context) { //ODO:
+func EdgeStatus(ctx *gin.Context) {
 
-	type Data struct {
-		Edge EdgeStatusResp `json:"edge"`
+	dev := devUCase.GetCacheDevice(ctx)
+	if dev == nil {
+		e := errors.New("GetCacheDevice Nil")
+		dlv.RespError(ctx, e, nil)
+		return
 	}
-	data := Data{}
-	data.Edge = EdgeStatusResp{}
+	edge := dev.GetEdgeInfo()
+
+	data := EdgeStatusResp{}
+	if edge != nil {
+		tmp := EdgeInfo{
+			IP:     edge.IP,
+			Port:   edge.Port,
+			Status: edge.Status,
+			Online: edge.Online,
+		}
+		data.Edge = &tmp
+	}
 
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK
@@ -126,16 +144,13 @@ func EdgeList(ctx *gin.Context) {
 	manager := edgeUCase.GetEdgeManager()
 	ret := manager.GetEdgeList()
 
-	type Data struct {
-		Edges []EdgeStatusResp `json:"edge_list"`
-	}
-	data := Data{}
+	data := EdgeListResp{}
 
 	for _, v := range ret {
-		tmp := EdgeStatusResp{
+		tmp := EdgeInfo{
 			IP:     v.IP,
 			Port:   v.Port,
-			Status: int(v.Status),
+			Status: v.Status,
 			Online: v.Online}
 		data.Edges = append(data.Edges, tmp)
 

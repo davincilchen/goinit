@@ -113,3 +113,15 @@ func (t *LoginDevice) AttachEdge(edge *edgeUCase.Edge) {
 
 	t.edge = edge
 }
+
+func (t *LoginDevice) GetEdgeInfo() *models.Edge {
+	t.edgeMux.Lock()
+	defer t.edgeMux.Unlock()
+
+	if t.edge == nil {
+		return nil
+	}
+
+	e := t.edge.GetInfo()
+	return &e
+}
