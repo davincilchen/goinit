@@ -77,6 +77,7 @@ func (t *Edge) Reserve(ctx ctxcache.Context, appID int) error {
 			online = &tmp
 		} else {
 			actRet = ACTION_RET_RESERVE_FAILD
+			status = models.STATUS_FREE
 			//status = models.STATUS_FAIL
 		}
 	}
@@ -107,6 +108,7 @@ func (t *Edge) ReleaseReserve(ctx ctxcache.Context) error {
 			online = &tmp
 		} else {
 			actRet = ACTION_RET_RELEASE_FAILD
+			status = models.STATUS_FREE
 			//status = models.STATUS_FAIL
 		}
 	}
@@ -159,6 +161,7 @@ func (t *Edge) StartAPP(ctx ctxcache.Context, appID int) error {
 			online = &tmp
 		} else {
 			actRet = ACTION_RET_STARTAPP_FAILD
+			status = models.STATUS_RESERVE_XR_CONNECT
 			//status = models.STATUS_FAIL
 		}
 	}
@@ -187,6 +190,7 @@ func (t *Edge) StopAPP(ctx ctxcache.Context) error {
 			online = &tmp
 		} else {
 			actRet = ACTION_RET_STOPAPP_FAILD
+			status = models.STATUS_PLAYING
 			//status = models.STATUS_FAIL
 		}
 	}
