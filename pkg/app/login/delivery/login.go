@@ -164,7 +164,8 @@ func DevLogout(ctx *gin.Context) {
 		return
 	}
 
-	err := dev.Logout()
+	nCtx := ctxcache.NewContext(ctx)
+	err := dev.Logout(nCtx)
 	if err != nil {
 		dlv.RespError(ctx, err, nil)
 		return

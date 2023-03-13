@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 	"sync"
 	"xr-central/pkg/app/ctxcache"
 	repo "xr-central/pkg/app/device/repo/mysql"
@@ -11,6 +10,19 @@ import (
 	edgeUCase "xr-central/pkg/app/edge/usecase"
 	errDef "xr-central/pkg/app/errordef"
 	userUCase "xr-central/pkg/app/user/usecase"
+)
+
+type DevStatus int
+
+const (
+	STATUS_FREE DevStatus = 0
+	//STATUS_RESERVE_INIT           DevStatus = 110
+	STATUS_RESERVE_XR_NOT_CONNECT DevStatus = 120
+	STATUS_RESERVE_XR_CONNECT     DevStatus = 130
+	//STATUS_RX_START_APP           DevStatus = 140
+	STATUS_PLAYING DevStatus = 150
+	// STATUS_RX_STOP_APP            DevStatus = 160
+	// STATUS_RX_RELEASE             DevStatus = 170
 )
 
 var deviceRepo repo.Device
@@ -55,15 +67,22 @@ type LoginDevice struct {
 	edge   *edgeUCase.Edge //not nil when post reserve success
 	Device *models.Device
 	User   *userUCase.LoginUser
+
+	statusMux sync.RWMutex
+	status    DevStatus
+
+	appMux sync.RWMutex
+	appID  int
 }
 
-func (t *LoginDevice) Logout() error {
+func (t *LoginDevice) Logout(ctx ctxcache.Context) error {
 	if t.User == nil {
 		return errors.New("nil user for login device")
 	}
+	err := t.ReleaseReserve(ctx)
 	manager := GetDeviceManager()
 	manager.Delete(t)
-	return nil
+	return err
 }
 
 func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID int) (*string, error) {
@@ -74,8 +93,6 @@ func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID int) (*string, erro
 		return nil, errDef.ErrRepeatedReserve
 	}
 
-	fmt.Println("appID", appID) //TODO remove
-
 	manager := edgeUCase.GetEdgeManager()
 	edge, err := manager.Reserve(ctx, appID)
 	if err != nil {
@@ -84,20 +101,35 @@ func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID int) (*string, erro
 
 	t.AttachEdge(edge)
 	e := edge.GetInfo()
+	t.SetAppID(appID)
 	return &e.IP, nil
 }
 
 func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context) error {
-	t.edgeMux.Lock()
-	defer t.edgeMux.Unlock()
+	t.statusMux.Lock()
+	t.status = STATUS_FREE
+	t.statusMux.Unlock()
 
-	if t.edge == nil {
+	edge := t.getEdge()
+	if edge == nil {
 		return nil
 	}
+	edge.ReleaseReserve(ctx)
+	t.DetachEdge()
 
-	t.edge.ReleaseReserve(ctx)
-	t.edge = nil
+	t.SetAppID(0)
 	return nil
+}
+
+func (t *LoginDevice) StartApp(ctx ctxcache.Context) error {
+	edge := t.getEdge()
+	appID := t.GetAppID()
+	return edge.StartAPP(ctx, appID)
+}
+
+func (t *LoginDevice) StopApp(ctx ctxcache.Context) error {
+	edge := t.getEdge()
+	return edge.StopAPP(ctx)
 }
 
 func (t *LoginDevice) IsReserve() bool {
@@ -114,6 +146,22 @@ func (t *LoginDevice) AttachEdge(edge *edgeUCase.Edge) {
 	t.edge = edge
 }
 
+func (t *LoginDevice) DetachEdge() {
+	t.edgeMux.Lock()
+	defer t.edgeMux.Unlock()
+
+	t.edge = nil
+}
+
+func (t *LoginDevice) getEdge() *edgeUCase.Edge {
+	t.edgeMux.Lock()
+	defer t.edgeMux.Unlock()
+	if t.edge == nil {
+		return nil
+	}
+	return t.edge
+}
+
 func (t *LoginDevice) GetEdgeInfo() *edgeUCase.EdgeInfoStatus {
 	t.edgeMux.Lock()
 	defer t.edgeMux.Unlock()
@@ -124,4 +172,16 @@ func (t *LoginDevice) GetEdgeInfo() *edgeUCase.EdgeInfoStatus {
 
 	e := t.edge.GetInfo()
 	return &e
+}
+
+func (t *LoginDevice) GetAppID() int {
+	t.appMux.RLock()
+	defer t.appMux.RUnlock()
+	return t.appID
+}
+
+func (t *LoginDevice) SetAppID(appID int) {
+	t.appMux.Lock()
+	defer t.appMux.Unlock()
+	t.appID = appID
 }
