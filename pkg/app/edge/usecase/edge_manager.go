@@ -94,7 +94,7 @@ func (t *EdgeManager) FindUnusedEdgesWithAppID(appID int) ([]*Edge, error) {
 		if !info.Online {
 			continue
 		}
-		if info.Status != models.STATUS_FREE && info.Status != models.STATUS_FAIL {
+		if info.Status != models.STATUS_FREE {
 			continue
 		}
 		edges = append(edges, e)

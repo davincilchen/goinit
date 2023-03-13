@@ -10,6 +10,16 @@ import (
 	errDef "xr-central/pkg/app/errordef"
 )
 
+type ActionRet int
+
+const (
+	ACTION_RET_NORMAL         ActionRet = 0
+	ACTION_RET_RESERVE_FAILD  ActionRet = 1
+	ACTION_RET_STARTAPP_FAILD ActionRet = 2
+	ACTION_RET_STOPAPP_FAILD  ActionRet = 3
+	ACTION_RET_RELEASE_FAILD  ActionRet = 4
+)
+
 type HttpEdge interface {
 	SetURL(url string)
 	Reserve(ctx ctxcache.Context, appID int) error
@@ -21,9 +31,10 @@ type HttpEdge interface {
 }
 
 type Edge struct {
-	mux   sync.Mutex
-	info  models.Edge
-	eHttp HttpEdge
+	mux    sync.Mutex
+	info   models.Edge
+	actRet ActionRet
+	eHttp  HttpEdge
 }
 
 func NewEdge(edge models.Edge) *Edge {
@@ -54,17 +65,20 @@ func (t *Edge) Reserve(ctx ctxcache.Context, appID int) error {
 	err := t.eHttp.Reserve(ctx, appID)
 
 	status := models.STATUS_RESERVE_XR_NOT_CONNECT
+	actRet := ACTION_RET_NORMAL
 	var online *bool
 	if err != nil {
 		if err == errDef.ErrEdgeLost {
 			tmp := false
 			online = &tmp
 		} else {
-			status = models.STATUS_FAIL
+			actRet = ACTION_RET_RESERVE_FAILD
+			//status = models.STATUS_FAIL
 		}
 	}
 
-	t.updateStatus(status, online)
+	t.updateStatus(status, online, &actRet)
+
 	return err
 
 }
@@ -77,21 +91,23 @@ func (t *Edge) ReleaseReserve(ctx ctxcache.Context) error {
 	}
 
 	status = models.STATUS_RX_RELEASE
-	t.updateStatus(status, nil)
+	t.updateStatus(status, nil, nil)
 	err := t.eHttp.Release(ctx)
 
 	status = models.STATUS_FREE
+	actRet := ACTION_RET_NORMAL
 	var online *bool
 	if err != nil {
 		if err == errDef.ErrEdgeLost {
 			tmp := false
 			online = &tmp
 		} else {
-			status = models.STATUS_FAIL
+			actRet = ACTION_RET_RELEASE_FAILD
+			//status = models.STATUS_FAIL
 		}
 	}
 
-	t.updateStatus(status, online)
+	t.updateStatus(status, online, &actRet)
 	return err
 
 }
@@ -131,17 +147,20 @@ func (t *Edge) StartAPP(ctx ctxcache.Context, appID int) error {
 	err := t.eHttp.StartAPP(ctx, appID)
 
 	status := models.STATUS_PLAYING
+	actRet := ACTION_RET_NORMAL
 	var online *bool
 	if err != nil {
 		if err == errDef.ErrEdgeLost {
 			tmp := false
 			online = &tmp
 		} else {
-			status = models.STATUS_FAIL
+			actRet = ACTION_RET_STARTAPP_FAILD
+			//status = models.STATUS_FAIL
 		}
 	}
 
-	t.updateStatus(status, online)
+	t.updateStatus(status, online, &actRet)
+
 	return err
 }
 
@@ -156,28 +175,30 @@ func (t *Edge) StopAPP(ctx ctxcache.Context) error {
 	err := t.eHttp.StopAPP(ctx)
 
 	status := models.STATUS_RESERVE_XR_CONNECT
+	actRet := ACTION_RET_NORMAL
 	var online *bool
 	if err != nil {
 		if err == errDef.ErrEdgeLost {
 			tmp := false
 			online = &tmp
 		} else {
-			status = models.STATUS_FAIL
+			actRet = ACTION_RET_STOPAPP_FAILD
+			//status = models.STATUS_FAIL
 		}
 	}
 
-	t.updateStatus(status, online)
+	t.updateStatus(status, online, &actRet)
 
 	return err
 }
 
 func (t *Edge) OnXRConnect() {
 	online := true
-	t.updateStatus(models.STATUS_RESERVE_XR_CONNECT, &online)
+	t.updateStatus(models.STATUS_RESERVE_XR_CONNECT, &online, nil)
 	//updateStatus when
 }
 
-func (t *Edge) updateStatus(status models.EdgeStatus, online *bool) {
+func (t *Edge) updateStatus(status models.EdgeStatus, online *bool, actRet *ActionRet) {
 	t.mux.Lock()
 	defer t.mux.Unlock()
 
@@ -186,6 +207,11 @@ func (t *Edge) updateStatus(status models.EdgeStatus, online *bool) {
 	if online != nil {
 		t.info.Online = *online
 	}
+
+	if actRet != nil {
+		t.actRet = *actRet
+	}
+
 }
 
 func (t *Edge) updateStatusWhen(oriStatus, newStatus models.EdgeStatus) bool {
