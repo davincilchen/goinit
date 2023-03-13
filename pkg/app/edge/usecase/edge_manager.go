@@ -34,7 +34,7 @@ func GetEdgeManager() *EdgeManager {
 		if err != nil {
 			fmt.Printf("LoadEdges error %s\n", err.Error())
 		} else {
-			fmt.Println("==== LoadEdges Start ===")
+			fmt.Println("========= LoadEdges Start =========")
 			fmt.Printf("LoadEdges count %d\n", len(es))
 			for i, v := range es {
 				fmt.Printf("%d %#v\n", i, v)
@@ -43,7 +43,7 @@ func GetEdgeManager() *EdgeManager {
 				manager.edges = append(manager.edges, tmpEdge)
 
 			}
-			fmt.Println("==== LoadEdges Done ===")
+			fmt.Println("========= LoadEdges Done =========")
 		}
 
 	}
@@ -91,7 +91,10 @@ func (t *EdgeManager) FindUnusedEdgesWithAppID(appID int) ([]*Edge, error) {
 		}
 
 		info := e.GetInfo()
-		if !info.Online || info.Status != models.STATUS_FREE {
+		if !info.Online {
+			continue
+		}
+		if info.Status != models.STATUS_FREE && info.Status != models.STATUS_FAIL {
 			continue
 		}
 		edges = append(edges, e)

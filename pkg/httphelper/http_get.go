@@ -18,8 +18,7 @@ var APICommentNormalV = fmt.Sprintf("%s, %s", version.Version, APICommentNormal)
 var APICommentRoutineRetryV = fmt.Sprintf("%s, %s", version.Version, APICommentRoutineRetry)
 
 var client = &http.Client{
-	//Timeout: 20 * time.Second,
-	Timeout: 1 * time.Second, //TODO: test
+	Timeout: 10 * time.Second,
 	Transport: &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
 		DialContext: (&net.Dialer{
