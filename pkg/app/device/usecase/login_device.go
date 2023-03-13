@@ -146,12 +146,20 @@ func (t *LoginDevice) Resume(ctx ctxcache.Context) error {
 	return edge.Resume(ctx)
 }
 
-func (t *LoginDevice) OnCloudXRConnect(ctx ctxcache.Context) error {
+func (t *LoginDevice) UpdateStatus(ctx ctxcache.Context, status DevStatus) error {
 	edge := t.getEdge()
 	if edge == nil {
 		return errDef.ErrDevNoReserve
 	}
-	return edge.OnCloudXRConnect(ctx)
+	if status == STATUS_RESERVE_XR_CONNECT {
+		edge.OnCloudXRConnect(ctx) //TODO: double check
+	}
+
+	t.statusMux.Lock()
+	defer t.statusMux.Unlock()
+	t.status = status
+
+	return nil
 }
 
 func (t *LoginDevice) IsReserve() bool {

@@ -203,7 +203,7 @@ func (t *Edge) StopAPP(ctx ctxcache.Context) error {
 func (t *Edge) OnCloudXRConnect(ctx ctxcache.Context) error {
 	online := true
 	t.updateStatus(models.STATUS_RESERVE_XR_CONNECT, &online, nil)
-	//updateStatus when
+	//t.updateStatusWhen(models.STATUS_RESERVE_XR_CONNECT, &online, nil)
 	return nil
 }
 

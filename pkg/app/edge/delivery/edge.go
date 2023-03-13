@@ -1,7 +1,9 @@
 package delivery
 
 import (
+	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 
@@ -149,6 +151,11 @@ type EdgeInfo struct {
 	ActRet edgeUCase.ActionRet `json:"last_act_ret"`
 }
 
+type EdgeStatusReq struct {
+	DevStatus int    `json:"device_status"`
+	StatusDes string `json:"status_des"`
+}
+
 type EdgeStatusResp struct {
 	Edge *EdgeInfo `json:"edge"`
 }
@@ -158,15 +165,31 @@ type EdgeListResp struct {
 }
 
 func EdgeStatus(ctx *gin.Context) {
-
 	dev := devUCase.GetCacheDevice(ctx)
 	if dev == nil {
 		e := errors.New("GetCacheDevice Nil")
 		dlv.RespError(ctx, e, nil)
 		return
 	}
-	edge := dev.GetEdgeInfo()
 
+	// .. //
+	param := EdgeStatusReq{}
+	req, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		// Handle error
+		e := errors.New("read request body failed")
+		dlv.RespError(ctx, e, nil)
+		return
+	}
+	err = json.Unmarshal(req, &param)
+	if err != nil {
+		e := errors.New("unmarshal body failed")
+		dlv.RespError(ctx, e, nil)
+		return
+	}
+
+	// .. //
+	edge := dev.GetEdgeInfo()
 	data := EdgeStatusResp{}
 	if edge != nil {
 		tmp := EdgeInfo{
@@ -183,6 +206,7 @@ func EdgeStatus(ctx *gin.Context) {
 	response.ResCode = dlv.RES_OK
 	response.Data = data
 
+	dev.UpdateStatus(ctxcache.NewContext(ctx), devUCase.DevStatus(param.DevStatus))
 	ctx.JSON(http.StatusOK, response)
 }
 
@@ -201,7 +225,6 @@ func EdgeList(ctx *gin.Context) {
 			ActRet: v.ActRet,
 		}
 		data.Edges = append(data.Edges, tmp)
-
 	}
 
 	response := dlv.ResBody{}
