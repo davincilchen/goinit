@@ -132,6 +132,11 @@ func (t *LoginDevice) StopApp(ctx ctxcache.Context) error {
 	return edge.StopAPP(ctx)
 }
 
+func (t *LoginDevice) Resume(ctx ctxcache.Context) error {
+	edge := t.getEdge()
+	return edge.Resume(ctx)
+}
+
 func (t *LoginDevice) IsReserve() bool {
 	t.edgeMux.Lock()
 	defer t.edgeMux.Unlock()

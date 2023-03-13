@@ -62,7 +62,12 @@ func ReleaseReserve(ctx *gin.Context) { //TODO:
 		return
 	}
 
-	dev.ReleaseReserve(ctxcache.NewContext(ctx))
+	err := dev.ReleaseReserve(ctxcache.NewContext(ctx))
+	if err == nil {
+		dlv.RespError(ctx, err, nil)
+		return
+	}
+
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK
 
@@ -70,8 +75,21 @@ func ReleaseReserve(ctx *gin.Context) { //TODO:
 }
 
 func DeviceResume(ctx *gin.Context) { //TODO:
+	dev := devUCase.GetCacheDevice(ctx)
+	if dev == nil {
+		e := errors.New("GetCacheDevice Nil")
+		dlv.RespError(ctx, e, nil)
+		return
+	}
+
+	err := dev.Resume(ctxcache.NewContext(ctx))
+	if err == nil {
+		dlv.RespError(ctx, err, nil)
+		return
+	}
+
 	response := dlv.ResBody{}
-	response.ResCode = dlv.RES_EDGE_LOST
+	response.ResCode = dlv.RES_OK
 
 	ctx.JSON(http.StatusOK, response)
 
@@ -81,6 +99,19 @@ type StartAppResp struct {
 }
 
 func StartApp(ctx *gin.Context) { //TODO:
+	dev := devUCase.GetCacheDevice(ctx)
+	if dev == nil {
+		e := errors.New("GetCacheDevice Nil")
+		dlv.RespError(ctx, e, nil)
+		return
+	}
+
+	err := dev.StartApp(ctxcache.NewContext(ctx))
+	if err == nil {
+		dlv.RespError(ctx, err, nil)
+		return
+	}
+
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK
 
@@ -90,7 +121,20 @@ func StartApp(ctx *gin.Context) { //TODO:
 type StopAppResp struct {
 }
 
-func StopApp(ctx *gin.Context) { //TODO:
+func StopApp(ctx *gin.Context) {
+	dev := devUCase.GetCacheDevice(ctx)
+	if dev == nil {
+		e := errors.New("GetCacheDevice Nil")
+		dlv.RespError(ctx, e, nil)
+		return
+	}
+
+	err := dev.StopApp(ctxcache.NewContext(ctx))
+	if err == nil {
+		dlv.RespError(ctx, err, nil)
+		return
+	}
+
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK
 
