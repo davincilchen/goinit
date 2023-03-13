@@ -12,6 +12,7 @@ var (
 
 	ErrRepeatedLogin   = errors.New("repeated login")
 	ErrRepeatedReserve = errors.New("repeated reserve")
+	ErrDevNoReserve    = errors.New("device no reserve")
 
 	ErrUrlParamError = errors.New("url param error")
 )

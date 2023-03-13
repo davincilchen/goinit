@@ -63,7 +63,7 @@ func ReleaseReserve(ctx *gin.Context) { //TODO:
 	}
 
 	err := dev.ReleaseReserve(ctxcache.NewContext(ctx))
-	if err == nil {
+	if err != nil {
 		dlv.RespError(ctx, err, nil)
 		return
 	}
@@ -83,7 +83,7 @@ func DeviceResume(ctx *gin.Context) { //TODO:
 	}
 
 	err := dev.Resume(ctxcache.NewContext(ctx))
-	if err == nil {
+	if err != nil {
 		dlv.RespError(ctx, err, nil)
 		return
 	}
@@ -107,7 +107,7 @@ func StartApp(ctx *gin.Context) { //TODO:
 	}
 
 	err := dev.StartApp(ctxcache.NewContext(ctx))
-	if err == nil {
+	if err != nil {
 		dlv.RespError(ctx, err, nil)
 		return
 	}
@@ -130,7 +130,7 @@ func StopApp(ctx *gin.Context) {
 	}
 
 	err := dev.StopApp(ctxcache.NewContext(ctx))
-	if err == nil {
+	if err != nil {
 		dlv.RespError(ctx, err, nil)
 		return
 	}

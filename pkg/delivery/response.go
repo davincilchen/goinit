@@ -20,6 +20,7 @@ const (
 	RES_CLOUDXR_UNCONNECT ResCode = 103
 	RES_REPEATED_LOGIN    ResCode = 104
 	RES_REPEATED_RESERVE  ResCode = 105
+	RES_NO_RESERVE        ResCode = 106
 
 	RES_ERROR_UNKNOWN         ResCode = 200
 	RES_ERROR_BAD_REQUEST     ResCode = 201
@@ -80,10 +81,14 @@ func getStatusCode(err error) (ResCode, int) {
 		return RES_REPEATED_LOGIN, http.StatusOK
 	case errordef.ErrRepeatedReserve:
 		return RES_REPEATED_RESERVE, http.StatusOK
+	case errordef.ErrDevNoReserve:
+		return RES_NO_RESERVE, http.StatusOK
+
 		//
 	case errordef.ErrUrlParamError:
 		return RES_ERROR_BAD_REQUEST, http.StatusNotFound
 		//
+
 	default:
 		return RES_ERROR_UNKNOWN, http.StatusInternalServerError
 	}

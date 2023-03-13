@@ -79,10 +79,10 @@ func (t *LoginDevice) Logout(ctx ctxcache.Context) error {
 	if t.User == nil {
 		return errors.New("nil user for login device")
 	}
-	err := t.ReleaseReserve(ctx)
+	_ = t.ReleaseReserve(ctx)
 	manager := GetDeviceManager()
 	manager.Delete(t)
-	return err
+	return nil
 }
 
 func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID int) (*string, error) {
@@ -112,7 +112,7 @@ func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context) error {
 
 	edge := t.getEdge()
 	if edge == nil {
-		return nil
+		return errDef.ErrDevNoReserve
 	}
 	edge.ReleaseReserve(ctx)
 	t.DetachEdge()
@@ -123,18 +123,35 @@ func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context) error {
 
 func (t *LoginDevice) StartApp(ctx ctxcache.Context) error {
 	edge := t.getEdge()
+	if edge == nil {
+		return errDef.ErrDevNoReserve
+	}
 	appID := t.GetAppID()
 	return edge.StartAPP(ctx, appID)
 }
 
 func (t *LoginDevice) StopApp(ctx ctxcache.Context) error {
 	edge := t.getEdge()
+	if edge == nil {
+		return errDef.ErrDevNoReserve
+	}
 	return edge.StopAPP(ctx)
 }
 
 func (t *LoginDevice) Resume(ctx ctxcache.Context) error {
 	edge := t.getEdge()
+	if edge == nil {
+		return errDef.ErrDevNoReserve
+	}
 	return edge.Resume(ctx)
+}
+
+func (t *LoginDevice) OnCloudXRConnect(ctx ctxcache.Context) error {
+	edge := t.getEdge()
+	if edge == nil {
+		return errDef.ErrDevNoReserve
+	}
+	return edge.OnCloudXRConnect(ctx)
 }
 
 func (t *LoginDevice) IsReserve() bool {

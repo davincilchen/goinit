@@ -200,10 +200,11 @@ func (t *Edge) StopAPP(ctx ctxcache.Context) error {
 	return err
 }
 
-func (t *Edge) OnXRConnect() {
+func (t *Edge) OnCloudXRConnect(ctx ctxcache.Context) error {
 	online := true
 	t.updateStatus(models.STATUS_RESERVE_XR_CONNECT, &online, nil)
 	//updateStatus when
+	return nil
 }
 
 func (t *Edge) updateStatus(status models.EdgeStatus, online *bool, actRet *ActionRet) {
