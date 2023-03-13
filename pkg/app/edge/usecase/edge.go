@@ -36,6 +36,10 @@ type Edge struct {
 	actRet ActionRet
 	eHttp  HttpEdge
 }
+type EdgeInfoStatus struct {
+	models.Edge
+	ActRet ActionRet
+}
 
 func NewEdge(edge models.Edge) *Edge {
 	e := Edge{
@@ -237,6 +241,10 @@ func (t *Edge) setOnline(online bool) {
 	t.info.Online = online
 }
 
-func (t *Edge) GetInfo() models.Edge { //副本
-	return t.info
+func (t *Edge) GetInfo() EdgeInfoStatus { //副本
+	ret := EdgeInfoStatus{
+		Edge:   t.info,
+		ActRet: t.actRet,
+	}
+	return ret
 }

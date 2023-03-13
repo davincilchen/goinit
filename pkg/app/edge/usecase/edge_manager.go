@@ -126,9 +126,9 @@ func (t *EdgeManager) getEdge(id int) *Edge {
 	return e
 }
 
-func (t *EdgeManager) GetEdgeList() []models.Edge {
+func (t *EdgeManager) GetEdgeList() []EdgeInfoStatus {
 
-	ret := make([]models.Edge, 0)
+	ret := make([]EdgeInfoStatus, 0)
 	for _, v := range t.edges {
 		ret = append(ret, v.GetInfo())
 	}

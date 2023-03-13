@@ -98,10 +98,11 @@ func StopApp(ctx *gin.Context) { //TODO:
 }
 
 type EdgeInfo struct {
-	IP     string            `json:"ip"`
-	Port   int               `json:"port"`
-	Status models.EdgeStatus `json:"status"`
-	Online bool              `json:"online"`
+	IP     string              `json:"ip"`
+	Port   int                 `json:"port"`
+	Status models.EdgeStatus   `json:"status"`
+	Online bool                `json:"online"`
+	ActRet edgeUCase.ActionRet `json:"last_act_ret"`
 }
 
 type EdgeStatusResp struct {
@@ -129,6 +130,7 @@ func EdgeStatus(ctx *gin.Context) {
 			Port:   edge.Port,
 			Status: edge.Status,
 			Online: edge.Online,
+			ActRet: edge.ActRet,
 		}
 		data.Edge = &tmp
 	}
@@ -151,7 +153,9 @@ func EdgeList(ctx *gin.Context) {
 			IP:     v.IP,
 			Port:   v.Port,
 			Status: v.Status,
-			Online: v.Online}
+			Online: v.Online,
+			ActRet: v.ActRet,
+		}
 		data.Edges = append(data.Edges, tmp)
 
 	}
