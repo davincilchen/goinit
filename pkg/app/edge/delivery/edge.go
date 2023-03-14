@@ -193,6 +193,7 @@ func EdgeStatus(ctx *gin.Context) {
 		dlv.RespError(ctx, err, nil)
 		return
 	}
+	dev.UpdateStatus(ctxcache.NewContext(ctx), devUCase.DevStatus(param.DevStatus))
 
 	// .. //
 	edge := dev.GetEdgeInfo()
@@ -212,7 +213,6 @@ func EdgeStatus(ctx *gin.Context) {
 	response.ResCode = dlv.RES_OK
 	response.Data = data
 
-	dev.UpdateStatus(ctxcache.NewContext(ctx), devUCase.DevStatus(param.DevStatus))
 	ctx.JSON(http.StatusOK, response)
 }
 

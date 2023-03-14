@@ -154,6 +154,7 @@ func (t *LoginDevice) UpdateStatus(ctx ctxcache.Context, status DevStatus) error
 	if status == STATUS_RESERVE_XR_CONNECT {
 		edge.OnCloudXRConnect(ctx) //TODO: double check
 	}
+	//TODO: 當以連線狀態下 丟未連線 判斷是否真的未連線
 
 	t.statusMux.Lock()
 	defer t.statusMux.Unlock()
