@@ -44,6 +44,7 @@ func Router() *gin.Engine {
 	// .. //
 	edges := router.Group("/edges")
 	edges.GET("/", edgedlv.EdgeList)
+	edges.POST("/reg", edgedlv.EdgeReg)
 
 	// .. //fake for test // TODO: remove
 	router.POST("/start_app", deliveryfake.FakeStartApp)

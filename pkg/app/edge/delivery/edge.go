@@ -3,6 +3,7 @@ package delivery
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -143,6 +144,8 @@ func StopApp(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// =========================================== //
+
 type EdgeInfo struct {
 	IP     string              `json:"ip"`
 	Port   int                 `json:"port"`
@@ -160,8 +163,21 @@ type EdgeStatusResp struct {
 	Edge *EdgeInfo `json:"edge"`
 }
 
-type EdgeListResp struct {
-	Edges []EdgeInfo `json:"edges"`
+func edgeStatusParam(ctx *gin.Context) (*EdgeStatusReq, error) {
+	// .. //
+	param := EdgeStatusReq{}
+	req, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		// Handle error
+		e := errors.New("read request body failed")
+		return nil, e
+	}
+	err = json.Unmarshal(req, &param)
+	if err != nil {
+		e := errors.New("unmarshal body failed")
+		return nil, e
+	}
+	return &param, nil
 }
 
 func EdgeStatus(ctx *gin.Context) {
@@ -171,20 +187,10 @@ func EdgeStatus(ctx *gin.Context) {
 		dlv.RespError(ctx, e, nil)
 		return
 	}
-
 	// .. //
-	param := EdgeStatusReq{}
-	req, err := ioutil.ReadAll(ctx.Request.Body)
+	param, err := edgeStatusParam(ctx)
 	if err != nil {
-		// Handle error
-		e := errors.New("read request body failed")
-		dlv.RespError(ctx, e, nil)
-		return
-	}
-	err = json.Unmarshal(req, &param)
-	if err != nil {
-		e := errors.New("unmarshal body failed")
-		dlv.RespError(ctx, e, nil)
+		dlv.RespError(ctx, err, nil)
 		return
 	}
 
@@ -210,6 +216,12 @@ func EdgeStatus(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// =========================================== //
+
+type EdgeListResp struct {
+	Edges []EdgeInfo `json:"edges"`
+}
+
 func EdgeList(ctx *gin.Context) {
 	manager := edgeUCase.GetEdgeManager()
 	ret := manager.GetEdgeList()
@@ -232,4 +244,45 @@ func EdgeList(ctx *gin.Context) {
 	response.Data = data
 
 	ctx.JSON(http.StatusOK, response)
+}
+
+// =========================================== //
+
+type EdgeRegReq struct {
+	AppsID []int `json:"apps_id"`
+	Port   int   `json:"port"`
+}
+
+func edgeRegParam(ctx *gin.Context) (*EdgeRegReq, error) {
+	// .. //
+	param := EdgeRegReq{}
+	req, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		// Handle error
+		e := errors.New("read request body failed")
+		return nil, e
+	}
+	err = json.Unmarshal(req, &param)
+	if err != nil {
+		e := errors.New("unmarshal body failed")
+		return nil, e
+	}
+	return &param, nil
+}
+
+func EdgeReg(ctx *gin.Context) {
+	// .. //
+	param, err := edgeRegParam(ctx)
+	if err != nil {
+		dlv.RespError(ctx, err, nil)
+		return
+	}
+	fmt.Println(param)
+
+	response := dlv.ResBody{}
+	response.ResCode = dlv.RES_OK
+	//response.Data = data
+
+	ctx.JSON(http.StatusOK, response)
+
 }
