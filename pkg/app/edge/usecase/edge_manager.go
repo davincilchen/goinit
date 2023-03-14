@@ -12,7 +12,7 @@ import (
 type EdgeManager struct {
 	//TODO: lock
 	edges   []*Edge
-	edgeMap map[int]*Edge
+	edgeMap map[uint]*Edge
 	mux     sync.Mutex
 }
 
@@ -28,7 +28,7 @@ func GetEdgeManager() *EdgeManager {
 	if manager == nil {
 		manager = newEdgeManager()
 		manager.edges = make([]*Edge, 0)
-		manager.edgeMap = make(map[int]*Edge)
+		manager.edgeMap = make(map[uint]*Edge)
 		eRepo := repo.Edge{}
 		es, err := eRepo.GetEdges()
 		if err != nil {
@@ -38,16 +38,36 @@ func GetEdgeManager() *EdgeManager {
 			fmt.Printf("LoadEdges count %d\n", len(es))
 			for i, v := range es {
 				fmt.Printf("%d %#v\n", i, v)
-				tmpEdge := NewEdge(v)
-				manager.edgeMap[int(v.ID)] = tmpEdge
-				manager.edges = append(manager.edges, tmpEdge)
-
+				manager.addEdge(v)
 			}
 			fmt.Println("========= LoadEdges Done =========")
 		}
 
 	}
 	return manager
+}
+
+func (t *EdgeManager) addEdge(edge models.Edge) *Edge {
+	t.mux.Lock()
+	defer t.mux.Unlock()
+
+	tmpEdge := NewEdge(edge)
+	manager.edgeMap[edge.ID] = tmpEdge
+	manager.edges = append(manager.edges, tmpEdge)
+
+	return tmpEdge
+}
+
+func (t *EdgeManager) getEdge(id uint) *Edge {
+
+	t.mux.Lock()
+	defer t.mux.Unlock()
+
+	e, ok := t.edgeMap[id]
+	if !ok {
+		return nil
+	}
+	return e
 }
 
 func (t *EdgeManager) Reserve(ctx ctxcache.Context, appID int) (*Edge, error) {
@@ -114,18 +134,6 @@ func (t *EdgeManager) findEdgeApp(appID int) ([]models.EdgeApp, error) {
 	return edge_app, nil
 }
 
-func (t *EdgeManager) getEdge(id int) *Edge {
-
-	t.mux.Lock()
-	defer t.mux.Unlock()
-
-	e, ok := t.edgeMap[id]
-	if !ok {
-		return nil
-	}
-	return e
-}
-
 func (t *EdgeManager) GetEdgeList() []EdgeInfoStatus {
 
 	ret := make([]EdgeInfoStatus, 0)
@@ -133,4 +141,15 @@ func (t *EdgeManager) GetEdgeList() []EdgeInfoStatus {
 		ret = append(ret, v.GetInfo())
 	}
 	return ret
+}
+
+func (t *EdgeManager) RegEdge(ip string, port int) (*Edge, error) {
+	eRepo := repo.Edge{}
+	edge, err := eRepo.RegEdge(ip, port)
+	if err != nil {
+		return nil, err
+	}
+	edgeUse := t.addEdge(*edge)
+
+	return edgeUse, nil
 }

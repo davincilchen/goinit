@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 
 	appdlv "xr-central/pkg/app/app/delivery"
@@ -50,7 +52,11 @@ func Router() *gin.Engine {
 	router.POST("/start_app", deliveryfake.FakeStartApp)
 	router.POST("/stop_app", deliveryfake.FakeStopApp)
 
+	router.POST("/reserve/app/:id", test)
 	return router
+}
+func test(ctx *gin.Context) {
+	fmt.Println(" ============ test ========== ")
 }
 
 func info(c *gin.Context) {

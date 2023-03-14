@@ -25,7 +25,7 @@ func (t *Edge) SetURL(url string) {
 }
 
 func (t *Edge) Reserve(ctx ctxcache.Context, appID int) error {
-	url := fmt.Sprintf("http://%s//reserve//app//%d", t.URL, appID)
+	url := fmt.Sprintf("http://%s/reserve/app/%d", t.URL, appID)
 	resp, err := httph.Post(url)
 	if err != nil {
 		fmt.Println(err)
@@ -43,7 +43,7 @@ func (t *Edge) Reserve(ctx ctxcache.Context, appID int) error {
 }
 
 func (t *Edge) Release(ctx ctxcache.Context) error {
-	url := fmt.Sprintf("http://%s//reserve", t.URL)
+	url := fmt.Sprintf("http://%s/reserve", t.URL)
 	_, err := httph.Delete(url)
 	return err
 }
@@ -64,13 +64,13 @@ func (t *Edge) Status(ctx ctxcache.Context) error {
 }
 
 func (t *Edge) StartAPP(ctx ctxcache.Context, appID int) error {
-	url := fmt.Sprintf("http://%s//%d//start_app", t.URL, appID)
+	url := fmt.Sprintf("http://%s/apps/%d/start_app", t.URL, appID)
 	_, err := httph.Post(url)
 	return err
 }
 
 func (t *Edge) StopAPP(ctx ctxcache.Context) error {
-	url := fmt.Sprintf("http://%s//stop_app", t.URL)
+	url := fmt.Sprintf("http://%s/stop_app", t.URL)
 	_, err := httph.Post(url)
 
 	return err

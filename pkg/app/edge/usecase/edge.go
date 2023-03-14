@@ -7,6 +7,7 @@ import (
 
 	"xr-central/pkg/app/ctxcache"
 	edgeHttp "xr-central/pkg/app/edge/repo/http"
+	repo "xr-central/pkg/app/edge/repo/mysql"
 	errDef "xr-central/pkg/app/errordef"
 )
 
@@ -252,4 +253,11 @@ func (t *Edge) GetInfo() EdgeInfoStatus { //副本
 		ActRet: t.actRet,
 	}
 	return ret
+}
+
+// .. //
+func (t *Edge) RegApps(appsID []uint) error {
+	eRepo := repo.Edge{}
+	_, err := eRepo.RegApps(t.info.ID, appsID)
+	return err
 }

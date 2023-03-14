@@ -249,8 +249,8 @@ func EdgeList(ctx *gin.Context) {
 // =========================================== //
 
 type EdgeRegReq struct {
-	AppsID []int `json:"apps_id"`
-	Port   int   `json:"port"`
+	AppsID []uint `json:"apps_id"`
+	Port   int    `json:"port"`
 }
 
 func edgeRegParam(ctx *gin.Context) (*EdgeRegReq, error) {
@@ -267,6 +267,11 @@ func edgeRegParam(ctx *gin.Context) (*EdgeRegReq, error) {
 		e := errors.New("unmarshal body failed")
 		return nil, e
 	}
+
+	if param.Port <= 0 {
+		e := fmt.Errorf("error port: %d", param.Port)
+		return nil, e
+	}
 	return &param, nil
 }
 
@@ -277,7 +282,15 @@ func EdgeReg(ctx *gin.Context) {
 		dlv.RespError(ctx, err, nil)
 		return
 	}
-	fmt.Println(param)
+	//ip := ctx.Request.RemoteAddr
+	ip := ctx.ClientIP() //TODO:127.0.0.1 ::1換成真的ip 否則dev會打不到
+	manager := edgeUCase.GetEdgeManager()
+	edge, err := manager.RegEdge(ip, param.Port)
+	if err != nil {
+		dlv.RespError(ctx, err, nil)
+		return
+	}
+	edge.RegApps(param.AppsID)
 
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK
