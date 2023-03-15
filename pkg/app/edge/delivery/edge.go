@@ -275,15 +275,16 @@ func edgeRegParam(ctx *gin.Context) (*EdgeRegReq, error) {
 	return &param, nil
 }
 
-func EdgeReg(ctx *gin.Context) {
+func EdgeReg(ctx *gin.Context) { //TODO: 處理掉刪除的部分 多一個欄位叫valid
 	// .. //
 	param, err := edgeRegParam(ctx)
+	fmt.Printf("EdgeReg: apps %#v", param)
 	if err != nil {
 		dlv.RespError(ctx, err, nil)
 		return
 	}
 	//ip := ctx.Request.RemoteAddr
-	ip := ctx.ClientIP() //TODO:127.0.0.1 ::1換成真的ip 否則dev會打不到
+	ip := ctx.ClientIP() //TODO:127.0.0.1 ::1換成真的ip 否則device會打不到
 	manager := edgeUCase.GetEdgeManager()
 	edge, err := manager.RegEdge(ip, param.Port)
 	if err != nil {

@@ -8,4 +8,5 @@ type EdgeApp struct {
 	Edge   Edge
 	AppID  uint `gorm:"not null;index:edge_app,unique"`
 	App    App
+	Valid  bool `gorm:"not null;default:0"`
 }
