@@ -5,6 +5,7 @@ import "errors"
 var (
 	ErrNoResource      = errors.New("no resource")
 	ErrEdgeLost        = errors.New("edge lost")
+	ErrStartAppTimeout = errors.New("start app timeout")
 	ErrInvalidStramVR  = errors.New("invalid steam VR")
 	ErrCloudXRUnconect = errors.New("cloudXR unconnect")
 	ErrNotPlaying      = errors.New("not playing")

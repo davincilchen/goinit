@@ -16,11 +16,12 @@ const (
 
 	RES_NO_RESOURCE       ResCode = 100
 	RES_EDGE_LOST         ResCode = 101
-	RES_INVALID_STEAM_VR  ResCode = 102
-	RES_CLOUDXR_UNCONNECT ResCode = 103
-	RES_REPEATED_LOGIN    ResCode = 104
-	RES_REPEATED_RESERVE  ResCode = 105
-	RES_NO_RESERVE        ResCode = 106
+	RES_START_TIME_OUT    ResCode = 102
+	RES_INVALID_STEAM_VR  ResCode = 103
+	RES_CLOUDXR_UNCONNECT ResCode = 104
+	RES_REPEATED_LOGIN    ResCode = 105
+	RES_REPEATED_RESERVE  ResCode = 106
+	RES_NO_RESERVE        ResCode = 107
 
 	RES_ERROR_UNKNOWN         ResCode = 200
 	RES_ERROR_BAD_REQUEST     ResCode = 201
@@ -65,13 +66,15 @@ func RespInvalidPassword(ctx *gin.Context) {
 
 }
 
-func getStatusCode(err error) (ResCode, int) {
+func GetStatusCode(err error) (ResCode, int) {
 	//logrus.Error(err)
 	switch err {
 	case errordef.ErrNoResource:
 		return RES_NO_RESOURCE, http.StatusOK
 	case errordef.ErrEdgeLost:
 		return RES_EDGE_LOST, http.StatusOK
+	case errordef.ErrStartAppTimeout:
+		return RES_START_TIME_OUT, http.StatusOK
 	case errordef.ErrInvalidStramVR:
 		return RES_INVALID_STEAM_VR, http.StatusOK
 	case errordef.ErrCloudXRUnconect:
@@ -97,7 +100,7 @@ func getStatusCode(err error) (ResCode, int) {
 func RespError(ctx *gin.Context, err, advErr error) {
 
 	response := FillErrorBody(ctx, err)
-	resCode, httpCode := getStatusCode(err)
+	resCode, httpCode := GetStatusCode(err)
 	response.ResCode = resCode
 	ctxcache.CacheError(ctx, err)
 	ctxcache.CacheAdvError(ctx, advErr)

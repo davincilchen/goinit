@@ -2,13 +2,47 @@ package http
 
 // import "xr-central/pkg/models"
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"xr-central/pkg/app/ctxcache"
 	errDef "xr-central/pkg/app/errordef"
 	httph "xr-central/pkg/httphelper"
 )
 
+type ResCode int
+
+const (
+	RES_OK                ResCode = 0
+	RES_START_TIME_OUT    ResCode = 1
+	RES_CLOUDXR_NOT_RUN   ResCode = 2
+	RES_CLOUDXR_UNCONNECT ResCode = 3
+)
+
+type ResError struct {
+	Title string `json:"title"`
+	Desc  string `json:"description"`
+}
+
+type ResBody struct {
+	ResCode ResCode `json:"resp_code"`
+	// Error   *ResError   `json:"error,omitempty"`
+	// Data    interface{} `json:"data,omitempty"`
+}
+
+func ResCodeToErr(code ResCode) error {
+	switch code {
+	case RES_START_TIME_OUT:
+		return errDef.ErrStartAppTimeout
+	case RES_CLOUDXR_NOT_RUN:
+		return errDef.ErrInvalidStramVR
+	case RES_CLOUDXR_UNCONNECT:
+		return errDef.ErrCloudXRUnconect
+	}
+
+	return nil
+}
 func NewEdge(URL string) *Edge {
 	return &Edge{
 		URL: URL,
@@ -24,8 +58,24 @@ func (t *Edge) SetURL(url string) {
 	t.URL = url
 }
 
+func (t *Edge) parseRespBody(res *http.Response, out interface{}) error {
+
+	defer res.Body.Close() //20190815
+	body, bodyErr := ioutil.ReadAll(res.Body)
+	if bodyErr != nil {
+		return fmt.Errorf("ParseRespBody body ReadAll error : %s,", bodyErr)
+	}
+
+	err := json.Unmarshal(body, &out)
+	if err != nil {
+		return fmt.Errorf("ParseRespBody body Unmarshal error : %s,", err)
+	}
+	return nil
+
+}
+
 func (t *Edge) Reserve(ctx ctxcache.Context, appID int) error {
-	url := fmt.Sprintf("http://%s/reserve/app/%d", t.URL, appID)
+	url := fmt.Sprintf("http://%s/reserve/apps/%d", t.URL, appID)
 	resp, err := httph.Post(url)
 	if err != nil {
 		fmt.Println(err)
@@ -39,12 +89,30 @@ func (t *Edge) Reserve(ctx ctxcache.Context, appID int) error {
 		return err
 	}
 
-	return nil
+	body := ResBody{}
+	err = t.parseRespBody(resp, body)
+	if err != nil {
+		return err
+	}
+	return ResCodeToErr(body.ResCode)
+
 }
 
 func (t *Edge) Release(ctx ctxcache.Context) error {
 	url := fmt.Sprintf("http://%s/reserve", t.URL)
-	_, err := httph.Delete(url)
+	resp, err := httph.Delete(url)
+
+	if err != nil {
+		fmt.Println(err)
+		ctx.CacheHttpError(err)
+		return errDef.ErrEdgeLost
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		err := fmt.Errorf("resp.StatusCode = %d", resp.StatusCode)
+		ctx.CacheHttpError(err)
+		return err
+	}
 	return err
 }
 
@@ -65,13 +133,43 @@ func (t *Edge) Status(ctx ctxcache.Context) error {
 
 func (t *Edge) StartAPP(ctx ctxcache.Context, appID int) error {
 	url := fmt.Sprintf("http://%s/apps/%d/start_app", t.URL, appID)
-	_, err := httph.Post(url)
-	return err
+	resp, err := httph.Post(url)
+
+	if err != nil {
+		fmt.Println(err)
+		ctx.CacheHttpError(err)
+		return errDef.ErrEdgeLost
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		err := fmt.Errorf("resp.StatusCode = %d", resp.StatusCode)
+		ctx.CacheHttpError(err)
+		return err
+	}
+
+	body := ResBody{}
+	err = t.parseRespBody(resp, body)
+	if err != nil {
+		return err
+	}
+	return ResCodeToErr(body.ResCode)
 }
 
 func (t *Edge) StopAPP(ctx ctxcache.Context) error {
 	url := fmt.Sprintf("http://%s/stop_app", t.URL)
-	_, err := httph.Post(url)
+	resp, err := httph.Post(url)
+
+	if err != nil {
+		fmt.Println(err)
+		ctx.CacheHttpError(err)
+		return errDef.ErrEdgeLost
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		err := fmt.Errorf("resp.StatusCode = %d", resp.StatusCode)
+		ctx.CacheHttpError(err)
+		return err
+	}
 
 	return err
 	//return errDef.ErrEdgeLost

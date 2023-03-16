@@ -37,13 +37,18 @@ func NewReserve(ctx *gin.Context) { //TODO:
 	}
 	nCtx := ctxcache.NewContext(ctx)
 	ip, err := dev.NewReserve(nCtx, id)
-	if err != nil || ip == nil {
-		if err == errDef.ErrRepeatedReserve {
-			dlv.RespError(ctx, errDef.ErrRepeatedReserve, nil)
-		} else {
+	if err != nil {
+		code, _ := dlv.GetStatusCode(err)
+		if code == dlv.RES_ERROR_UNKNOWN {
 			dlv.RespError(ctx, errDef.ErrNoResource, err)
+			return
 		}
+		dlv.RespError(ctx, err, nil)
 		return
+	}
+
+	if ip == nil {
+		dlv.RespError(ctx, errDef.ErrNoResource, nil)
 	}
 
 	data := NewReserveResp{
