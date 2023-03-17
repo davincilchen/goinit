@@ -51,9 +51,25 @@ func (t *EdgeManager) addEdge(edge models.Edge) *Edge {
 	t.mux.Lock()
 	defer t.mux.Unlock()
 
+	edgeOld, ok := t.edgeMap[edge.ID]
+	if ok {
+		edgeOld.info.Online = true
+		return edgeOld
+	}
+
 	tmpEdge := NewEdge(edge)
-	manager.edgeMap[edge.ID] = tmpEdge
-	manager.edges = append(manager.edges, tmpEdge)
+	t.edgeMap[edge.ID] = tmpEdge
+	t.edges = append(manager.edges, tmpEdge)
+
+	// edgeOld, ok := manager.edgeMap[edge.ID]
+	// if ok {
+	// 	edgeOld.info.Online = true
+	// 	return edgeOld
+	// }
+
+	// tmpEdge := NewEdge(edge)
+	// manager.edgeMap[edge.ID] = tmpEdge
+	// manager.edges = append(manager.edges, tmpEdge)
 
 	return tmpEdge
 }
