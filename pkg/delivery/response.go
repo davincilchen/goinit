@@ -14,14 +14,16 @@ type ResCode int
 const (
 	RES_OK ResCode = 0
 
-	RES_NO_RESOURCE       ResCode = 100
-	RES_EDGE_LOST         ResCode = 101
-	RES_START_TIME_OUT    ResCode = 102
-	RES_INVALID_STEAM_VR  ResCode = 103
-	RES_CLOUDXR_UNCONNECT ResCode = 104
-	RES_REPEATED_LOGIN    ResCode = 105
-	RES_REPEATED_RESERVE  ResCode = 106
-	RES_NO_RESERVE        ResCode = 107
+	RES_NO_RESOURCE ResCode = 100
+	RES_EDGE_LOST   ResCode = 101
+
+	RES_REPEATED_LOGIN   ResCode = 120
+	RES_REPEATED_RESERVE ResCode = 121
+	RES_NO_RESERVE       ResCode = 122
+
+	RES_START_TIME_OUT    ResCode = 140
+	RES_INVALID_STEAM_VR  ResCode = 141
+	RES_CLOUDXR_UNCONNECT ResCode = 142
 
 	RES_ERROR_UNKNOWN         ResCode = 200
 	RES_ERROR_BAD_REQUEST     ResCode = 201
@@ -66,6 +68,22 @@ func RespInvalidPassword(ctx *gin.Context) {
 
 }
 
+func IsClientStatusCode(err error) bool {
+	switch err {
+	case errordef.ErrNotPlaying:
+		return true
+	case errordef.ErrAlreadyPlaying:
+		return true
+	case errordef.ErrAlreadyFree:
+		return true
+	case errordef.ErrProcessing:
+		return true
+
+	default:
+		return false
+	}
+}
+
 func GetStatusCode(err error) (ResCode, int) {
 	//logrus.Error(err)
 	switch err {
@@ -73,12 +91,6 @@ func GetStatusCode(err error) (ResCode, int) {
 		return RES_NO_RESOURCE, http.StatusOK
 	case errordef.ErrEdgeLost:
 		return RES_EDGE_LOST, http.StatusOK
-	case errordef.ErrStartAppTimeout:
-		return RES_START_TIME_OUT, http.StatusOK
-	case errordef.ErrInvalidStramVR:
-		return RES_INVALID_STEAM_VR, http.StatusOK
-	case errordef.ErrCloudXRUnconect:
-		return RES_CLOUDXR_UNCONNECT, http.StatusOK
 
 	case errordef.ErrRepeatedLogin:
 		return RES_REPEATED_LOGIN, http.StatusOK
@@ -87,12 +99,22 @@ func GetStatusCode(err error) (ResCode, int) {
 	case errordef.ErrDevNoReserve:
 		return RES_NO_RESERVE, http.StatusOK
 
+	case errordef.ErrStartAppTimeout:
+		return RES_START_TIME_OUT, http.StatusOK
+	case errordef.ErrInvalidStramVR:
+		return RES_INVALID_STEAM_VR, http.StatusOK
+	case errordef.ErrCloudXRUnconect:
+		return RES_CLOUDXR_UNCONNECT, http.StatusOK
+
 		//
 	case errordef.ErrUrlParamError:
 		return RES_ERROR_BAD_REQUEST, http.StatusNotFound
 		//
 
 	default:
+		if IsClientStatusCode(err) {
+			return RES_ERROR_UNKNOWN, http.StatusBadRequest
+		}
 		return RES_ERROR_UNKNOWN, http.StatusInternalServerError
 	}
 }
