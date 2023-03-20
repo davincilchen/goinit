@@ -90,7 +90,7 @@ func (t *Edge) Reserve(ctx ctxcache.Context, appID int) error {
 	}
 
 	body := ResBody{}
-	err = t.parseRespBody(resp, body)
+	err = t.parseRespBody(resp, &body) //TODO: 容易有錯如果沒加&
 	if err != nil {
 		return err
 	}
@@ -148,7 +148,7 @@ func (t *Edge) StartAPP(ctx ctxcache.Context, appID int) error {
 	}
 
 	body := ResBody{}
-	err = t.parseRespBody(resp, body)
+	err = t.parseRespBody(resp, &body) //TODO: 容易有錯如果沒加&
 	if err != nil {
 		return err
 	}
