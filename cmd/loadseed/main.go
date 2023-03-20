@@ -142,7 +142,7 @@ func loadSeed(path string) (*Seed, error) {
 			u.Name = u.Name + no
 			u.Account = u.Account + no
 			u.Password = u.Password + no
-			tmpSeed.Users = append(seed.Users, u)
+			tmpSeed.Users = append(tmpSeed.Users,u)
 		}
 	}
 
