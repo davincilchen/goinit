@@ -9,6 +9,7 @@ import (
 
 	// gcpLogging "cloud.google.com/go/logging"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 type APILog struct {
@@ -113,17 +114,21 @@ func logger(log APILog) {
 	// }
 
 	s := fmt.Sprintf("%#v", log)
-	fmt.Println(s)
+	logrus.Info(s)
+	//fmt.Println(s)
 
 	if log.SessionToken != nil {
 		s := fmt.Sprintf("SessionToken %#v", *log.SessionToken)
-		fmt.Println(s)
+		logrus.Info(s)
+		//fmt.Println(s)
 	}
 
 	//if log.DevData != nil { 無法檢查interface, 這裡可以不檢查
 	b, err := json.Marshal(log.DevData)
 	if err == nil {
-		fmt.Println("DevData:", string(b))
+		//fmt.Println("DevData:", string(b))
+		s := fmt.Sprintln("DevData:", string(b))
+		logrus.Info(s)
 	}
 	fmt.Println()
 	// gcp.stdLogger.Println(s)
