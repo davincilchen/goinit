@@ -23,10 +23,10 @@ const (
 
 type HttpEdge interface {
 	SetURL(url string)
-	Reserve(ctx ctxcache.Context, appID int) error
+	Reserve(ctx ctxcache.Context, appID uint) error
 	Release(ctx ctxcache.Context) error
 	Resume(ctx ctxcache.Context) error
-	StartAPP(ctx ctxcache.Context, appID int) error
+	StartAPP(ctx ctxcache.Context, appID uint) error
 	StopAPP(ctx ctxcache.Context) error
 	GetStatus(ctx ctxcache.Context) error
 }
@@ -59,7 +59,7 @@ func (t *Edge) GetURL() string {
 	return e.IP
 }
 
-func (t *Edge) Reserve(ctx ctxcache.Context, appID int) error {
+func (t *Edge) Reserve(ctx ctxcache.Context, appID uint) error {
 
 	//online由每次reg時確認,減少api時間
 	ok := t.updateStatusWhen(models.STATUS_FREE, models.STATUS_RESERVE_INIT)
@@ -165,7 +165,7 @@ func (t *Edge) CanStartAPP() (bool, error) {
 	return true, nil
 }
 
-func (t *Edge) StartAPP(ctx ctxcache.Context, appID int) error {
+func (t *Edge) StartAPP(ctx ctxcache.Context, appID uint) error {
 	ok, err := t.CanStartAPP()
 	if !ok {
 		return err

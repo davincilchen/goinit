@@ -118,7 +118,20 @@ func (t *Edge) SetAppsValid(edgeID uint, valid bool) error {
 	return ddb.Error
 }
 
-func (t *Edge) FindEdgesWithAppID(appID int) ([]models.EdgeApp, error) {
+func (t *Edge) FindEdgesWithEdgeID(edgeID uint) ([]models.EdgeApp, error) {
+	ddb := GetDB()
+	out := []models.EdgeApp{}
+
+	dbc := ddb.Where("edge_id = ?", edgeID).Find(&out)
+
+	if dbc.Error != nil {
+		return nil, dbc.Error
+	}
+	return out, nil
+
+}
+
+func (t *Edge) FindEdgesWithAppID(appID uint) ([]models.EdgeApp, error) {
 	ddb := GetDB()
 	out := []models.EdgeApp{}
 

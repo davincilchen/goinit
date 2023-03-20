@@ -72,7 +72,7 @@ type LoginDevice struct {
 	status    DevStatus
 
 	appMux sync.RWMutex
-	appID  int
+	appID  uint
 }
 
 func (t *LoginDevice) Logout(ctx ctxcache.Context) error {
@@ -85,7 +85,7 @@ func (t *LoginDevice) Logout(ctx ctxcache.Context) error {
 	return nil
 }
 
-func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID int) (*string, error) {
+func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID uint) (*string, error) {
 	if t.User == nil {
 		return nil, errors.New("nil user for login device")
 	}
@@ -205,13 +205,13 @@ func (t *LoginDevice) GetEdgeInfo() *edgeUCase.EdgeInfoStatus {
 	return &e
 }
 
-func (t *LoginDevice) GetAppID() int {
+func (t *LoginDevice) GetAppID() uint {
 	t.appMux.RLock()
 	defer t.appMux.RUnlock()
 	return t.appID
 }
 
-func (t *LoginDevice) SetAppID(appID int) {
+func (t *LoginDevice) SetAppID(appID uint) {
 	t.appMux.Lock()
 	defer t.appMux.Unlock()
 	t.appID = appID

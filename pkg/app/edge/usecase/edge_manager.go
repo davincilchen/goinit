@@ -86,7 +86,28 @@ func (t *EdgeManager) getEdge(id uint) *Edge {
 	return e
 }
 
-func (t *EdgeManager) Reserve(ctx ctxcache.Context, appID int) (*Edge, error) {
+func (t *EdgeManager) findEdgeAppsWithEdgeID(edgeID uint) ([]models.EdgeApp, error) {
+
+	eRepo := repo.Edge{}
+	edge_app, err := eRepo.FindEdgesWithEdgeID(edgeID)
+
+	if err != nil {
+		return nil, err
+	}
+	return edge_app, nil
+}
+
+func (t *EdgeManager) findEdgeApp(appID uint) ([]models.EdgeApp, error) {
+	eRepo := repo.Edge{}
+	edge_app, err := eRepo.FindEdgesWithAppID(appID)
+
+	if err != nil {
+		return nil, err
+	}
+	return edge_app, nil
+}
+
+func (t *EdgeManager) Reserve(ctx ctxcache.Context, appID uint) (*Edge, error) {
 	elist, err := t.FindUnusedEdgesWithAppID(appID)
 	if err != nil {
 		return nil, err
@@ -110,7 +131,7 @@ func (t *EdgeManager) Reserve(ctx ctxcache.Context, appID int) (*Edge, error) {
 	return edge, nil
 }
 
-func (t *EdgeManager) FindUnusedEdgesWithAppID(appID int) ([]*Edge, error) {
+func (t *EdgeManager) FindUnusedEdgesWithAppID(appID uint) ([]*Edge, error) {
 
 	eapp, err := t.findEdgeApp(appID)
 
@@ -138,16 +159,6 @@ func (t *EdgeManager) FindUnusedEdgesWithAppID(appID int) ([]*Edge, error) {
 	}
 
 	return edges, nil
-}
-
-func (t *EdgeManager) findEdgeApp(appID int) ([]models.EdgeApp, error) {
-	eRepo := repo.Edge{}
-	edge_app, err := eRepo.FindEdgesWithAppID(appID)
-
-	if err != nil {
-		return nil, err
-	}
-	return edge_app, nil
 }
 
 func (t *EdgeManager) GetEdgeList() []EdgeInfoStatus {

@@ -30,13 +30,13 @@ func NewReserve(ctx *gin.Context) { //TODO:
 		return
 	}
 
-	id, err := strconv.Atoi(ctx.Param("id"))
+	id, err := strconv.Atoi(ctx.Param("id")) //TODO: uint
 	if err != nil {
 		dlv.RespError(ctx, errDef.ErrUrlParamError, nil)
 		return
 	}
 	nCtx := ctxcache.NewContext(ctx)
-	ip, err := dev.NewReserve(nCtx, id)
+	ip, err := dev.NewReserve(nCtx, uint(id))
 	if err != nil {
 		code, _ := dlv.GetStatusCode(err)
 		if code == dlv.RES_ERROR_UNKNOWN {

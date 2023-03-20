@@ -74,7 +74,7 @@ func (t *Edge) parseRespBody(res *http.Response, out interface{}) error {
 
 }
 
-func (t *Edge) Reserve(ctx ctxcache.Context, appID int) error {
+func (t *Edge) Reserve(ctx ctxcache.Context, appID uint) error {
 	url := fmt.Sprintf("http://%s/reserve/apps/%d", t.URL, appID)
 	resp, err := httph.Post(url)
 	if err != nil {
@@ -131,7 +131,7 @@ func (t *Edge) Status(ctx ctxcache.Context) error {
 	return nil
 }
 
-func (t *Edge) StartAPP(ctx ctxcache.Context, appID int) error {
+func (t *Edge) StartAPP(ctx ctxcache.Context, appID uint) error {
 	url := fmt.Sprintf("http://%s/apps/%d/start_app", t.URL, appID)
 	resp, err := httph.Post(url)
 
