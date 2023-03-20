@@ -52,7 +52,7 @@ func NewReserve(ctx *gin.Context) { //TODO:
 	}
 
 	data := NewReserveResp{
-		GameServerIP: *ip,
+		GameServerIP: *ip, //TODO: !!!
 	}
 
 	response := dlv.ResBody{}
@@ -301,6 +301,43 @@ func EdgeReg(ctx *gin.Context) { //TODO: 處理掉刪除的部分 多一個欄�
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK
 	//response.Data = data
+
+	ctx.JSON(http.StatusOK, response)
+
+}
+
+type AppInfo struct {
+	ID uint `json:"id"`
+}
+
+type EdgeAppListResp struct {
+	Apps []AppInfo `json:"apps"`
+}
+
+func EdgeAppList(ctx *gin.Context) { //TODO: 處理掉刪除的部分 多一個欄位叫valid
+
+	id, err := strconv.Atoi(ctx.Param("id")) //TODO: uint
+	if err != nil {
+		dlv.RespError(ctx, errDef.ErrUrlParamError, nil)
+		return
+	}
+	manager := edgeUCase.GetEdgeManager()
+	apps, err := manager.GetAppsOfEdge(uint(id))
+	if err != nil {
+		dlv.RespError(ctx, err, nil)
+		return
+	}
+
+	data := EdgeAppListResp{}
+	for _, v := range apps {
+		tmp := AppInfo{
+			ID: v.ID,
+		}
+		data.Apps = append(data.Apps, tmp)
+	}
+	response := dlv.ResBody{}
+	response.ResCode = dlv.RES_OK
+	response.Data = data
 
 	ctx.JSON(http.StatusOK, response)
 
