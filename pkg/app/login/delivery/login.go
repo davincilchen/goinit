@@ -22,7 +22,7 @@ type UserLoginParams struct {
 }
 
 type DevInfo struct {
-	Type *int
+	Type *int `json:"device_type"`
 	UUID *string
 }
 
@@ -54,7 +54,7 @@ func DevLogin(ctx *gin.Context) {
 	}
 
 	if req.DevInfo.Type == nil || req.DevInfo.UUID == nil {
-		e := fmt.Errorf("nil Type or UUID")
+		e := fmt.Errorf("nil device_type or UUID")
 		dlv.RespBadRequest(ctx, e)
 		return
 	}
