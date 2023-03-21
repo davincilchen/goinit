@@ -49,6 +49,7 @@ func NewReserve(ctx *gin.Context) { //TODO:
 
 	if ip == nil {
 		dlv.RespError(ctx, errDef.ErrNoResource, nil)
+		return
 	}
 
 	data := NewReserveResp{
