@@ -12,7 +12,7 @@ import (
 type EdgeManager struct {
 	//TODO: lock
 	edges   []*Edge
-	edgeMap map[uint]*Edge
+	edgeMap map[uint]*Edge //edge.ID
 	mux     sync.Mutex
 }
 

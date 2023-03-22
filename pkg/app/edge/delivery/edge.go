@@ -153,6 +153,7 @@ func StopApp(ctx *gin.Context) {
 // =========================================== //
 
 type EdgeInfo struct {
+	ID     uint                `json:"id"`
 	IP     string              `json:"ip"`
 	Port   int                 `json:"port"`
 	Status models.EdgeStatus   `json:"status"`
@@ -206,6 +207,7 @@ func EdgeStatus(ctx *gin.Context) {
 	data := EdgeStatusResp{}
 	if edge != nil {
 		tmp := EdgeInfo{
+			ID:     edge.ID,
 			IP:     edge.IP,
 			Port:   edge.Port,
 			Status: edge.Status,
@@ -236,6 +238,7 @@ func EdgeList(ctx *gin.Context) {
 
 	for _, v := range ret {
 		tmp := EdgeInfo{
+			ID:     v.ID,
 			IP:     v.IP,
 			Port:   v.Port,
 			Status: v.Status,
