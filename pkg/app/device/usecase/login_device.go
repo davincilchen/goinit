@@ -61,6 +61,9 @@ func (t *DeviceLoginProc) DevLoginSucess(ctx ctxcache.Context, user *userUCase.L
 }
 
 // ============================================= //
+type QLoginDeviceRet struct {
+}
+
 type LoginDevice struct {
 	edgeMux sync.RWMutex
 	//每次呼叫edge的ctx會不同,不能在new的時候跟著綁
@@ -75,12 +78,20 @@ type LoginDevice struct {
 	appID  uint
 }
 
+func (t *LoginDevice) GetDeviceManager() *DeviceManager {
+	return GetDeviceManager()
+}
+
+func (t *LoginDevice) GetEdgeManager() *edgeUCase.EdgeManager {
+	return edgeUCase.GetEdgeManager()
+}
+
 func (t *LoginDevice) Logout(ctx ctxcache.Context) error {
 	if t.User == nil {
 		return errors.New("nil user for login device")
 	}
 	_ = t.ReleaseReserve(ctx)
-	manager := GetDeviceManager()
+	manager := t.GetDeviceManager()
 	manager.Delete(t)
 	return nil
 }
@@ -93,12 +104,14 @@ func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID uint) (*string, err
 		return nil, errDef.ErrRepeatedReserve
 	}
 
-	manager := edgeUCase.GetEdgeManager()
-	edge, err := manager.Reserve(ctx, appID)
+	edgeManager := t.GetEdgeManager()
+	edge, err := edgeManager.Reserve(ctx, appID)
 	if err != nil {
 		return nil, err
 	}
 
+	devM := t.GetDeviceManager()
+	devM.reserveFor(edge.GetInfo().ID, t.Device.UUID)
 	t.AttachEdge(edge)
 	e := edge.GetInfo()
 	t.SetAppID(appID)
@@ -114,6 +127,8 @@ func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context) error {
 	if edge == nil {
 		return errDef.ErrDevNoReserve
 	}
+	devM := t.GetDeviceManager()
+	devM.releseReserve(edge.GetInfo().ID)
 	edge.ReleaseReserve(ctx)
 	t.DetachEdge()
 

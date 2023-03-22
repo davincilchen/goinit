@@ -6,9 +6,10 @@ import (
 )
 
 type DeviceManager struct {
-	deviceUUIDMap  map[string]*LoginDevice //KEY: UUID
-	deviceTokenMap map[string]*LoginDevice //KEY: Token
-	mux            sync.RWMutex
+	deviceUUIDMap      map[string]*LoginDevice //KEY: UUID
+	deviceTokenMap     map[string]*LoginDevice //KEY: Token
+	edgeIDtoDevUUIDMap map[uint]string         //KEY: edgeID
+	mux                sync.RWMutex
 }
 
 var deviceManager *DeviceManager
@@ -17,7 +18,7 @@ func newDeviceManager() *DeviceManager {
 	d := &DeviceManager{}
 	d.deviceUUIDMap = make(map[string]*LoginDevice)
 	d.deviceTokenMap = make(map[string]*LoginDevice)
-
+	d.edgeIDtoDevUUIDMap = make(map[uint]string)
 	return d
 }
 
@@ -44,6 +45,23 @@ func (t *DeviceManager) Add(dev *LoginDevice) error {
 
 	t.deviceUUIDMap[dev.Device.UUID] = dev
 	t.deviceTokenMap[dev.User.Token] = dev
+	return nil
+}
+
+func (t *DeviceManager) reserveFor(edgeID uint, devUUID string) error {
+	t.mux.Lock()
+	defer t.mux.Unlock()
+
+	t.edgeIDtoDevUUIDMap[edgeID] = devUUID
+
+	return nil
+}
+
+func (t *DeviceManager) releseReserve(edgeID uint) error {
+	t.mux.Lock()
+	defer t.mux.Unlock()
+
+	delete(t.edgeIDtoDevUUIDMap, edgeID)
 	return nil
 }
 
@@ -78,4 +96,8 @@ func (t *DeviceManager) Delete(dev *LoginDevice) {
 
 	delete(t.deviceTokenMap, dev.User.Token)
 	delete(t.deviceUUIDMap, dev.Device.UUID)
+
+	if dev.edge != nil {
+		delete(t.edgeIDtoDevUUIDMap, dev.edge.GetInfo().ID)
+	}
 }
