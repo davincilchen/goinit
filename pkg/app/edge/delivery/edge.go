@@ -152,9 +152,9 @@ func StopApp(ctx *gin.Context) {
 
 // =========================================== //
 type UserInfo struct {
-	ID      uint   `json:"id"`
-	Name    string `json:"name"`
-	Account string `json:"account"`
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+	//Account string `json:"account"`
 }
 
 type DeviceInfo struct {
@@ -212,9 +212,8 @@ func WarpDeviceInfo(in *devUCase.QLoginDeviceRet) *DeviceInfo {
 		ID: devInfo.ID,
 		IP: in.IP,
 		User: UserInfo{
-			ID:      userInfo.ID,
-			Name:    userInfo.Name,
-			Account: userInfo.Account,
+			ID:   userInfo.ID,
+			Name: userInfo.Name,
 		},
 	}
 
