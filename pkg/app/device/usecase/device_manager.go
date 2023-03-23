@@ -116,10 +116,7 @@ func (t *DeviceManager) GetDevInfoWithEdge(edgeID uint) *QLoginDeviceRet {
 		return nil
 	}
 
-	return &QLoginDeviceRet{
-		User:   dev.user,
-		Device: dev.device,
-		appID:  dev.appID,
-	}
+	ret := dev.GetDeviceInfo()
+	return &ret
 
 }

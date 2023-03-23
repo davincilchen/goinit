@@ -159,7 +159,7 @@ type UserInfo struct {
 
 type DeviceInfo struct {
 	ID   uint     `json:"id"`
-	IP   uint     `json:"ip"`
+	IP   string   `json:"ip"`
 	User UserInfo `json:"user"`
 }
 
@@ -201,6 +201,25 @@ func edgeStatusParam(ctx *gin.Context) (*EdgeStatusReq, error) {
 	return &param, nil
 }
 
+func WarpDeviceInfo(in *devUCase.QLoginDeviceRet) *DeviceInfo {
+
+	if in == nil {
+		return nil
+	}
+	devInfo := in.Device
+	userInfo := in.User
+	return &DeviceInfo{
+		ID: devInfo.ID,
+		IP: in.IP,
+		User: UserInfo{
+			ID:      userInfo.ID,
+			Name:    userInfo.Name,
+			Account: userInfo.Account,
+		},
+	}
+
+}
+
 func EdgeStatus(ctx *gin.Context) {
 	dev := devUCase.GetCacheDevice(ctx)
 	if dev == nil {
@@ -218,6 +237,8 @@ func EdgeStatus(ctx *gin.Context) {
 
 	// .. //
 	edge := dev.GetEdgeInfo()
+	devInfo := dev.GetDeviceInfo()
+
 	data := EdgeStatusResp{}
 	if edge != nil {
 		tmp := EdgeInfo{
@@ -228,7 +249,9 @@ func EdgeStatus(ctx *gin.Context) {
 			Online: edge.Online,
 			ActRet: edge.ActRet,
 			AppID:  dev.GetAppID(),
+			Device: WarpDeviceInfo(&devInfo),
 		}
+
 		data.Edge = &tmp
 
 	}
@@ -266,20 +289,7 @@ func EdgeList(ctx *gin.Context) {
 		dev := devM.GetDevInfoWithEdge(v.ID)
 		if dev != nil {
 			tmp.AppID = dev.GetAppID()
-			tmp.Device = &DeviceInfo{
-				ID: dev.Device.GetID(),
-				//tmp.Device.IP
-				User: UserInfo{
-					ID:      dev.User.ID,
-					Name:    dev.User.Name,
-					Account: dev.User.Account,
-				},
-			}
-			// tmp.Device.ID = dev.Device.GetID()
-
-			// tmp.Device.User.ID = dev.User.ID
-			// tmp.Device.User.Name = dev.User.Name
-			// tmp.Device.User.Account = dev.User.Account
+			tmp.Device = WarpDeviceInfo(dev)
 		}
 		data.Edges = append(data.Edges, tmp)
 	}

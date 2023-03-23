@@ -27,11 +27,13 @@ const (
 var deviceRepo repo.Device
 
 type DeviceLoginProc struct {
+	IP     string
 	Device models.Device
 }
 
-func NewDeviceLoginProc(Type int, UUID string) *DeviceLoginProc {
+func NewDeviceLoginProc(Type int, UUID, IP string) *DeviceLoginProc {
 	d := &DeviceLoginProc{
+		IP: IP,
 		Device: models.Device{
 			Type: Type,
 			UUID: UUID,
@@ -50,6 +52,7 @@ func (t *DeviceLoginProc) DevLoginSucess(ctx ctxcache.Context, user userUCase.Lo
 	}
 
 	loginDev := LoginDevice{
+		ip:     t.IP,
 		device: *device,
 		user:   user,
 	}
@@ -64,6 +67,7 @@ type QLoginDeviceRet struct {
 	Device models.Device
 	User   userUCase.LoginUser
 	appID  uint
+	IP     string
 }
 
 func (t *QLoginDeviceRet) GetAppID() *uint {
@@ -85,6 +89,7 @@ type LoginDevice struct {
 
 	appMux sync.RWMutex
 	appID  uint
+	ip     string
 }
 
 func (t *LoginDevice) GetDeviceManager() *DeviceManager {
@@ -226,6 +231,15 @@ func (t *LoginDevice) GetEdgeInfo() *edgeUCase.EdgeInfoStatus {
 
 	e := t.edge.GetInfo()
 	return &e
+}
+
+func (t *LoginDevice) GetDeviceInfo() QLoginDeviceRet {
+	return QLoginDeviceRet{
+		User:   t.user,
+		Device: t.device,
+		appID:  t.appID,
+		IP:     t.ip,
+	}
 }
 
 func (t *LoginDevice) GetAppID() *uint {
