@@ -152,9 +152,9 @@ func (t *EdgeManager) FindUnusedEdgesWithAppID(appID uint) ([]*Edge, error) {
 		}
 
 		info := e.GetInfo()
-		if !info.Online {
-			continue
-		}
+		// if !info.Online { //try it
+		// 	continue
+		// }
 		if info.Status != models.STATUS_FREE {
 			continue
 		}
