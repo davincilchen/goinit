@@ -34,17 +34,17 @@ func (t *DeviceManager) Add(dev *LoginDevice) error {
 	t.mux.Lock()
 	defer t.mux.Unlock()
 
-	_, ok := t.deviceUUIDMap[dev.Device.UUID]
+	_, ok := t.deviceUUIDMap[dev.device.UUID]
 	if ok {
 		return errDef.ErrRepeatedLogin //請先登出
 	}
-	_, ok = t.deviceTokenMap[dev.User.Token]
+	_, ok = t.deviceTokenMap[dev.user.Token]
 	if ok {
 		return errDef.ErrRepeatedLogin //請先登出
 	}
 
-	t.deviceUUIDMap[dev.Device.UUID] = dev
-	t.deviceTokenMap[dev.User.Token] = dev
+	t.deviceUUIDMap[dev.device.UUID] = dev
+	t.deviceTokenMap[dev.user.Token] = dev
 	return nil
 }
 
@@ -94,10 +94,32 @@ func (t *DeviceManager) Delete(dev *LoginDevice) {
 	t.mux.Lock()
 	defer t.mux.Unlock()
 
-	delete(t.deviceTokenMap, dev.User.Token)
-	delete(t.deviceUUIDMap, dev.Device.UUID)
+	delete(t.deviceTokenMap, dev.user.Token)
+	delete(t.deviceUUIDMap, dev.device.UUID)
 
 	if dev.edge != nil {
 		delete(t.edgeIDtoDevUUIDMap, dev.edge.GetInfo().ID)
 	}
+}
+
+func (t *DeviceManager) GetDevInfoWithEdge(edgeID uint) *QLoginDeviceRet {
+	t.mux.Lock()
+	defer t.mux.Unlock()
+
+	uuid, ok := t.edgeIDtoDevUUIDMap[edgeID]
+	if !ok {
+		return nil
+	}
+
+	dev, ok := t.deviceUUIDMap[uuid]
+	if !ok {
+		return nil
+	}
+
+	return &QLoginDeviceRet{
+		User:   dev.user,
+		Device: dev.device,
+		appID:  dev.appID,
+	}
+
 }

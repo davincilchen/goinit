@@ -14,7 +14,7 @@ import (
 	dlv "xr-central/pkg/delivery"
 )
 
-type loginSuccess func(ctxcache.Context, *userUCase.LoginUser) error
+type loginSuccess func(ctxcache.Context, userUCase.LoginUser) error
 
 type UserLoginParams struct {
 	Account  *string
@@ -89,7 +89,7 @@ func (t *LoginController) Do() {
 		return
 	}
 
-	err := t.fnSuccess(ctxcache.NewContext(ctx), loginUser)
+	err := t.fnSuccess(ctxcache.NewContext(ctx), *loginUser)
 
 	if err != nil {
 		dlv.RespError(ctx, err, nil) //TODO:
@@ -149,8 +149,7 @@ func Login(ctx *gin.Context) {
 
 }
 
-func UserLoginSucess(ctx ctxcache.Context, user *userUCase.LoginUser) error {
-
+func UserLoginSucess(ctx ctxcache.Context, user userUCase.LoginUser) error {
 	return nil
 }
 

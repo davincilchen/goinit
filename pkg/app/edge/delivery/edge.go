@@ -151,6 +151,17 @@ func StopApp(ctx *gin.Context) {
 }
 
 // =========================================== //
+type UserInfo struct {
+	ID      uint   `json:"id"`
+	Name    string `json:"name"`
+	Account string `json:"account"`
+}
+
+type DeviceInfo struct {
+	ID   uint     `json:"id"`
+	IP   uint     `json:"ip"`
+	User UserInfo `json:"user"`
+}
 
 type EdgeInfo struct {
 	ID     uint                `json:"id"`
@@ -159,6 +170,9 @@ type EdgeInfo struct {
 	Status models.EdgeStatus   `json:"status"`
 	Online bool                `json:"online"`
 	ActRet edgeUCase.ActionRet `json:"last_act_ret"`
+
+	Device *DeviceInfo `json:"device"`
+	AppID  *uint       `json:"app_id"`
 }
 
 type EdgeStatusReq struct {
@@ -213,8 +227,10 @@ func EdgeStatus(ctx *gin.Context) {
 			Status: edge.Status,
 			Online: edge.Online,
 			ActRet: edge.ActRet,
+			AppID:  dev.GetAppID(),
 		}
 		data.Edge = &tmp
+
 	}
 
 	response := dlv.ResBody{}
@@ -231,8 +247,9 @@ type EdgeListResp struct {
 }
 
 func EdgeList(ctx *gin.Context) {
-	manager := edgeUCase.GetEdgeManager()
-	ret := manager.GetEdgeList()
+	edgeM := edgeUCase.GetEdgeManager()
+	devM := devUCase.GetDeviceManager()
+	ret := edgeM.GetEdgeList()
 
 	data := EdgeListResp{}
 
@@ -244,6 +261,25 @@ func EdgeList(ctx *gin.Context) {
 			Status: v.Status,
 			Online: v.Online,
 			ActRet: v.ActRet,
+		}
+
+		dev := devM.GetDevInfoWithEdge(v.ID)
+		if dev != nil {
+			tmp.AppID = dev.GetAppID()
+			tmp.Device = &DeviceInfo{
+				ID: dev.Device.GetID(),
+				//tmp.Device.IP
+				User: UserInfo{
+					ID:      dev.User.ID,
+					Name:    dev.User.Name,
+					Account: dev.User.Account,
+				},
+			}
+			// tmp.Device.ID = dev.Device.GetID()
+
+			// tmp.Device.User.ID = dev.User.ID
+			// tmp.Device.User.Name = dev.User.Name
+			// tmp.Device.User.Account = dev.User.Account
 		}
 		data.Edges = append(data.Edges, tmp)
 	}
