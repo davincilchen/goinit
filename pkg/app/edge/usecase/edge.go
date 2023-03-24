@@ -73,12 +73,13 @@ func (t *Edge) Reserve(ctx ctxcache.Context, appID uint) error {
 	actRet := ACTION_RET_NORMAL
 	var online *bool
 	if err != nil {
+		status = models.STATUS_FREE //reset free for next try
 		if err == errDef.ErrEdgeLost {
 			tmp := false
 			online = &tmp
 		} else {
 			actRet = ACTION_RET_RESERVE_FAILD
-			status = models.STATUS_FREE
+			//status = models.STATUS_FREE
 			//status = models.STATUS_FAIL
 		}
 	}
@@ -207,7 +208,7 @@ func (t *Edge) StopAPP(ctx ctxcache.Context) error {
 			online = false
 		} else {
 			actRet = ACTION_RET_STOPAPP_FAILD
-			status = models.STATUS_PLAYING
+			status = models.STATUS_PLAYING //TODO:
 			//status = models.STATUS_FAIL
 		}
 	}
