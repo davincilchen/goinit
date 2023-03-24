@@ -2,7 +2,10 @@ package usecase
 
 import (
 	"sync"
+	"time"
 	errDef "xr-central/pkg/app/errordef"
+
+	cache "github.com/patrickmn/go-cache"
 )
 
 type DeviceManager struct {
@@ -10,9 +13,12 @@ type DeviceManager struct {
 	deviceTokenMap     map[string]*LoginDevice //KEY: Token
 	edgeIDtoDevUUIDMap map[uint]string         //KEY: edgeID
 	mux                sync.RWMutex
+
+	uuidCache *cache.Cache
 }
 
 var deviceManager *DeviceManager
+var dafaultKeepAliveInterval time.Duration = 5 * time.Minute
 
 func newDeviceManager() *DeviceManager {
 	d := &DeviceManager{}
@@ -25,6 +31,9 @@ func newDeviceManager() *DeviceManager {
 func GetDeviceManager() *DeviceManager {
 	if deviceManager == nil {
 		deviceManager = newDeviceManager()
+		deviceManager.uuidCache = cache.New(dafaultKeepAliveInterval,
+			10*time.Minute)
+
 	}
 	return deviceManager
 }
@@ -32,7 +41,10 @@ func GetDeviceManager() *DeviceManager {
 func (t *DeviceManager) Add(dev *LoginDevice) error {
 
 	t.mux.Lock()
-	defer t.mux.Unlock()
+	defer func() {
+		t.mux.Unlock()
+		t.uuidCache.Set(dev.device.UUID, dev.device.UUID, cache.DefaultExpiration)
+	}()
 
 	_, ok := t.deviceUUIDMap[dev.device.UUID]
 	if ok {
@@ -46,6 +58,10 @@ func (t *DeviceManager) Add(dev *LoginDevice) error {
 	t.deviceUUIDMap[dev.device.UUID] = dev
 	t.deviceTokenMap[dev.user.Token] = dev
 	return nil
+}
+
+func (t *DeviceManager) Alive(uuid string) {
+	t.uuidCache.Set(uuid, uuid, cache.DefaultExpiration)
 }
 
 func (t *DeviceManager) reserveFor(edgeID uint, devUUID string) error {
