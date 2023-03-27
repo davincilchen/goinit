@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"sync"
 	"time"
+	"xr-central/pkg/app/ctxcache"
+
 	errDef "xr-central/pkg/app/errordef"
 
 	cache "github.com/patrickmn/go-cache"
@@ -92,6 +94,8 @@ func (t *DeviceManager) reserveTimeout(uuid string, value interface{}) {
 			edgeID = edge.ID
 			edgeIP = edge.IP
 		}
+		ctx := ctxcache.NewContextLogger("ReserveTimeout")
+		dev.ReleaseReserve(ctx)
 	}
 	fmt.Println(time.Now(), " [ReserveTimeout] edge_id:", edgeID,
 		",IP:", edgeIP,
