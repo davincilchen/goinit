@@ -58,7 +58,7 @@ func (t *DeviceLoginProc) DevLoginSucess(ctx ctxcache.Context, user userUCase.Lo
 	}
 
 	manager := GetDeviceManager()
-	return manager.Add(&loginDev)
+	return manager.Add(ctx, &loginDev)
 
 }
 

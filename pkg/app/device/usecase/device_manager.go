@@ -23,7 +23,7 @@ type DeviceManager struct {
 var deviceManager *DeviceManager
 
 var dafaultKeepAliveInterval time.Duration = 5 * time.Minute
-var dafaultCleanAliveInterval time.Duration = 5 * time.Second
+var dafaultCleanAliveInterval time.Duration = 5 * time.Minute
 
 //var dafaultKeepAliveInterval time.Duration = 1 * time.Minute
 //var dafaultCleanAliveInterval time.Duration = 1 * time.Second
@@ -50,23 +50,35 @@ func GetDeviceManager() *DeviceManager {
 	return deviceManager
 }
 
-func (t *DeviceManager) Add(dev *LoginDevice) error {
+func (t *DeviceManager) Add(ctx ctxcache.Context, dev *LoginDevice) error {
+
+	var oldDev *LoginDevice
 
 	t.mux.Lock()
-	defer t.mux.Unlock()
+	defer func() {
+		t.mux.Unlock()
+		if oldDev != nil {
+			oldDev.Logout(ctx)
+		}
+
+		//release完 再加
+		t.mux.Lock()
+		t.deviceUUIDMap[dev.device.UUID] = dev
+		t.deviceTokenMap[dev.user.Token] = dev
+		t.mux.Unlock()
+	}()
 
 	_, ok := t.deviceTokenMap[dev.user.Token]
 	if ok {
 		return errDef.ErrRepeatedLogin //請先登出
 	}
 
-	_, ok = t.deviceUUIDMap[dev.device.UUID]
+	tmpDev, ok := t.deviceUUIDMap[dev.device.UUID]
 	if ok {
-		return errDef.ErrRepeatedLogin //請先登出
+		oldDev = tmpDev
+		//return errDef.ErrRepeatedLogin //請先登出
 	}
 
-	t.deviceUUIDMap[dev.device.UUID] = dev
-	t.deviceTokenMap[dev.user.Token] = dev
 	return nil
 }
 
