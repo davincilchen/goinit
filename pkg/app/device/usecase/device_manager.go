@@ -22,14 +22,14 @@ type DeviceManager struct {
 
 var deviceManager *DeviceManager
 
-//var dafaultKeepAliveInterval time.Duration = 5 * time.Minute
-//var dafaultCleanAliveInterval time.Duration = 5 * time.Second
+var dafaultKeepAliveInterval time.Duration = 5 * time.Minute
+var dafaultCleanAliveInterval time.Duration = 5 * time.Second
 
-// var dafaultKeepAliveInterval time.Duration = 1 * time.Minute
-// var dafaultCleanAliveInterval time.Duration = 1 * time.Second
+//var dafaultKeepAliveInterval time.Duration = 1 * time.Minute
+//var dafaultCleanAliveInterval time.Duration = 1 * time.Second
 
-var dafaultKeepAliveInterval time.Duration = 10 * time.Second
-var dafaultCleanAliveInterval time.Duration = 11 * time.Second
+// var dafaultKeepAliveInterval time.Duration = 10 * time.Second
+// var dafaultCleanAliveInterval time.Duration = 11 * time.Second
 
 func newDeviceManager() *DeviceManager {
 	d := &DeviceManager{}
