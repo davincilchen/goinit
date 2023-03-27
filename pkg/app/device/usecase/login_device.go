@@ -138,7 +138,7 @@ func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context) error {
 		return errDef.ErrDevNoReserve
 	}
 	devM := t.GetDeviceManager()
-	devM.releseReserve(edge.GetInfo().ID)
+	devM.releseReserve(edge.GetInfo().ID, t.device.UUID)
 	edge.ReleaseReserve(ctx)
 	t.DetachEdge()
 

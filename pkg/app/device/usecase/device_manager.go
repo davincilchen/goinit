@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"fmt"
 	"sync"
 	"time"
 	errDef "xr-central/pkg/app/errordef"
@@ -18,21 +19,30 @@ type DeviceManager struct {
 }
 
 var deviceManager *DeviceManager
-var dafaultKeepAliveInterval time.Duration = 5 * time.Minute
+
+//var dafaultKeepAliveInterval time.Duration = 5 * time.Minute
+//var dafaultCleanAliveInterval time.Duration = 5 * time.Second
+
+// var dafaultKeepAliveInterval time.Duration = 1 * time.Minute
+// var dafaultCleanAliveInterval time.Duration = 1 * time.Second
+
+var dafaultKeepAliveInterval time.Duration = 10 * time.Second
+var dafaultCleanAliveInterval time.Duration = 11 * time.Second
 
 func newDeviceManager() *DeviceManager {
 	d := &DeviceManager{}
 	d.deviceUUIDMap = make(map[string]*LoginDevice)
 	d.deviceTokenMap = make(map[string]*LoginDevice)
 	d.edgeIDtoDevUUIDMap = make(map[uint]string)
+	d.uuidCache = cache.New(dafaultKeepAliveInterval,
+		dafaultCleanAliveInterval)
+	d.uuidCache.OnEvicted(d.reserveTimeout)
 	return d
 }
 
 func GetDeviceManager() *DeviceManager {
 	if deviceManager == nil {
 		deviceManager = newDeviceManager()
-		deviceManager.uuidCache = cache.New(dafaultKeepAliveInterval,
-			10*time.Minute)
 
 	}
 	return deviceManager
@@ -41,16 +51,14 @@ func GetDeviceManager() *DeviceManager {
 func (t *DeviceManager) Add(dev *LoginDevice) error {
 
 	t.mux.Lock()
-	defer func() {
-		t.mux.Unlock()
-		t.uuidCache.Set(dev.device.UUID, dev.device.UUID, cache.DefaultExpiration)
-	}()
+	defer t.mux.Unlock()
 
-	_, ok := t.deviceUUIDMap[dev.device.UUID]
+	_, ok := t.deviceTokenMap[dev.user.Token]
 	if ok {
 		return errDef.ErrRepeatedLogin //請先登出
 	}
-	_, ok = t.deviceTokenMap[dev.user.Token]
+
+	_, ok = t.deviceUUIDMap[dev.device.UUID]
 	if ok {
 		return errDef.ErrRepeatedLogin //請先登出
 	}
@@ -61,19 +69,44 @@ func (t *DeviceManager) Add(dev *LoginDevice) error {
 }
 
 func (t *DeviceManager) Alive(uuid string) {
+	_, ok := t.uuidCache.Get(uuid)
+	if !ok {
+		return
+	}
 	t.uuidCache.Set(uuid, uuid, cache.DefaultExpiration)
 }
 
+func (t *DeviceManager) reserveTimeout(uuid string, value interface{}) {
+
+	edgeID := uint(0)
+	t.mux.Lock()
+	dev, ok := t.deviceUUIDMap[uuid]
+	t.mux.Unlock()
+
+	if ok && dev != nil {
+		edge := dev.GetEdgeInfo()
+		if edge != nil {
+			edgeID = edge.ID
+		}
+	}
+	fmt.Println(time.Now(), " ReserveTimeout: edge id: ", edgeID, ", ", uuid)
+}
+
 func (t *DeviceManager) reserveFor(edgeID uint, devUUID string) error {
+
+	t.uuidCache.Set(devUUID, devUUID, cache.DefaultExpiration)
+
 	t.mux.Lock()
 	defer t.mux.Unlock()
-
 	t.edgeIDtoDevUUIDMap[edgeID] = devUUID
 
 	return nil
 }
 
-func (t *DeviceManager) releseReserve(edgeID uint) error {
+func (t *DeviceManager) releseReserve(edgeID uint, uuid string) error {
+
+	t.uuidCache.Delete(uuid)
+
 	t.mux.Lock()
 	defer t.mux.Unlock()
 
