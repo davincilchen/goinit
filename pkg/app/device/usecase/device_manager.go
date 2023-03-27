@@ -79,17 +79,24 @@ func (t *DeviceManager) Alive(uuid string) {
 func (t *DeviceManager) reserveTimeout(uuid string, value interface{}) {
 
 	edgeID := uint(0)
+	edgeIP := ""
+	devID := uint(0)
 	t.mux.Lock()
 	dev, ok := t.deviceUUIDMap[uuid]
 	t.mux.Unlock()
 
 	if ok && dev != nil {
+		devID = dev.device.ID
 		edge := dev.GetEdgeInfo()
 		if edge != nil {
 			edgeID = edge.ID
+			edgeIP = edge.IP
 		}
 	}
-	fmt.Println(time.Now(), " ReserveTimeout: edge id: ", edgeID, ", ", uuid)
+	fmt.Println(time.Now(), " [ReserveTimeout] edge_id:", edgeID,
+		",IP:", edgeIP,
+		",dev_id:", devID,
+		", ", uuid)
 }
 
 func (t *DeviceManager) reserveFor(edgeID uint, devUUID string) error {
