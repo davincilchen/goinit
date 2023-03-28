@@ -12,6 +12,7 @@ import (
 )
 
 type DeviceManager struct {
+	userDeviceMap      map[uint]*LoginDevice   //KEY: userID
 	deviceUUIDMap      map[string]*LoginDevice //KEY: UUID
 	deviceTokenMap     map[string]*LoginDevice //KEY: Token
 	edgeIDtoDevUUIDMap map[uint]string         //KEY: edgeID
@@ -33,6 +34,7 @@ var dafaultCleanAliveInterval time.Duration = 5 * time.Minute
 
 func newDeviceManager() *DeviceManager {
 	d := &DeviceManager{}
+	d.userDeviceMap = make(map[uint]*LoginDevice)
 	d.deviceUUIDMap = make(map[string]*LoginDevice)
 	d.deviceTokenMap = make(map[string]*LoginDevice)
 	d.edgeIDtoDevUUIDMap = make(map[uint]string)
@@ -61,11 +63,26 @@ func (t *DeviceManager) Add(ctx ctxcache.Context, dev *LoginDevice) error {
 			oldDev.Logout(ctx)
 		}
 
-		//release完 再加
+		//release完再加,避免被清掉
 		t.mux.Lock()
-		t.deviceUUIDMap[dev.device.UUID] = dev
+		t.userDeviceMap[dev.user.ID] = dev
 		t.deviceTokenMap[dev.user.Token] = dev
+		t.deviceUUIDMap[dev.device.UUID] = dev
 		t.mux.Unlock()
+
+		//TODO: close
+		for k, v := range t.userDeviceMap {
+			fmt.Printf("userDeviceMap user %d, uuid %s\n", k, v.device.UUID)
+		}
+		fmt.Println()
+		for k, v := range t.deviceTokenMap {
+			fmt.Printf("deviceTokenMap token %s, uuid %s, player %d\n", k, v.device.UUID, dev.user.ID)
+		}
+		fmt.Println()
+		for k, v := range t.deviceUUIDMap {
+			fmt.Printf("deviceUUIDMap uuid %s, uuid %s, player %d\n", k, v.device.UUID, dev.user.ID)
+		}
+		fmt.Println()
 	}()
 
 	_, ok := t.deviceTokenMap[dev.user.Token]
@@ -73,8 +90,14 @@ func (t *DeviceManager) Add(ctx ctxcache.Context, dev *LoginDevice) error {
 		return errDef.ErrRepeatedLogin //請先登出
 	}
 
-	tmpDev, ok := t.deviceUUIDMap[dev.device.UUID]
-	if ok {
+	tmpDev, ok := t.userDeviceMap[dev.user.ID]
+	if ok { //同樣的帳號,可能同裝置或不同裝置
+		oldDev = tmpDev
+		//return errDef.ErrRepeatedLogin //請先登出
+	}
+
+	tmpDev, ok = t.deviceUUIDMap[dev.device.UUID]
+	if ok { //同裝置,可能同人或不同人
 		oldDev = tmpDev
 		//return errDef.ErrRepeatedLogin //請先登出
 	}
@@ -166,6 +189,7 @@ func (t *DeviceManager) Delete(dev *LoginDevice) {
 	t.mux.Lock()
 	defer t.mux.Unlock()
 
+	delete(t.userDeviceMap, dev.user.ID)
 	delete(t.deviceTokenMap, dev.user.Token)
 	delete(t.deviceUUIDMap, dev.device.UUID)
 
