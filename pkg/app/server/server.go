@@ -80,16 +80,16 @@ func (t *Server) Serve() {
 // ENABLE_WRAP_AT_EOL_OUTPUT = 0x0002
 // ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004 # VT100 (Win 10)
 
-type master struct {
-	in     windows.Handle
-	inMode uint32
-
-	out     windows.Handle
-	outMode uint32
-
-	err     windows.Handle
-	errMode uint32
-}
+// Built-in operators
+// Operation	Result	Description
+// 0011 & 0101	0001	Bitwise AND
+// 0011 | 0101	0111	Bitwise OR
+// 0011 ^ 0101	0110	Bitwise XOR
+// ^0101	1010	Bitwise NOT (same as 1111 ^ 0101)
+// 0011 &^ 0101	0010	Bitclear (AND NOT)
+// 00110101<<2	11010100	Left shift
+// 00110101<<100	00000000	No upper limit on shift count
+// 00110101>>2	00001101	Right shift
 
 func consoleQuickMode(enable bool) { //for windows
 	//hStdin := syscall.Handle(os.Stdin.Fd())
@@ -108,20 +108,14 @@ func consoleQuickMode(enable bool) { //for windows
 	if enable {
 		//(0x100|0x80|0x00|0x00|0x10|0x4|0x2|0x1)
 		//_enable := 0x0060 //|0x20|0x40
-		// newMode &^= windows.ENABLE_INSERT_MODE
-		// newMode &^= windows.ENABLE_QUICK_EDIT_MODE
 		newMode |= windows.ENABLE_INSERT_MODE
 		newMode |= windows.ENABLE_QUICK_EDIT_MODE
-
-		//newMode = originalMode | uint32(_enable)
 		logrus.Infof("[_enable] NewMode : %x ", newMode)
 	} else { //disable
 		//(0x100|0x80|0x00|0x00|0x10|0x4|0x2|0x1)
 		//_disable := 0x019F //|0x20|0x40
 		newMode &^= windows.ENABLE_INSERT_MODE
 		newMode &^= windows.ENABLE_QUICK_EDIT_MODE
-
-		//newMode = originalMode & uint32(_disable)
 		logrus.Infof("[_disable] NewMode : %x ", newMode)
 	}
 	err = windows.SetConsoleMode(hStdin, newMode)
@@ -139,34 +133,6 @@ func consoleQuickMode(enable bool) { //for windows
 
 	logrus.Infof("windows.GetConsoleMode new mode: %x", originalMode)
 }
-
-// func consoleQuickMode(enable bool) { //for windows
-// 	//hStdin := syscall.Handle(os.Stdin.Fd())
-// 	hStdin := os.Stdin.Fd()
-
-// 	var originalMode uint32
-// 	var newMode uint32
-// 	err := windows.GetConsoleMode(hStdin, &originalMode)
-// 	if err != nil {
-// 		logrus.Errorf("syscall.GetConsoleMode error: %s", err.Error())
-// 		return
-// 	}
-
-// 	logrus.Errorf("syscall.GetConsoleMode mode: %x", originalMode)
-// 	newMode = originalMode
-// 	if enable {
-// 		//(0x100|0x80|0x00|0x00|0x10|0x4|0x2|0x1)
-// 		_enable := 0x0060 //|0x20|0x40
-// 		newMode = originalMode | uint32(_enable)
-// 		logrus.Errorf("[_enable] NewMode : %x , flag %x", newMode, uint32(_enable))
-// 	} else {
-// 		//(0x100|0x80|0x00|0x00|0x10|0x4|0x2|0x1)
-// 		_disable := 0x019F //|0x20|0x40
-// 		newMode = originalMode & uint32(_disable)
-// 		logrus.Errorf("[_disable] NewMode : %x , flag %x", newMode, uint32(_disable))
-// 	}
-// 	err = syscall.SetConsoleMode(syscall.Stdin, newMode)
-// }
 
 //example of SetConsoleMode
 //fd windows.Handle: trans -> os.Stdin.Fd() or os.Stdout.Fd()
