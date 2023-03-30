@@ -81,7 +81,7 @@ func (t *Edge) Reserve(ctx ctxcache.Context, appID uint) error {
 		ctx.CacheHttpError(err)
 		return errDef.ErrEdgeLost
 	}
-	fmt.Println("Response for no error", resp)
+	fmt.Println("[Response for no error] ", resp)
 	if resp.StatusCode != http.StatusOK {
 		err := fmt.Errorf("resp.StatusCode = %d", resp.StatusCode)
 		ctx.CacheHttpError(err)

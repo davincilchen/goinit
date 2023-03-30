@@ -119,6 +119,7 @@ func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID uint) (*string, err
 	if err != nil {
 		return nil, err
 	}
+	ctx.ResetHttpError()
 
 	devM := t.GetDeviceManager()
 	devM.reserveFor(edge.GetInfo().ID, t.device.UUID)

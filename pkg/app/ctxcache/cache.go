@@ -41,6 +41,7 @@ type DBErrCache interface {
 }
 
 type HttpErrCache interface {
+	ResetHttpError()
 	CacheHttpError(error)
 	GetHttpError() error
 }
@@ -79,6 +80,10 @@ func NewHttpErrPass(cache InfoCache) *HttpErrPass {
 
 type HttpErrPass struct {
 	cache InfoCache
+}
+
+func (t *HttpErrPass) ResetHttpError() {
+	ResetHttpError(t.cache)
 }
 
 func (t *HttpErrPass) CacheHttpError(err error) {
@@ -152,6 +157,10 @@ func GetDBError(ctx InfoCache) error {
 		}
 	}
 	return nil
+}
+
+func ResetHttpError(ctx InfoCache) {
+	ctx.Set(GinKeyHttpError, nil)
 }
 
 func CacheHttpError(ctx InfoCache, err error) {

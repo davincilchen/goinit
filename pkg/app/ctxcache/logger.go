@@ -25,6 +25,10 @@ func (t *ContextLogger) GetDBError() error {
 	return nil
 }
 
+func (t *ContextLogger) ResetHttpError() {
+	logrus.Errorf("[ResetHttpError]")
+}
+
 func (t *ContextLogger) CacheHttpError(err error) {
 	if err == nil {
 		return
