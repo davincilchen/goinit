@@ -135,7 +135,7 @@ func (t *Edge) FindEdgesWithAppID(appID uint) ([]models.EdgeApp, error) {
 	ddb := GetDB()
 	out := []models.EdgeApp{}
 
-	dbc := ddb.Where("app_id = ?", appID).Find(&out)
+	dbc := ddb.Where("app_id = ? and valid = 1", appID).Find(&out)
 
 	if dbc.Error != nil {
 		return nil, dbc.Error
