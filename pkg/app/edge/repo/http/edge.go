@@ -78,11 +78,10 @@ func (t *Edge) Reserve(ctx ctxcache.Context, appID uint) error {
 	url := fmt.Sprintf("http://%s/reserve/apps/%d", t.URL, appID)
 	resp, err := httph.Post(url)
 	if err != nil {
-		fmt.Println(err)
 		ctx.CacheHttpError(err)
 		return errDef.ErrEdgeLost
 	}
-	fmt.Println(resp)
+	fmt.Println("Response for no error", resp)
 	if resp.StatusCode != http.StatusOK {
 		err := fmt.Errorf("resp.StatusCode = %d", resp.StatusCode)
 		ctx.CacheHttpError(err)
