@@ -1,6 +1,7 @@
 package delivery
 
 import (
+	"errors"
 	"net/http"
 
 	"xr-central/pkg/app/ctxcache"
@@ -55,7 +56,12 @@ func RespUnauthorized(ctx *gin.Context, err error) {
 
 	response := FillErrorBody(ctx, err)
 	response.ResCode = RES_INVALID_USER_TOKEN
-	ctxcache.CacheError(ctx, err)
+	if err == nil {
+		ctxcache.CacheError(ctx, errors.New("INVALID_USER_TOKEN"))
+	} else {
+		ctxcache.CacheError(ctx, err)
+	}
+
 	ctx.JSON(http.StatusUnauthorized, response)
 	ctx.Abort()
 }

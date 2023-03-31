@@ -12,21 +12,80 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type APILog struct {
+type BasicLog struct {
+	SessionToken *string `json:"sessionToken"`
 	Version      string
 	RequestURI   string
 	Method       string
 	Duration     time.Duration
 	DurationText string
 	InfoTxt      string
+}
+
+func (t *BasicLog) MakeTokenString() string {
+	SessionToken := ""
+	if t.SessionToken != nil {
+		SessionToken = *t.SessionToken
+	}
+	return SessionToken
+}
+
+func (t *BasicLog) MakeBasicString() string {
+
+	s := fmt.Sprintf("%s [version:%s] ,%s %s %s [info:%s]",
+		t.MakeTokenString(), t.Version,
+		t.Method, t.RequestURI, t.DurationText,
+		t.InfoTxt)
+	return s
+}
+
+type APILog struct {
+	BasicLog
 	DBErrorTxt   string
 	HttpErrorTxt string
 	ErrorTxt     string
 	AdvErrorTxt  string
 
-	RequestBody  *string `json:"requestBody"`
-	SessionToken *string `json:"sessionToken"`
-	DevData      interface{}
+	RequestBody *string `json:"requestBody"`
+
+	DevData interface{}
+}
+
+func (t *APILog) HaveError() bool {
+	s := t.AdvErrorTxt + t.ErrorTxt +
+		t.DBErrorTxt + t.HttpErrorTxt
+
+	return s != ""
+}
+
+func (t *APILog) MakeErrorString() string {
+
+	if !t.HaveError() {
+		return ""
+	}
+	s := t.MakeTokenString() +
+		" ,ErrorTxt:" + t.ErrorTxt +
+		" ,AdvErrorTxt:" + t.AdvErrorTxt +
+		" ,DBErrorTxt:" + t.DBErrorTxt +
+		" ,HttpErrorTxt:" + t.HttpErrorTxt
+
+	return s
+}
+
+func (t *APILog) MakeDevString() string {
+
+	//不用檢查t.DevData interface null
+	//null marshal 還是會成功,會寫"null" string
+	//if log.DevData != nil { 無法檢查interface, 這裡可以不檢查
+
+	s := ""
+	b, err := json.Marshal(t.DevData)
+	if err == nil {
+		s = string(b)
+	}
+	ret := t.MakeTokenString() +
+		" ,DevData:" + s
+	return ret
 }
 
 // type Gcp struct {
@@ -112,24 +171,22 @@ func logger(log APILog) {
 	// 	fmt.Println(log)
 	// 	return
 	// }
+	//logBasicInfo(log)
 
-	s := fmt.Sprintf("%#v", log)
-	logrus.Info(s)
-	//fmt.Println(s)
+	s := log.MakeBasicString()
+	devString := log.MakeDevString()
 
-	if log.SessionToken != nil {
-		s := fmt.Sprintf("SessionToken %#v", *log.SessionToken)
+	if log.HaveError() {
+		logrus.Error(s)
+		sErr := log.MakeErrorString()
+		logrus.Error(sErr)
+		logrus.Error(devString)
+
+	} else {
 		logrus.Info(s)
-		//fmt.Println(s)
+		logrus.Info(devString)
 	}
 
-	//if log.DevData != nil { 無法檢查interface, 這裡可以不檢查
-	b, err := json.Marshal(log.DevData)
-	if err == nil {
-		//fmt.Println("DevData:", string(b))
-		s := fmt.Sprintln("DevData:", string(b))
-		logrus.Info(s)
-	}
 	fmt.Println()
 	// gcp.stdLogger.Println(s)
 
