@@ -18,12 +18,14 @@ var APICommentNormalV = fmt.Sprintf("[%s], [%s]", version.Version, APICommentNor
 var APICommentRoutineRetryV = fmt.Sprintf("[%s], [%s]", version.Version, APICommentRoutineRetry)
 
 var client = &http.Client{
-	//Timeout: 10 * time.Second,
-	Timeout: 8 * time.Second,
+	Timeout: 16 * time.Second,
+	//Timeout: 8 * time.Second,
 	Transport: &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
 		DialContext: (&net.Dialer{
-			Timeout:   5 * time.Second,
+			// Timeout:   5 * time.Second,
+			// KeepAlive: 5 * time.Second,
+			Timeout:   10 * time.Second,
 			KeepAlive: 5 * time.Second,
 			DualStack: true,
 		}).DialContext,
