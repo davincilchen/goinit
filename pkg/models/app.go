@@ -7,7 +7,7 @@ type App struct {
 	PlatformAppID     string `gorm:"type:varchar(32)"` //not null
 	PlatformID        int    `gorm:"not null"`
 	Platform          Platform
-	AppTitle          string `gorm:"type:varchar(32);not null"`
+	AppTitle          string `gorm:"type:varchar(64);not null"`
 	AppBrief          string `gorm:"type:varchar(256)"`
 	ImageURL          string `gorm:"type:varchar(256)"`
 	Developler        string `gorm:"type:varchar(128)"`
