@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 
@@ -23,6 +24,9 @@ func Router() *gin.Engine {
 	//router.GET("/app/usage_satus", info)
 	router.POST("/login", loginDlv.Login)
 	router.POST("/logout", loginDlv.Logout)
+
+	//
+	router.StaticFS("/static", http.Dir("static"))
 
 	// .. //
 	dev := router.Group("/devices")
