@@ -7,4 +7,5 @@ type Edge struct {
 	Port   int        `gorm:"type:int unsigned;default:0"`
 	Online bool       `gorm:"default:0;not null"`
 	Status EdgeStatus `gorm:"type:int unsigned;default:0;not null"` //0: init
+	Valid  bool       `gorm:"not null;default:1"`
 }

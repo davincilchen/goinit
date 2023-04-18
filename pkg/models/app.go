@@ -10,6 +10,7 @@ type App struct {
 	AppTitle          string `gorm:"type:varchar(64);not null"`
 	AppBrief          string `gorm:"type:varchar(256)"`
 	ImageURL          string `gorm:"type:varchar(256)"`
+	CentralImage      bool   `gorm:"not null;default:1"`
 	Developler        string `gorm:"type:varchar(128)"`
 	PublicationStatus int    `gorm:"tinyint unsigned;default:0"` //0:public 1:Private
 	APPGenreID        int    `gorm:"default:1;not null"`

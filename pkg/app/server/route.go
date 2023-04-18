@@ -26,7 +26,7 @@ func Router() *gin.Engine {
 	router.POST("/logout", loginDlv.Logout)
 
 	//
-	router.StaticFS("/static", http.Dir("static"))
+	router.StaticFS("/static", http.Dir("web/static"))
 
 	// .. //
 	dev := router.Group("/devices")
