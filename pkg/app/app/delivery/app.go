@@ -17,11 +17,12 @@ type AppListResp struct {
 }
 
 type AppResp struct {
-	ID     int    `json:"id"`
-	Title  string `json:"title"`
-	Genre  string `json:"genre"`
-	Des    string `json:"description"`
-	ImgUrl string `json:"img_url"`
+	ID             int    `json:"id"`
+	Title          string `json:"title"`
+	Genre          string `json:"genre"`
+	Des            string `json:"description"`
+	ImgURL         string `json:"img_url"`
+	CentralPathImg bool   `json:"central_path_img"`
 }
 
 func AppList(ctx *gin.Context) { //TODO:
@@ -39,11 +40,12 @@ func AppList(ctx *gin.Context) { //TODO:
 
 	for _, v := range apps {
 		a := AppResp{
-			ID:     int(v.ID),
-			Title:  v.AppTitle,
-			Genre:  v.AppGenre.Type,
-			Des:    v.AppBrief,
-			ImgUrl: v.ImageURL,
+			ID:             int(v.ID),
+			Title:          v.AppTitle,
+			Genre:          v.AppGenre.Type,
+			Des:            v.AppBrief,
+			ImgURL:         v.ImageURL,
+			CentralPathImg: v.CentralImage,
 		}
 		data.Apps = append(data.Apps, a)
 	}
