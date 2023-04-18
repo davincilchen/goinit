@@ -152,11 +152,15 @@ func (t *EdgeManager) FindUnusedEdgesWithAppID(appID uint) ([]*Edge, error) {
 		}
 
 		info := e.GetInfo()
-		fmt.Printf("[Reserve List for APP = %d] [status = %d] IP:%s : %d \n", appID, info.Status, e.info.IP, e.info.Port)
+		fmt.Printf("[Reserve List for APP = %d] [status = %d] [valid = %t] IP:%s : %d \n", appID, info.Status, info.Valid, e.info.IP, e.info.Port)
 		// if !info.Online { //try it
 		// 	continue
 		// }
 		if info.Status != models.STATUS_FREE {
+			continue
+		}
+
+		if !info.Valid {
 			continue
 		}
 		edges = append(edges, e)
