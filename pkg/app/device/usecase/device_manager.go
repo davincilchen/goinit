@@ -115,7 +115,7 @@ func (t *DeviceManager) Alive(uuid string) {
 
 func (t *DeviceManager) reserveTimeout(uuid string, value interface{}) {
 
-	fmt.Println(time.Now(), " [ReserveTimeout] uuid:", uuid)
+	fmt.Println(time.Now(), " [ReserveTimeout] for uuid:", uuid)
 
 	edgeID := uint(0)
 	edgeIP := ""
@@ -162,24 +162,24 @@ func (t *DeviceManager) releseReserve(edgeID uint, uuid string) error {
 	return nil
 }
 
-func (t *DeviceManager) GetByUUID(token string) *LoginDevice {
+func (t *DeviceManager) GetByUUID(uuid string) *LoginDevice {
 
 	t.mux.RLock()
 	defer t.mux.RUnlock()
 
-	dev, ok := t.deviceUUIDMap[token]
+	dev, ok := t.deviceUUIDMap[uuid]
 	if ok {
 		return dev
 	}
 	return nil
 }
 
-func (t *DeviceManager) GetByToken(uuid string) *LoginDevice {
+func (t *DeviceManager) GetByToken(token string) *LoginDevice {
 
 	t.mux.RLock()
 	defer t.mux.RUnlock()
 
-	dev, ok := t.deviceTokenMap[uuid]
+	dev, ok := t.deviceTokenMap[token]
 	if ok {
 		return dev
 	}
@@ -216,5 +216,27 @@ func (t *DeviceManager) GetDevInfoWithEdge(edgeID uint) *QLoginDeviceRet {
 
 	ret := dev.GetDeviceInfo()
 	return &ret
+
+}
+
+func (t *DeviceManager) GetDevices() []QLoginDeviceRetDetail {
+
+	devs := make([]*LoginDevice, 0)
+	t.mux.Lock()
+	for _, v := range t.deviceUUIDMap {
+		devs = append(devs, v)
+	}
+	t.mux.Unlock()
+
+	ret := make([]QLoginDeviceRetDetail, 0)
+	for _, v := range devs {
+		tmp := QLoginDeviceRetDetail{
+			QLoginDeviceRet: v.GetDeviceInfo(),
+			Edge:            v.GetEdgeInfo(),
+		}
+		ret = append(ret, tmp)
+	}
+
+	return ret
 
 }

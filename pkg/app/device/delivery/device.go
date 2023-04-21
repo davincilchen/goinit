@@ -7,52 +7,38 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	// appUCase "xr-central/pkg/app/app/usecase"
+	dlvModel "xr-central/pkg/app/deliverymodel"
+	devUCase "xr-central/pkg/app/device/usecase"
 	dlv "xr-central/pkg/delivery"
 )
 
-// type AppListResp struct {
-// 	Total int       `json:"total_num"`
-// 	Apps  []AppResp `json:"app"`
-// }
+type DeviceDetailListResp struct {
+	Total int                         `json:"total_num"`
+	List  []dlvModel.DeviceInfoDetail `json:"device"`
+}
 
-// type AppResp struct {
-// 	ID             int    `json:"id"`
-// 	Title          string `json:"title"`
-// 	Genre          string `json:"genre"`
-// 	Des            string `json:"description"`
-// 	ImgURL         string `json:"img_url"`
-// 	CentralPathImg bool   `json:"central_path_img"`
-// }
+func DeviceList(ctx *gin.Context) {
 
-func DeviceList(ctx *gin.Context) { //TODO:
-	// appHandle := appUCase.AppHandle{}
-	// apps, err := appHandle.GetApps()
-	// if err != nil {
-	// 	ctxcache.CacheDBError(ctx, err)
-	// 	dlv.RespError(ctx, err, nil)
-	// 	return
-	// }
+	devM := devUCase.GetDeviceManager()
+	list := make([]dlvModel.DeviceInfoDetail, 0)
 
-	// data := AppListResp{
-	// 	Total: len(apps),
-	// }
+	devices := devM.GetDevices()
+	for _, v := range devices {
+		warpDev := dlvModel.WarpDeviceInfo(&v.QLoginDeviceRet)
+		tmp := dlvModel.DeviceInfoDetail{
+			DeviceInfo: *warpDev,
+			Edge:       dlvModel.WarpEdgeInfo(v.Edge, &v.QLoginDeviceRet),
+		}
+		list = append(list, tmp)
+	}
 
-	// for _, v := range apps {
-	// 	a := AppResp{
-	// 		ID:             int(v.ID),
-	// 		Title:          v.AppTitle,
-	// 		Genre:          v.AppGenre.Type,
-	// 		Des:            v.AppBrief,
-	// 		ImgURL:         v.ImageURL,
-	// 		CentralPathImg: v.CentralImage,
-	// 	}
-	// 	data.Apps = append(data.Apps, a)
-	// }
-
+	data := DeviceDetailListResp{
+		Total: len(list),
+		List:  list,
+	}
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK
-	//response.Data = data
+	response.Data = data
 
 	ctx.JSON(http.StatusOK, response)
 }

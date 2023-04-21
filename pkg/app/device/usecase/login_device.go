@@ -77,6 +77,11 @@ func (t *QLoginDeviceRet) GetAppID() *uint {
 	return &t.appID
 }
 
+type QLoginDeviceRetDetail struct {
+	QLoginDeviceRet
+	Edge *edgeUCase.EdgeInfoStatus
+}
+
 type LoginDevice struct {
 	edgeMux sync.RWMutex
 	//每次呼叫edge的ctx會不同,不能在new的時候跟著綁

@@ -31,8 +31,8 @@ func Router() *gin.Engine {
 
 	// .. //
 	dev := router.Group("/devices")
+	dev.GET("/", devDlv.DeviceList)
 	dev.POST("/login", loginDlv.DevLogin)
-	dev.POST("/", devDlv.DeviceList)
 
 	devSession := router.Group("/devices")
 	devSession.Use(AuthDevSession)

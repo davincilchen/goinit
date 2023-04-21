@@ -6,7 +6,13 @@ import (
 	// "xr-central/pkg/models"
 )
 
+type DeviceInfoDetail struct {
+	DeviceInfo
+	Edge *EdgeInfo `json:"edge"`
+}
+
 type DeviceInfo struct {
+	UUID string   `json:"uuid"`
 	ID   uint     `json:"id"`
 	IP   string   `json:"ip"`
 	User UserInfo `json:"user"`
@@ -20,8 +26,9 @@ func WarpDeviceInfo(in *devUCase.QLoginDeviceRet) *DeviceInfo {
 	devInfo := in.Device
 	userInfo := in.User
 	return &DeviceInfo{
-		ID: devInfo.ID,
-		IP: in.IP,
+		UUID: devInfo.UUID,
+		ID:   devInfo.ID,
+		IP:   in.IP,
 		User: UserInfo{
 			ID:   userInfo.ID,
 			Name: userInfo.Name,

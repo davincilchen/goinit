@@ -199,18 +199,19 @@ func EdgeStatus(ctx *gin.Context) {
 
 	data := EdgeStatusResp{}
 	if edge != nil {
-		tmp := dlvModel.EdgeInfo{
-			ID:     edge.ID,
-			IP:     edge.IP,
-			Port:   edge.Port,
-			Status: edge.Status,
-			Online: edge.Online,
-			ActRet: edge.ActRet,
-			AppID:  dev.GetAppID(),
-			Device: dlvModel.WarpDeviceInfo(&devInfo),
-		}
+		tmp := dlvModel.WarpEdgeInfo(edge, &devInfo)
+		// tmp := dlvModel.EdgeInfo{
+		// 	ID:     edge.ID,
+		// 	IP:     edge.IP,
+		// 	Port:   edge.Port,
+		// 	Status: edge.Status,
+		// 	Online: edge.Online,
+		// 	ActRet: edge.ActRet,
+		// 	AppID:  dev.GetAppID(),
+		// 	Device: dlvModel.WarpDeviceInfo(&devInfo),
+		// }
 
-		data.Edge = &tmp
+		data.Edge = tmp
 
 	}
 
@@ -224,6 +225,7 @@ func EdgeStatus(ctx *gin.Context) {
 // =========================================== //
 
 type EdgeListResp struct {
+	Total int                 `json:"total_num"`
 	Edges []dlvModel.EdgeInfo `json:"edges"`
 }
 
@@ -235,22 +237,25 @@ func EdgeList(ctx *gin.Context) {
 	data := EdgeListResp{}
 
 	for _, v := range ret {
-		tmp := dlvModel.EdgeInfo{
-			ID:     v.ID,
-			IP:     v.IP,
-			Port:   v.Port,
-			Status: v.Status,
-			Online: v.Online,
-			ActRet: v.ActRet,
-		}
+		// tmp := dlvModel.EdgeInfo{
+		// 	ID:     v.ID,
+		// 	IP:     v.IP,
+		// 	Port:   v.Port,
+		// 	Status: v.Status,
+		// 	Online: v.Online,
+		// 	ActRet: v.ActRet,
+		// }
 
 		dev := devM.GetDevInfoWithEdge(v.ID)
-		if dev != nil {
-			tmp.AppID = dev.GetAppID()
-			tmp.Device = dlvModel.WarpDeviceInfo(dev)
-		}
-		data.Edges = append(data.Edges, tmp)
+		// if dev != nil {
+		// 	tmp.AppID = dev.GetAppID()
+		// 	tmp.Device = dlvModel.WarpDeviceInfo(dev)
+		// }
+		tmp := dlvModel.WarpEdgeInfo(&v, dev)
+		data.Edges = append(data.Edges, *tmp)
 	}
+
+	data.Total = len(data.Edges)
 
 	response := dlv.ResBody{}
 	response.ResCode = dlv.RES_OK
