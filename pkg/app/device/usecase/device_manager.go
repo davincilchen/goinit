@@ -115,6 +115,8 @@ func (t *DeviceManager) Alive(uuid string) {
 
 func (t *DeviceManager) reserveTimeout(uuid string, value interface{}) {
 
+	fmt.Println(time.Now(), " [ReserveTimeout] uuid:", uuid)
+
 	edgeID := uint(0)
 	edgeIP := ""
 	devID := uint(0)

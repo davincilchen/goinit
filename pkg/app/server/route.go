@@ -6,8 +6,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	appdlv "xr-central/pkg/app/app/delivery"
-	edgedlv "xr-central/pkg/app/edge/delivery"
+	appDlv "xr-central/pkg/app/app/delivery"
+	devDlv "xr-central/pkg/app/device/delivery"
+	edgeDlv "xr-central/pkg/app/edge/delivery"
 	loginDlv "xr-central/pkg/app/login/delivery"
 	"xr-central/pkg/deliveryfake" //just for test. TODO: remove
 )
@@ -31,27 +32,28 @@ func Router() *gin.Engine {
 	// .. //
 	dev := router.Group("/devices")
 	dev.POST("/login", loginDlv.DevLogin)
+	dev.POST("/", devDlv.DeviceList)
 
 	devSession := router.Group("/devices")
 	devSession.Use(AuthDevSession)
 
 	devSession.POST("/logout", loginDlv.DevLogout)
-	devSession.POST("/apps/:id/reserve", edgedlv.NewReserve)
-	devSession.DELETE("/reserve", edgedlv.ReleaseReserve)
-	devSession.GET("/resume", edgedlv.DeviceResume)
-	devSession.POST("/start_app", edgedlv.StartApp)
-	devSession.POST("/stop_app", edgedlv.StopApp)
-	devSession.POST("/status", edgedlv.EdgeStatus)
+	devSession.POST("/apps/:id/reserve", edgeDlv.NewReserve)
+	devSession.DELETE("/reserve", edgeDlv.ReleaseReserve)
+	devSession.GET("/resume", edgeDlv.DeviceResume)
+	devSession.POST("/start_app", edgeDlv.StartApp)
+	devSession.POST("/stop_app", edgeDlv.StopApp)
+	devSession.POST("/status", edgeDlv.EdgeStatus)
 
 	// .. //
 	apps := router.Group("/apps")
-	apps.GET("/", appdlv.AppList)
+	apps.GET("/", appDlv.AppList)
 
 	// .. //
 	edges := router.Group("/edges")
-	edges.GET("/", edgedlv.EdgeList)
-	edges.POST("/reg", edgedlv.EdgeReg)
-	edges.GET("/:id/apps", edgedlv.EdgeAppList)
+	edges.GET("/", edgeDlv.EdgeList)
+	edges.POST("/reg", edgeDlv.EdgeReg)
+	edges.GET("/:id/apps", edgeDlv.EdgeAppList)
 
 	// .. //fake for test // TODO: remove
 	router.POST("/start_app", deliveryfake.FakeStartApp)
