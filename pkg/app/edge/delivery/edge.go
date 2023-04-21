@@ -224,7 +224,7 @@ func EdgeStatus(ctx *gin.Context) {
 // =========================================== //
 
 type EdgeListResp struct {
-	Edges []EdgeInfo `json:"edges"`
+	Edges []dlvModel.EdgeInfo `json:"edges"`
 }
 
 func EdgeList(ctx *gin.Context) {
@@ -235,7 +235,7 @@ func EdgeList(ctx *gin.Context) {
 	data := EdgeListResp{}
 
 	for _, v := range ret {
-		tmp := EdgeInfo{
+		tmp := dlvModel.EdgeInfo{
 			ID:     v.ID,
 			IP:     v.IP,
 			Port:   v.Port,
@@ -247,7 +247,7 @@ func EdgeList(ctx *gin.Context) {
 		dev := devM.GetDevInfoWithEdge(v.ID)
 		if dev != nil {
 			tmp.AppID = dev.GetAppID()
-			tmp.Device = WarpDeviceInfo(dev)
+			tmp.Device = dlvModel.WarpDeviceInfo(dev)
 		}
 		data.Edges = append(data.Edges, tmp)
 	}
