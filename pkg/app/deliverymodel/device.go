@@ -1,20 +1,8 @@
 package deliverymodel
 
 import (
-	// "encoding/json"
-	// "errors"
-	// "fmt"
-	// "io/ioutil"
-	// "net/http"
-	// "strconv"
-
-	// "github.com/gin-gonic/gin"
-
-	// "xr-central/pkg/app/ctxcache"
 	devUCase "xr-central/pkg/app/device/usecase"
 	// edgeUCase "xr-central/pkg/app/edge/usecase"
-	// errDef "xr-central/pkg/app/errordef"
-	// dlv "xr-central/pkg/delivery"
 	// "xr-central/pkg/models"
 )
 

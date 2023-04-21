@@ -11,11 +11,11 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"xr-central/pkg/app/ctxcache"
+	dlvModel "xr-central/pkg/app/deliverymodel"
 	devUCase "xr-central/pkg/app/device/usecase"
 	edgeUCase "xr-central/pkg/app/edge/usecase"
 	errDef "xr-central/pkg/app/errordef"
 	dlv "xr-central/pkg/delivery"
-	"xr-central/pkg/models"
 )
 
 type NewReserveResp struct {
@@ -151,29 +151,6 @@ func StopApp(ctx *gin.Context) {
 }
 
 // =========================================== //
-type UserInfo struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
-	//Account string `json:"account"`
-}
-
-type DeviceInfo struct {
-	ID   uint     `json:"id"`
-	IP   string   `json:"ip"`
-	User UserInfo `json:"user"`
-}
-
-type EdgeInfo struct {
-	ID     uint                `json:"id"`
-	IP     string              `json:"ip"`
-	Port   int                 `json:"port"`
-	Status models.EdgeStatus   `json:"status"`
-	Online bool                `json:"online"`
-	ActRet edgeUCase.ActionRet `json:"last_act_ret"`
-
-	Device *DeviceInfo `json:"device"`
-	AppID  *uint       `json:"app_id"`
-}
 
 type EdgeStatusReq struct {
 	DevStatus int    `json:"device_status"`
@@ -181,7 +158,7 @@ type EdgeStatusReq struct {
 }
 
 type EdgeStatusResp struct {
-	Edge *EdgeInfo `json:"edge"`
+	Edge *dlvModel.EdgeInfo `json:"edge"`
 }
 
 func edgeStatusParam(ctx *gin.Context) (*EdgeStatusReq, error) {
@@ -199,24 +176,6 @@ func edgeStatusParam(ctx *gin.Context) (*EdgeStatusReq, error) {
 		return nil, e
 	}
 	return &param, nil
-}
-
-func WarpDeviceInfo(in *devUCase.QLoginDeviceRet) *DeviceInfo {
-
-	if in == nil {
-		return nil
-	}
-	devInfo := in.Device
-	userInfo := in.User
-	return &DeviceInfo{
-		ID: devInfo.ID,
-		IP: in.IP,
-		User: UserInfo{
-			ID:   userInfo.ID,
-			Name: userInfo.Name,
-		},
-	}
-
 }
 
 func EdgeStatus(ctx *gin.Context) {
@@ -240,7 +199,7 @@ func EdgeStatus(ctx *gin.Context) {
 
 	data := EdgeStatusResp{}
 	if edge != nil {
-		tmp := EdgeInfo{
+		tmp := dlvModel.EdgeInfo{
 			ID:     edge.ID,
 			IP:     edge.IP,
 			Port:   edge.Port,
@@ -248,7 +207,7 @@ func EdgeStatus(ctx *gin.Context) {
 			Online: edge.Online,
 			ActRet: edge.ActRet,
 			AppID:  dev.GetAppID(),
-			Device: WarpDeviceInfo(&devInfo),
+			Device: dlvModel.WarpDeviceInfo(&devInfo),
 		}
 
 		data.Edge = &tmp
