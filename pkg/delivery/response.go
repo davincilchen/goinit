@@ -21,6 +21,7 @@ const (
 	RES_REPEATED_LOGIN   ResCode = 120
 	RES_REPEATED_RESERVE ResCode = 121
 	RES_NO_RESERVE       ResCode = 122
+	RES_IN_PROCESS       ResCode = 123
 
 	RES_START_TIME_OUT    ResCode = 140
 	RES_INVALID_STEAM_VR  ResCode = 141
@@ -94,23 +95,25 @@ func GetStatusCode(err error) (ResCode, int) {
 	//logrus.Error(err)
 	switch err {
 	case errordef.ErrNoResource:
-		return RES_NO_RESOURCE, http.StatusOK
+		return RES_NO_RESOURCE, http.StatusOK //TODO: http code
 	case errordef.ErrEdgeLost:
-		return RES_EDGE_LOST, http.StatusOK
+		return RES_EDGE_LOST, http.StatusOK //TODO: http code
 
 	case errordef.ErrRepeatedLogin:
-		return RES_REPEATED_LOGIN, http.StatusOK
+		return RES_REPEATED_LOGIN, http.StatusOK //TODO: http code
 	case errordef.ErrRepeatedReserve:
-		return RES_REPEATED_RESERVE, http.StatusOK
+		return RES_REPEATED_RESERVE, http.StatusOK //TODO: http code
 	case errordef.ErrDevNoReserve:
-		return RES_NO_RESERVE, http.StatusOK
+		return RES_NO_RESERVE, http.StatusOK //TODO: http code
+	case errordef.ErrInOldProcess:
+		return RES_IN_PROCESS, http.StatusTooManyRequests
 
-	case errordef.ErrStartAppTimeout:
+	case errordef.ErrStartAppTimeout: //TODO: http code
 		return RES_START_TIME_OUT, http.StatusOK
 	case errordef.ErrInvalidStramVR:
-		return RES_INVALID_STEAM_VR, http.StatusOK
+		return RES_INVALID_STEAM_VR, http.StatusOK //TODO: http code
 	case errordef.ErrCloudXRUnconect:
-		return RES_CLOUDXR_UNCONNECT, http.StatusOK
+		return RES_CLOUDXR_UNCONNECT, http.StatusOK //TODO: http code
 
 		//
 	case errordef.ErrUrlParamError:

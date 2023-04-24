@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"sync"
+	"time"
 	"xr-central/pkg/app/ctxcache"
 	repo "xr-central/pkg/app/device/repo/mysql"
 	"xr-central/pkg/models"
@@ -83,11 +84,14 @@ type QLoginDeviceRetDetail struct {
 }
 
 type LoginDevice struct {
-	edgeMux sync.RWMutex
+	edgeMux sync.Mutex
 	//每次呼叫edge的ctx會不同,不能在new的時候跟著綁
 	edge   *edgeUCase.Edge //not nil when post reserve success
 	device models.Device
 	user   userUCase.LoginUser
+
+	processMux sync.Mutex
+	inProcess  bool
 
 	statusMux sync.RWMutex
 	status    DevStatus
@@ -113,8 +117,39 @@ func (t *LoginDevice) Logout(ctx ctxcache.Context) error {
 	return nil
 }
 
+func (t *LoginDevice) ToProcess(do bool) bool {
+	t.processMux.Lock()
+	defer t.processMux.Unlock()
+
+	if !do {
+		t.inProcess = false
+		return true
+	}
+
+	//want to do
+	if t.inProcess {
+		return false
+	}
+
+	t.inProcess = true
+	return true
+}
+
+func (t *LoginDevice) IsInProcess() bool {
+	t.processMux.Lock()
+	defer t.processMux.Unlock()
+	return t.inProcess
+}
+
 func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID uint) (*string, error) {
 
+	if !t.ToProcess(true) {
+		return nil, errDef.ErrInOldProcess
+	}
+
+	//can process
+	defer t.ToProcess(false)
+	time.Sleep(15 * time.Second)
 	if t.IsReserve() {
 		return nil, errDef.ErrRepeatedReserve
 	}
@@ -135,6 +170,14 @@ func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID uint) (*string, err
 }
 
 func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context) error {
+
+	if !t.ToProcess(true) {
+		return errDef.ErrInOldProcess
+	}
+
+	//can process
+	defer t.ToProcess(false)
+
 	t.statusMux.Lock()
 	t.status = STATUS_FREE
 	t.statusMux.Unlock()
@@ -153,6 +196,13 @@ func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context) error {
 }
 
 func (t *LoginDevice) StartApp(ctx ctxcache.Context) error {
+	if !t.ToProcess(true) {
+		return errDef.ErrInOldProcess
+	}
+
+	//can process
+	defer t.ToProcess(false)
+	time.Sleep(15 * time.Second)
 	edge := t.getEdge()
 	if edge == nil {
 		return errDef.ErrDevNoReserve
@@ -165,6 +215,14 @@ func (t *LoginDevice) StartApp(ctx ctxcache.Context) error {
 }
 
 func (t *LoginDevice) StopApp(ctx ctxcache.Context) error {
+
+	if !t.ToProcess(true) {
+		return errDef.ErrInOldProcess
+	}
+
+	//can process
+	defer t.ToProcess(false)
+	time.Sleep(15 * time.Second)
 	edge := t.getEdge()
 	if edge == nil {
 		return errDef.ErrDevNoReserve
