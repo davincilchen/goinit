@@ -13,8 +13,8 @@ import (
 
 type DeviceManager struct {
 	userDeviceMap      map[uint]*LoginDevice   //KEY: userID
-	deviceUUIDMap      map[string]*LoginDevice //KEY: UUID
-	deviceTokenMap     map[string]*LoginDevice //KEY: Token
+	uuidDeviceMap      map[string]*LoginDevice //KEY: UUID
+	tokenDeviceMap     map[string]*LoginDevice //KEY: Token
 	edgeIDtoDevUUIDMap map[uint]string         //KEY: edgeID
 	mux                sync.RWMutex
 
@@ -35,8 +35,8 @@ var dafaultCleanAliveInterval time.Duration = 5 * time.Minute
 func newDeviceManager() *DeviceManager {
 	d := &DeviceManager{}
 	d.userDeviceMap = make(map[uint]*LoginDevice)
-	d.deviceUUIDMap = make(map[string]*LoginDevice)
-	d.deviceTokenMap = make(map[string]*LoginDevice)
+	d.uuidDeviceMap = make(map[string]*LoginDevice)
+	d.tokenDeviceMap = make(map[string]*LoginDevice)
 	d.edgeIDtoDevUUIDMap = make(map[uint]string)
 	d.uuidCache = cache.New(dafaultKeepAliveInterval,
 		dafaultCleanAliveInterval)
@@ -66,8 +66,8 @@ func (t *DeviceManager) Add(ctx ctxcache.Context, dev *LoginDevice) error {
 		//release完再加,避免被清掉
 		t.mux.Lock()
 		t.userDeviceMap[dev.user.ID] = dev
-		t.deviceTokenMap[dev.user.Token] = dev
-		t.deviceUUIDMap[dev.device.UUID] = dev
+		t.tokenDeviceMap[dev.user.Token] = dev
+		t.uuidDeviceMap[dev.device.UUID] = dev
 		t.mux.Unlock()
 
 		//TODO: close
@@ -75,28 +75,30 @@ func (t *DeviceManager) Add(ctx ctxcache.Context, dev *LoginDevice) error {
 			fmt.Printf("userDeviceMap user %d, uuid %s\n", k, v.device.UUID)
 		}
 		fmt.Println()
-		for k, v := range t.deviceTokenMap {
-			fmt.Printf("deviceTokenMap token %s, uuid %s, player %d\n", k, v.device.UUID, dev.user.ID)
+		for k, v := range t.tokenDeviceMap {
+			fmt.Printf("tokenDeviceMap token %s, uuid %s, player %d\n", k, v.device.UUID, dev.user.ID)
 		}
 		fmt.Println()
-		for k, v := range t.deviceUUIDMap {
-			fmt.Printf("deviceUUIDMap uuid %s, uuid %s, player %d\n", k, v.device.UUID, dev.user.ID)
+		for k, v := range t.uuidDeviceMap {
+			fmt.Printf("uuidDeviceMap uuid %s, uuid %s, player %d\n", k, v.device.UUID, dev.user.ID)
 		}
 		fmt.Println()
 	}()
 
-	_, ok := t.deviceTokenMap[dev.user.Token]
+	_, ok := t.tokenDeviceMap[dev.user.Token]
 	if ok {
 		return errDef.ErrRepeatedLogin //請先登出
 	}
-
+	// in process
+	// setuuid
+	// del
 	tmpDev, ok := t.userDeviceMap[dev.user.ID]
 	if ok { //同樣的帳號,可能同裝置或不同裝置
 		oldDev = tmpDev
 		//return errDef.ErrRepeatedLogin //請先登出
 	}
 
-	tmpDev, ok = t.deviceUUIDMap[dev.device.UUID]
+	tmpDev, ok = t.uuidDeviceMap[dev.device.UUID]
 	if ok { //同裝置,可能同人或不同人
 		oldDev = tmpDev
 		//return errDef.ErrRepeatedLogin //請先登出
@@ -121,7 +123,7 @@ func (t *DeviceManager) reserveTimeout(uuid string, value interface{}) {
 	edgeIP := ""
 	devID := uint(0)
 	t.mux.Lock()
-	dev, ok := t.deviceUUIDMap[uuid]
+	dev, ok := t.uuidDeviceMap[uuid]
 	t.mux.Unlock()
 
 	if ok && dev != nil {
@@ -167,7 +169,7 @@ func (t *DeviceManager) GetByUUID(uuid string) *LoginDevice {
 	t.mux.RLock()
 	defer t.mux.RUnlock()
 
-	dev, ok := t.deviceUUIDMap[uuid]
+	dev, ok := t.uuidDeviceMap[uuid]
 	if ok {
 		return dev
 	}
@@ -179,7 +181,7 @@ func (t *DeviceManager) GetByToken(token string) *LoginDevice {
 	t.mux.RLock()
 	defer t.mux.RUnlock()
 
-	dev, ok := t.deviceTokenMap[token]
+	dev, ok := t.tokenDeviceMap[token]
 	if ok {
 		return dev
 	}
@@ -192,8 +194,8 @@ func (t *DeviceManager) Delete(dev *LoginDevice) {
 	defer t.mux.Unlock()
 
 	delete(t.userDeviceMap, dev.user.ID)
-	delete(t.deviceTokenMap, dev.user.Token)
-	delete(t.deviceUUIDMap, dev.device.UUID)
+	delete(t.tokenDeviceMap, dev.user.Token)
+	delete(t.uuidDeviceMap, dev.device.UUID)
 
 	if dev.edge != nil {
 		delete(t.edgeIDtoDevUUIDMap, dev.edge.GetInfo().ID)
@@ -209,7 +211,7 @@ func (t *DeviceManager) GetDevInfoWithEdge(edgeID uint) *QLoginDeviceRet {
 		return nil
 	}
 
-	dev, ok := t.deviceUUIDMap[uuid]
+	dev, ok := t.uuidDeviceMap[uuid]
 	if !ok {
 		return nil
 	}
@@ -223,7 +225,7 @@ func (t *DeviceManager) GetDevices() []QLoginDeviceRetDetail {
 
 	devs := make([]*LoginDevice, 0)
 	t.mux.Lock()
-	for _, v := range t.deviceUUIDMap {
+	for _, v := range t.uuidDeviceMap {
 		devs = append(devs, v)
 	}
 	t.mux.Unlock()
