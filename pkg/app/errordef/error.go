@@ -9,7 +9,7 @@ var (
 	ErrRepeatedLogin   = errors.New("repeated login")
 	ErrRepeatedReserve = errors.New("repeated reserve")
 	ErrDevNoReserve    = errors.New("device no reserve")
-	ErrInOldProcess    = errors.New("already in old process")
+	ErrInOldProcess    = errors.New("still in old process")
 
 	ErrStartAppTimeout = errors.New("start app timeout")
 	ErrInvalidStramVR  = errors.New("invalid steam VR")

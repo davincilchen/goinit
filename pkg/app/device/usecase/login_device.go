@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"sync"
-	"time"
 	"xr-central/pkg/app/ctxcache"
 	repo "xr-central/pkg/app/device/repo/mysql"
 	"xr-central/pkg/models"
@@ -111,10 +110,12 @@ func (t *LoginDevice) GetEdgeManager() *edgeUCase.EdgeManager {
 
 func (t *LoginDevice) Logout(ctx ctxcache.Context) error {
 
-	_ = t.ReleaseReserve(ctx)
-	manager := t.GetDeviceManager()
-	manager.Delete(t)
-	return nil
+	err := t.ReleaseReserve(ctx)
+	if err == nil {
+		manager := t.GetDeviceManager()
+		manager.Delete(t)
+	}
+	return err
 }
 
 func (t *LoginDevice) ToProcess(do bool) bool {
@@ -149,7 +150,7 @@ func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID uint) (*string, err
 
 	//can process
 	defer t.ToProcess(false)
-	time.Sleep(15 * time.Second)
+	//time.Sleep(15 * time.Second)
 	if t.IsReserve() {
 		return nil, errDef.ErrRepeatedReserve
 	}
@@ -202,7 +203,7 @@ func (t *LoginDevice) StartApp(ctx ctxcache.Context) error {
 
 	//can process
 	defer t.ToProcess(false)
-	time.Sleep(15 * time.Second)
+	//time.Sleep(15 * time.Second)
 	edge := t.getEdge()
 	if edge == nil {
 		return errDef.ErrDevNoReserve
@@ -222,7 +223,7 @@ func (t *LoginDevice) StopApp(ctx ctxcache.Context) error {
 
 	//can process
 	defer t.ToProcess(false)
-	time.Sleep(15 * time.Second)
+	//time.Sleep(15 * time.Second)
 	edge := t.getEdge()
 	if edge == nil {
 		return errDef.ErrDevNoReserve
