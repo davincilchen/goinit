@@ -48,11 +48,11 @@ func (t *AppGenre) Get(id uint) (*models.AppGenre, error) {
 type App struct {
 }
 
-func (t *App) GetApps() ([]*models.App, error) {
+func (t *App) GetApps(valid bool) ([]*models.App, error) {
 	ddb := GetDB()
 	out := []*models.App{}
 
-	dbc := ddb.Preload("AppGenre").Find(&out)
+	dbc := ddb.Preload("AppGenre").Where("valid = ?", valid).Find(&out)
 
 	if dbc.Error != nil {
 		return nil, dbc.Error

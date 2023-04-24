@@ -18,4 +18,5 @@ type App struct {
 	SouceType         int    `gorm:"int unsigned;default:0"`      //0: none //EX:google drive
 	Type              int    `gorm:"type:int unsigned;default:0"` //0: none //TODO: remove
 	ExeName           string `gorm:"type:varchar(64);not null"`
+	Valid             bool   `gorm:"not null;default:1"`
 }

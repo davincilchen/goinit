@@ -27,7 +27,7 @@ type AppResp struct {
 
 func AppList(ctx *gin.Context) { //TODO:
 	appHandle := appUCase.AppHandle{}
-	apps, err := appHandle.GetApps()
+	apps, err := appHandle.GetApps(true)
 	if err != nil {
 		ctxcache.CacheDBError(ctx, err)
 		dlv.RespError(ctx, err, nil)

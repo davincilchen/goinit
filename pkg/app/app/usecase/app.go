@@ -20,6 +20,6 @@ func (t *AppHandle) GetGenre(id uint) (*models.AppGenre, error) {
 	return appGenreRepo.Get(id)
 }
 
-func (t *AppHandle) GetApps() ([]*models.App, error) {
-	return appRepo.GetApps()
+func (t *AppHandle) GetApps(valid bool) ([]*models.App, error) {
+	return appRepo.GetApps(valid)
 }

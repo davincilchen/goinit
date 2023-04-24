@@ -89,9 +89,7 @@ func (t *DeviceManager) Add(ctx ctxcache.Context, dev *LoginDevice) error {
 	if ok {
 		return errDef.ErrRepeatedLogin //請先登出
 	}
-	// in process
-	// setuuid
-	// del
+
 	tmpDev, ok := t.userDeviceMap[dev.user.ID]
 	if ok { //同樣的帳號,可能同裝置或不同裝置
 		oldDev = tmpDev
@@ -123,7 +121,7 @@ func (t *DeviceManager) reserveTimeout(uuid string, value interface{}) {
 	edgeIP := ""
 	devID := uint(0)
 	t.mux.Lock()
-	dev, ok := t.uuidDeviceMap[uuid]
+	dev, ok := t.uuidDeviceMap[uuid] //!ok if logout
 	t.mux.Unlock()
 
 	if ok && dev != nil {
