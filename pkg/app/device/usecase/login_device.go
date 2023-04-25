@@ -1,7 +1,9 @@
 package usecase
 
 import (
+	"fmt"
 	"sync"
+	"time"
 	"xr-central/pkg/app/ctxcache"
 	repo "xr-central/pkg/app/device/repo/mysql"
 	"xr-central/pkg/models"
@@ -127,7 +129,7 @@ func (t *LoginDevice) ToProcess(do bool) bool {
 		return true
 	}
 
-	//want to do
+	//do == true
 	if t.inProcess {
 		return false
 	}
@@ -145,8 +147,11 @@ func (t *LoginDevice) IsInProcess() bool {
 func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID uint) (*string, error) {
 
 	if !t.ToProcess(true) {
+		fmt.Println("#(LoginDevice) NewReserve [still in old process]: can not process ")
 		return nil, errDef.ErrInOldProcess
 	}
+
+	fmt.Println("#(LoginDevice) NewReserve [start]: can process")
 
 	//can process
 	defer t.ToProcess(false)
@@ -167,16 +172,34 @@ func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID uint) (*string, err
 	t.AttachEdge(edge)
 	e := edge.GetInfo()
 	t.SetAppID(appID)
+	fmt.Println("#(LoginDevice) NewReserve [success]")
 	return &e.IP, nil
 }
 
 func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context) error {
 
-	if !t.ToProcess(true) {
+	try := 1000 //50*1000 = 50 sec
+	inOldProcess := true
+	for i := 0; i < try; i++ {
+		if t.ToProcess(true) {
+			inOldProcess = false
+			break
+		}
+		time.Sleep(50 * time.Millisecond)
+		if i%100 == 0 {
+			fmt.Println(time.Now(), i+1,
+				"#(LoginDevice) ReleaseReserve wait for processing")
+		}
+
+	}
+
+	if inOldProcess {
+		fmt.Println("#(LoginDevice) ReleaseReserve [still in old process]: can not process ")
 		return errDef.ErrInOldProcess
 	}
 
 	//can process
+	fmt.Println("#(LoginDevice) ReleaseReserve [start]: can process ")
 	defer t.ToProcess(false)
 
 	t.statusMux.Lock()
@@ -187,21 +210,27 @@ func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context) error {
 	if edge == nil {
 		return errDef.ErrDevNoReserve
 	}
-	devM := t.GetDeviceManager()
-	devM.releseReserve(edge.GetInfo().ID, t.device.UUID)
+
 	edge.ReleaseReserve(ctx)
 	t.DetachEdge()
+	devM := t.GetDeviceManager()
+	devM.releseReserve(edge.GetInfo().ID, t.device.UUID)
+	//delete cache 會觸發OnEvicted(reserveTimeout)
+	//所以先release edge和DetachEdge
 
 	t.SetAppID(0)
+	fmt.Println("#(LoginDevice) ReleaseReserve [success]")
 	return nil
 }
 
 func (t *LoginDevice) StartApp(ctx ctxcache.Context) error {
 	if !t.ToProcess(true) {
+		fmt.Println("#(LoginDevice) StartApp [still in old process]: can not process ")
 		return errDef.ErrInOldProcess
 	}
 
 	//can process
+	fmt.Println("#(LoginDevice) StartApp [start]: can process ")
 	defer t.ToProcess(false)
 	//time.Sleep(15 * time.Second)
 	edge := t.getEdge()
@@ -212,23 +241,37 @@ func (t *LoginDevice) StartApp(ctx ctxcache.Context) error {
 	if appID == nil {
 		return errDef.ErrNoResource
 	}
-	return edge.StartAPP(ctx, *appID)
+
+	err := edge.StartAPP(ctx, *appID)
+	if err != nil {
+		return err
+	}
+	fmt.Println("#(LoginDevice) StartApp [success]: can process ")
+	return nil
 }
 
 func (t *LoginDevice) StopApp(ctx ctxcache.Context) error {
 
 	if !t.ToProcess(true) {
+		fmt.Println("#(LoginDevice) StopApp [still in old process]: can not process ")
 		return errDef.ErrInOldProcess
 	}
 
 	//can process
+	fmt.Println("#(LoginDevice) StopApp [start]: can process ")
 	defer t.ToProcess(false)
 	//time.Sleep(15 * time.Second)
 	edge := t.getEdge()
 	if edge == nil {
 		return errDef.ErrDevNoReserve
 	}
-	return edge.StopAPP(ctx)
+	err := edge.StopAPP(ctx)
+
+	if err != nil {
+		return err
+	}
+	fmt.Println("#(LoginDevice) StopApp [success]")
+	return nil
 }
 
 func (t *LoginDevice) Resume(ctx ctxcache.Context) error {
