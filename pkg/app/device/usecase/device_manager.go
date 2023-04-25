@@ -18,16 +18,16 @@ type DeviceManager struct {
 	edgeIDtoDevUUIDMap map[uint]string         //KEY: edgeID
 	mux                sync.RWMutex
 
-	uuidCache *cache.Cache
+	uuidCache *cache.Cache //uuid , beTimeout
 }
 
 var deviceManager *DeviceManager
 
 var dafaultKeepAliveInterval time.Duration = 5 * time.Minute
-var dafaultCleanAliveInterval time.Duration = 5 * time.Minute
+var dafaultCleanAliveInterval time.Duration = 1 * time.Minute
 
-//var dafaultKeepAliveInterval time.Duration = 1 * time.Minute
-//var dafaultCleanAliveInterval time.Duration = 1 * time.Second
+// var dafaultKeepAliveInterval time.Duration = 1 * time.Minute
+// var dafaultCleanAliveInterval time.Duration = 1 * time.Second
 
 // var dafaultKeepAliveInterval time.Duration = 10 * time.Second
 // var dafaultCleanAliveInterval time.Duration = 11 * time.Second
@@ -40,7 +40,7 @@ func newDeviceManager() *DeviceManager {
 	d.edgeIDtoDevUUIDMap = make(map[uint]string)
 	d.uuidCache = cache.New(dafaultKeepAliveInterval,
 		dafaultCleanAliveInterval)
-	d.uuidCache.OnEvicted(d.reserveTimeout)
+	d.uuidCache.OnEvicted(d.reserveEvicted)
 	return d
 }
 
@@ -110,12 +110,20 @@ func (t *DeviceManager) Alive(uuid string) {
 	if !ok {
 		return
 	}
-	t.uuidCache.Set(uuid, uuid, cache.DefaultExpiration)
+	needTimeout := true
+	t.uuidCache.Set(uuid, needTimeout, cache.DefaultExpiration)
 }
 
-func (t *DeviceManager) reserveTimeout(uuid string, value interface{}) {
+func (t *DeviceManager) reserveEvicted(uuid string, value interface{}) {
 
-	fmt.Println(time.Now(), " [ReserveTimeout] for uuid:", uuid)
+	timeout := false
+	if tmp, ok := value.(bool); ok {
+		timeout = tmp
+	}
+	fmt.Println(time.Now(), " [reserveEvicted] [ timeout:", timeout, "] for uuid:", uuid)
+	if !timeout {
+		return
+	}
 
 	edgeID := uint(0)
 	edgeIP := ""
@@ -131,18 +139,18 @@ func (t *DeviceManager) reserveTimeout(uuid string, value interface{}) {
 			edgeID = edge.ID
 			edgeIP = edge.IP
 		}
-		ctx := ctxcache.NewContextLogger("ReserveTimeout")
+		ctx := ctxcache.NewContextLogger("reserveEvicted")
 		dev.ReleaseReserve(ctx)
 	}
-	fmt.Println(time.Now(), " [ReserveTimeout] edge_id:", edgeID,
+	fmt.Println(time.Now(), " [reserveEvicted] edge_id:", edgeID,
 		",IP:", edgeIP,
 		",dev_id:", devID,
 		", ", uuid)
 }
 
 func (t *DeviceManager) reserveFor(edgeID uint, devUUID string) error {
-
-	t.uuidCache.Set(devUUID, devUUID, cache.DefaultExpiration)
+	needTimeout := true
+	t.uuidCache.Set(devUUID, needTimeout, cache.DefaultExpiration)
 
 	t.mux.Lock()
 	defer t.mux.Unlock()
@@ -152,6 +160,12 @@ func (t *DeviceManager) reserveFor(edgeID uint, devUUID string) error {
 }
 
 func (t *DeviceManager) releseReserve(edgeID uint, uuid string) error {
+
+	needTimeout := false
+	_, ok := t.uuidCache.Get(uuid)
+	if ok { //set for OnEvicted check
+		t.uuidCache.Set(uuid, needTimeout, cache.DefaultExpiration)
+	}
 
 	t.uuidCache.Delete(uuid)
 
