@@ -112,12 +112,13 @@ func (t *LoginDevice) GetEdgeManager() *edgeUCase.EdgeManager {
 
 func (t *LoginDevice) Logout(ctx ctxcache.Context) error {
 
-	err := t.ReleaseReserve(ctx)
-	if err == nil {
-		manager := t.GetDeviceManager()
-		manager.Delete(t)
+	err := t.ReleaseReserve(ctx, true)
+	if err == errDef.ErrInOldProcess {
+		return err
 	}
-	return err
+	manager := t.GetDeviceManager()
+	manager.Delete(t)
+	return nil
 }
 
 func (t *LoginDevice) ToProcess(do bool) bool {
@@ -176,9 +177,12 @@ func (t *LoginDevice) NewReserve(ctx ctxcache.Context, appID uint) (*string, err
 	return &e.IP, nil
 }
 
-func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context) error {
+func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context, isLogout bool) error {
 
 	try := 1000 //50*1000 = 50 sec
+	if isLogout {
+		try = 10000 //50*10000 = 500 sec
+	}
 	inOldProcess := true
 	for i := 0; i < try; i++ {
 		if t.ToProcess(true) {

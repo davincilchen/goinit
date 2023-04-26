@@ -71,7 +71,7 @@ func ReleaseReserve(ctx *gin.Context) { //TODO:
 		return
 	}
 
-	err := dev.ReleaseReserve(ctxcache.NewContext(ctx))
+	err := dev.ReleaseReserve(ctxcache.NewContext(ctx), false)
 	if err != nil {
 		dlv.RespError(ctx, err, nil)
 		return

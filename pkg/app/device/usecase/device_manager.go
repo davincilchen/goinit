@@ -140,7 +140,7 @@ func (t *DeviceManager) reserveEvicted(uuid string, value interface{}) {
 			edgeIP = edge.IP
 		}
 		ctx := ctxcache.NewContextLogger("reserveEvicted")
-		dev.ReleaseReserve(ctx)
+		dev.ReleaseReserve(ctx, false)
 	}
 	fmt.Println(time.Now(), " [reserveEvicted] edge_id:", edgeID,
 		",IP:", edgeIP,
