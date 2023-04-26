@@ -203,13 +203,17 @@ func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context) error {
 	fmt.Println("#(LoginDevice) ReleaseReserve [start]: can process ")
 	defer func() {
 		t.ToProcess(false)
+		edgeID := uint(0)
 		if edge != nil {
-			devM := t.GetDeviceManager()
-			devM.releseReserve(edge.GetInfo().ID, t.device.UUID)
-			//delete cache 會觸發OnEvicted(reserveTimeout)
-			//會兩邊重複lock inProcess
-			//所以先release edge和DetachEdge
+			edgeID = edge.GetInfo().ID
 		}
+		devM := t.GetDeviceManager()
+		devM.releseReserve(edgeID, t.device.UUID)
+		//delete cache 會觸發OnEvicted(reserveTimeout)
+		//會兩邊重複lock inProcess
+		//所以先release edge和DetachEdge
+		//OnEvicted 有加timeout flag,所以不會發生了
+
 	}()
 
 	t.statusMux.Lock()
@@ -225,6 +229,7 @@ func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context) error {
 	t.DetachEdge()
 
 	t.SetAppID(0)
+
 	fmt.Println("#(LoginDevice) ReleaseReserve [success]")
 	return nil
 }
