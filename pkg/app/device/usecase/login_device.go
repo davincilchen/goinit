@@ -192,19 +192,22 @@ func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context, isLogout bool) error 
 		time.Sleep(50 * time.Millisecond)
 		if i%50 == 0 {
 			fmt.Println(time.Now(), i+1,
-				"#(LoginDevice) ReleaseReserve wait for processing")
+				"#(LoginDevice) ReleaseReserve wait for processing",
+				"[ isLogout:", isLogout, "]")
 		}
 
 	}
 
 	if inOldProcess {
-		fmt.Println("#(LoginDevice) ReleaseReserve [still in old process]: can not process ")
+		fmt.Println("#(LoginDevice) ReleaseReserve [still in old process]: can not process ",
+			"[ isLogout:", isLogout, "]")
 		return errDef.ErrInOldProcess
 	}
 
 	var edge *edgeUCase.Edge
 	//can process
-	fmt.Println("#(LoginDevice) ReleaseReserve [start]: can process ")
+	fmt.Println("#(LoginDevice) ReleaseReserve [start]: can process ",
+		"[ isLogout:", isLogout, "]")
 	defer func() {
 		t.ToProcess(false)
 		edgeID := uint(0)
@@ -217,7 +220,8 @@ func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context, isLogout bool) error 
 		//會兩邊重複lock inProcess
 		//所以先release edge和DetachEdge
 		//OnEvicted 有加timeout flag,所以不會發生了
-
+		fmt.Println("#(LoginDevice) ReleaseReserve [after function]",
+			"[ isLogout:", isLogout, "]")
 	}()
 
 	t.statusMux.Lock()
@@ -234,7 +238,8 @@ func (t *LoginDevice) ReleaseReserve(ctx ctxcache.Context, isLogout bool) error 
 
 	t.SetAppID(0)
 
-	fmt.Println("#(LoginDevice) ReleaseReserve [success]")
+	fmt.Println("#(LoginDevice) ReleaseReserve [success]",
+		"[ isLogout:", isLogout, "]")
 	return nil
 }
 
