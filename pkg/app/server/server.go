@@ -1,12 +1,15 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"os"
 
 	//"syscall"
 	"xr-central/pkg/config"
 	"xr-central/pkg/db"
+
+	dlv "xr-central/pkg/delivery" //TODO:
 
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sys/windows"
@@ -56,8 +59,13 @@ func (t *Server) Serve() {
 	consoleQuickMode(false)
 	//InitLogger("", t.Config.GCP.ProjectID, t.Config.GCP.LogName)
 
+	dlv.IP = t.Config.Server.IP
 	addr := ":" + t.Config.Server.Port
-	log.Printf("======= Server start to listen (%s) and serve =======\n", addr)
+	IP := ""
+	if dlv.IP != "" {
+		IP = fmt.Sprintf("(IP:%s)", dlv.IP)
+	}
+	log.Printf("======= Server start to listen (%s) and serve %s=======\n", addr, IP)
 	r := Router()
 	r.Run(addr)
 

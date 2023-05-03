@@ -52,6 +52,10 @@ func NewReserve(ctx *gin.Context) { //TODO:
 		return
 	}
 
+	if *ip == "127.0.0.1" && dlv.IP != "" { // TODO
+		*ip = dlv.IP
+	}
+
 	data := NewReserveResp{
 		GameServerIP: *ip, //TODO: !!!
 	}

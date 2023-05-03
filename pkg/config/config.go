@@ -15,6 +15,7 @@ type Config struct {
 
 type Server struct {
 	Port string `json:"Port"`
+	IP   string `json:"IP"`
 }
 
 type GCP struct {

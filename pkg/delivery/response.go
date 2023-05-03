@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var IP = ""
+
 type ResCode int
 
 const (
