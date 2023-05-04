@@ -6,11 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	appDlv "xr-central/pkg/app/app/delivery"
-	devDlv "xr-central/pkg/app/device/delivery"
-	edgeDlv "xr-central/pkg/app/edge/delivery"
-	loginDlv "xr-central/pkg/app/login/delivery"
-	"xr-central/pkg/deliveryfake" //just for test. TODO: remove
+	appDlv "initpkg/pkg/app/app/delivery"
+	devDlv "initpkg/pkg/app/device/delivery"
+	edgeDlv "initpkg/pkg/app/edge/delivery"
+	loginDlv "initpkg/pkg/app/login/delivery"
 )
 
 func Router() *gin.Engine {
@@ -54,10 +53,6 @@ func Router() *gin.Engine {
 	edges.GET("/", edgeDlv.EdgeList)
 	edges.POST("/reg", edgeDlv.EdgeReg)
 	edges.GET("/:id/apps", edgeDlv.EdgeAppList)
-
-	// .. //fake for test // TODO: remove
-	router.POST("/start_app", deliveryfake.FakeStartApp)
-	router.POST("/stop_app", deliveryfake.FakeStopApp)
 
 	router.POST("/reserve/app/:id", test)
 	return router

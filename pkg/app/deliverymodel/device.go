@@ -1,9 +1,9 @@
 package deliverymodel
 
 import (
-	devUCase "xr-central/pkg/app/device/usecase"
-	// edgeUCase "xr-central/pkg/app/edge/usecase"
-	// "xr-central/pkg/models"
+	devUCase "initpkg/pkg/app/device/usecase"
+	// edgeUCase "initpkg/pkg/app/edge/usecase"
+	// "initpkg/pkg/models"
 )
 
 type DeviceInfoDetail struct {

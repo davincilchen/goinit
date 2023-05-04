@@ -1,14 +1,14 @@
 package http
 
-// import "xr-central/pkg/models"
+// import "initpkg/pkg/models"
 import (
 	"encoding/json"
 	"fmt"
+	"initpkg/pkg/app/ctxcache"
+	errDef "initpkg/pkg/app/errordef"
+	httph "initpkg/pkg/httphelper"
 	"io/ioutil"
 	"net/http"
-	"xr-central/pkg/app/ctxcache"
-	errDef "xr-central/pkg/app/errordef"
-	httph "xr-central/pkg/httphelper"
 )
 
 type ResCode int

@@ -2,15 +2,15 @@ package usecase
 
 import (
 	"fmt"
+	"initpkg/pkg/app/ctxcache"
+	repo "initpkg/pkg/app/device/repo/mysql"
+	"initpkg/pkg/models"
 	"sync"
 	"time"
-	"xr-central/pkg/app/ctxcache"
-	repo "xr-central/pkg/app/device/repo/mysql"
-	"xr-central/pkg/models"
 
-	edgeUCase "xr-central/pkg/app/edge/usecase"
-	errDef "xr-central/pkg/app/errordef"
-	userUCase "xr-central/pkg/app/user/usecase"
+	edgeUCase "initpkg/pkg/app/edge/usecase"
+	errDef "initpkg/pkg/app/errordef"
+	userUCase "initpkg/pkg/app/user/usecase"
 )
 
 type DevStatus int

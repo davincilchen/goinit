@@ -3,9 +3,9 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"initpkg/pkg/app/ctxcache"
+	devUCase "initpkg/pkg/app/device/usecase"
 	"time"
-	"xr-central/pkg/app/ctxcache"
-	devUCase "xr-central/pkg/app/device/usecase"
 
 	// gcpLogging "cloud.google.com/go/logging"
 	"github.com/gin-gonic/gin"

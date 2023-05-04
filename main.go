@@ -1,9 +1,9 @@
 package main
 
 import (
+	"initpkg/pkg/app/server"
+	"initpkg/pkg/config"
 	"log"
-	"xr-central/pkg/app/server"
-	"xr-central/pkg/config"
 )
 
 const confPath = "./config.json"

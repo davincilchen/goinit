@@ -2,9 +2,9 @@ package usecase
 
 import (
 	"fmt"
-	repo "xr-central/pkg/app/user/repo/mysql"
-	"xr-central/pkg/models"
-	"xr-central/pkg/token"
+	repo "initpkg/pkg/app/user/repo/mysql"
+	"initpkg/pkg/models"
+	"initpkg/pkg/token"
 
 	"golang.org/x/crypto/bcrypt"
 )

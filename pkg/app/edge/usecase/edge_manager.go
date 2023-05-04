@@ -2,11 +2,11 @@ package usecase
 
 import (
 	"fmt"
+	"initpkg/pkg/app/ctxcache"
+	repo "initpkg/pkg/app/edge/repo/mysql"
+	"initpkg/pkg/app/errordef"
+	"initpkg/pkg/models"
 	"sync"
-	"xr-central/pkg/app/ctxcache"
-	repo "xr-central/pkg/app/edge/repo/mysql"
-	"xr-central/pkg/app/errordef"
-	"xr-central/pkg/models"
 )
 
 type EdgeManager struct {

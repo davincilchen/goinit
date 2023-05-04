@@ -1,11 +1,11 @@
 package deliverymodel
 
 import (
-	"xr-central/pkg/models"
+	"initpkg/pkg/models"
 
-	//devUCase "xr-central/pkg/app/device/usecase"
-	devUCase "xr-central/pkg/app/device/usecase"
-	edgeUCase "xr-central/pkg/app/edge/usecase"
+	//devUCase "initpkg/pkg/app/device/usecase"
+	devUCase "initpkg/pkg/app/device/usecase"
+	edgeUCase "initpkg/pkg/app/edge/usecase"
 )
 
 type EdgeInfo struct {

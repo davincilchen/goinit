@@ -3,16 +3,16 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	appUCase "initpkg/pkg/app/app/usecase"
+	platformRepo "initpkg/pkg/app/platform/repo/mysql"
+	"initpkg/pkg/app/user/usecase"
+	"initpkg/pkg/config"
+	"initpkg/pkg/db"
+	"initpkg/pkg/models"
 	"io/ioutil"
 	"log"
 	"os"
 	"time"
-	appUCase "xr-central/pkg/app/app/usecase"
-	platformRepo "xr-central/pkg/app/platform/repo/mysql"
-	"xr-central/pkg/app/user/usecase"
-	"xr-central/pkg/config"
-	"xr-central/pkg/db"
-	"xr-central/pkg/models"
 
 	"gorm.io/gorm/logger"
 )
@@ -142,7 +142,7 @@ func loadSeed(path string) (*Seed, error) {
 			u.Name = u.Name + no
 			u.Account = u.Account + no
 			u.Password = u.Password + no
-			tmpSeed.Users = append(tmpSeed.Users,u)
+			tmpSeed.Users = append(tmpSeed.Users, u)
 		}
 	}
 

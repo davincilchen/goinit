@@ -2,8 +2,8 @@ package config
 
 import (
 	"encoding/json"
+	"initpkg/pkg/db"
 	"io/ioutil"
-	"xr-central/pkg/db"
 )
 
 type Config struct {

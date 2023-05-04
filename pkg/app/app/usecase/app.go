@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	repo "xr-central/pkg/app/app/repo/mysql"
-	"xr-central/pkg/models"
+	repo "initpkg/pkg/app/app/repo/mysql"
+	"initpkg/pkg/models"
 )
 
 var appGenreRepo repo.AppGenre

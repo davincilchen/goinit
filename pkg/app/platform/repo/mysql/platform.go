@@ -1,8 +1,8 @@
 package mysql
 
 import (
-	"xr-central/pkg/db"
-	"xr-central/pkg/models"
+	"initpkg/pkg/db"
+	"initpkg/pkg/models"
 
 	"gorm.io/gorm"
 )

@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"initpkg/pkg/config"
+	"initpkg/pkg/db"
 	"log"
 	"os"
 	"time"
-	"xr-central/pkg/config"
-	"xr-central/pkg/db"
 
 	"gorm.io/gorm/logger"
 )

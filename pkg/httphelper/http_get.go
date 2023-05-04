@@ -3,10 +3,10 @@ package httphelper
 import (
 	"crypto/tls"
 	"fmt"
+	"initpkg/version"
 	"net"
 	"net/http"
 	"time"
-	"xr-central/version"
 )
 
 const (

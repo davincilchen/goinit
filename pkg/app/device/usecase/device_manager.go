@@ -2,11 +2,11 @@ package usecase
 
 import (
 	"fmt"
+	"initpkg/pkg/app/ctxcache"
 	"sync"
 	"time"
-	"xr-central/pkg/app/ctxcache"
 
-	errDef "xr-central/pkg/app/errordef"
+	errDef "initpkg/pkg/app/errordef"
 
 	cache "github.com/patrickmn/go-cache"
 )

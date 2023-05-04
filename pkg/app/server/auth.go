@@ -2,12 +2,12 @@ package server
 
 import (
 	"fmt"
-	"xr-central/pkg/app/ctxcache"
+	"initpkg/pkg/app/ctxcache"
 
 	"github.com/gin-gonic/gin"
 
-	deviceUCase "xr-central/pkg/app/device/usecase"
-	dlv "xr-central/pkg/delivery"
+	deviceUCase "initpkg/pkg/app/device/usecase"
+	dlv "initpkg/pkg/delivery"
 )
 
 // ===================== //

@@ -2,13 +2,13 @@ package usecase
 
 import (
 	"fmt"
+	"initpkg/pkg/models"
 	"sync"
-	"xr-central/pkg/models"
 
-	"xr-central/pkg/app/ctxcache"
-	edgeHttp "xr-central/pkg/app/edge/repo/http"
-	repo "xr-central/pkg/app/edge/repo/mysql"
-	errDef "xr-central/pkg/app/errordef"
+	"initpkg/pkg/app/ctxcache"
+	edgeHttp "initpkg/pkg/app/edge/repo/http"
+	repo "initpkg/pkg/app/edge/repo/mysql"
+	errDef "initpkg/pkg/app/errordef"
 )
 
 type ActionRet int

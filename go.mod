@@ -1,4 +1,4 @@
-module xr-central
+module initpkg
 
 go 1.18
 

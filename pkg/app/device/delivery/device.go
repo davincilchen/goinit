@@ -3,13 +3,13 @@ package delivery
 import (
 	"net/http"
 
-	// "xr-central/pkg/app/ctxcache"
+	// "initpkg/pkg/app/ctxcache"
 
 	"github.com/gin-gonic/gin"
 
-	dlvModel "xr-central/pkg/app/deliverymodel"
-	devUCase "xr-central/pkg/app/device/usecase"
-	dlv "xr-central/pkg/delivery"
+	dlvModel "initpkg/pkg/app/deliverymodel"
+	devUCase "initpkg/pkg/app/device/usecase"
+	dlv "initpkg/pkg/delivery"
 )
 
 type DeviceDetailListResp struct {
