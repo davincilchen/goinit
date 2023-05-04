@@ -6,10 +6,10 @@ import (
 	"os"
 
 	//"syscall"
-	"initpkg/pkg/config"
-	"initpkg/pkg/db"
+	"goinit/pkg/config"
+	"goinit/pkg/db"
 
-	dlv "initpkg/pkg/delivery" //TODO:
+	dlv "goinit/pkg/delivery" //TODO:
 
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sys/windows"

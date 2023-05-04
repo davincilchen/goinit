@@ -3,12 +3,12 @@ package delivery
 import (
 	"net/http"
 
-	"initpkg/pkg/app/ctxcache"
+	"goinit/pkg/app/ctxcache"
 
 	"github.com/gin-gonic/gin"
 
-	appUCase "initpkg/pkg/app/app/usecase"
-	dlv "initpkg/pkg/delivery"
+	appUCase "goinit/pkg/app/app/usecase"
+	dlv "goinit/pkg/delivery"
 )
 
 type AppListResp struct {

@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	repo "initpkg/pkg/app/app/repo/mysql"
-	"initpkg/pkg/models"
+	repo "goinit/pkg/app/app/repo/mysql"
+	"goinit/pkg/models"
 )
 
 var appGenreRepo repo.AppGenre

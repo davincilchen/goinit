@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"initpkg/pkg/app/ctxcache"
-	"initpkg/pkg/app/errordef"
+	"goinit/pkg/app/ctxcache"
+	"goinit/pkg/app/errordef"
 
 	"github.com/gin-gonic/gin"
 )

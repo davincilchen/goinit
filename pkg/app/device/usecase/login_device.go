@@ -2,15 +2,15 @@ package usecase
 
 import (
 	"fmt"
-	"initpkg/pkg/app/ctxcache"
-	repo "initpkg/pkg/app/device/repo/mysql"
-	"initpkg/pkg/models"
+	"goinit/pkg/app/ctxcache"
+	repo "goinit/pkg/app/device/repo/mysql"
+	"goinit/pkg/models"
 	"sync"
 	"time"
 
-	edgeUCase "initpkg/pkg/app/edge/usecase"
-	errDef "initpkg/pkg/app/errordef"
-	userUCase "initpkg/pkg/app/user/usecase"
+	edgeUCase "goinit/pkg/app/edge/usecase"
+	errDef "goinit/pkg/app/errordef"
+	userUCase "goinit/pkg/app/user/usecase"
 )
 
 type DevStatus int

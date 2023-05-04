@@ -2,10 +2,10 @@ package usecase
 
 import (
 	"fmt"
-	"initpkg/pkg/app/ctxcache"
-	repo "initpkg/pkg/app/edge/repo/mysql"
-	"initpkg/pkg/app/errordef"
-	"initpkg/pkg/models"
+	"goinit/pkg/app/ctxcache"
+	repo "goinit/pkg/app/edge/repo/mysql"
+	"goinit/pkg/app/errordef"
+	"goinit/pkg/models"
 	"sync"
 )
 

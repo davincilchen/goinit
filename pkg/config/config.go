@@ -2,7 +2,7 @@ package config
 
 import (
 	"encoding/json"
-	"initpkg/pkg/db"
+	"goinit/pkg/db"
 	"io/ioutil"
 )
 

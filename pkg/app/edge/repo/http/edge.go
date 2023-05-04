@@ -1,12 +1,12 @@
 package http
 
-// import "initpkg/pkg/models"
+// import "goinit/pkg/models"
 import (
 	"encoding/json"
 	"fmt"
-	"initpkg/pkg/app/ctxcache"
-	errDef "initpkg/pkg/app/errordef"
-	httph "initpkg/pkg/httphelper"
+	"goinit/pkg/app/ctxcache"
+	errDef "goinit/pkg/app/errordef"
+	httph "goinit/pkg/httphelper"
 	"io/ioutil"
 	"net/http"
 )

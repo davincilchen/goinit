@@ -6,10 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	appDlv "initpkg/pkg/app/app/delivery"
-	devDlv "initpkg/pkg/app/device/delivery"
-	edgeDlv "initpkg/pkg/app/edge/delivery"
-	loginDlv "initpkg/pkg/app/login/delivery"
+	appDlv "goinit/pkg/app/app/delivery"
+	devDlv "goinit/pkg/app/device/delivery"
+	edgeDlv "goinit/pkg/app/edge/delivery"
+	loginDlv "goinit/pkg/app/login/delivery"
 )
 
 func Router() *gin.Engine {

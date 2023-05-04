@@ -1,11 +1,11 @@
 package deliverymodel
 
 import (
-	"initpkg/pkg/models"
+	"goinit/pkg/models"
 
-	//devUCase "initpkg/pkg/app/device/usecase"
-	devUCase "initpkg/pkg/app/device/usecase"
-	edgeUCase "initpkg/pkg/app/edge/usecase"
+	//devUCase "goinit/pkg/app/device/usecase"
+	devUCase "goinit/pkg/app/device/usecase"
+	edgeUCase "goinit/pkg/app/edge/usecase"
 )
 
 type EdgeInfo struct {

@@ -3,8 +3,8 @@ package mysql
 
 import (
 	"fmt"
-	"initpkg/pkg/db"
-	"initpkg/pkg/models"
+	"goinit/pkg/db"
+	"goinit/pkg/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"

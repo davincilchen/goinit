@@ -1,4 +1,4 @@
-module initpkg
+module goinit
 
 go 1.18
 
