@@ -15,14 +15,14 @@
 * DB註冊路徑: static/執行檔名稱 [欄位:image_url]
 
 # 清理不要的資料夾後
-* 砍掉readme.me此檔
-* 執行go mod tidy
+* 變更專案名稱
 * vscode設定
-* cmd不要的
-
+* 移除不要的cmd內資料夾
+* 執行go mod tidy
+* 砍掉readme.me此檔
 # 專案分佈
 * cmd下可建置其他執行檔
-* pkg下app外層 是其他共用的,含內層通用model (不含)deliverymodel
-* pkg下app內ctxcache,deliverymodel,errordef是內層通用
-* pkg下app內server內含進入點
-* pkg下app內含delivery, usecase , repo(db orm, http, grpc ...)
+* pkg下app外層是上層通用的,含通用model (不含)deliverymodel
+* pkg下app內層ctxcache,deliverymodel,errordef是內層通用
+* pkg下app內層server內含進入點
+* pkg下app內層含delivery, usecase , repo(db orm, http, grpc ...)
