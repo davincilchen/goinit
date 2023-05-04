@@ -1,0 +1,1026 @@
+{
+	"info": {
+		"_postman_id": "52c5ea55-6bda-4a6b-8502-7362306fb041",
+		"name": "XRCube",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17935854"
+	},
+	"item": [
+		{
+			"name": "Apps",
+			"item": [
+				{
+					"name": "apps",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{server}}/apps",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "app list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{server}}/edges",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"edges"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "device",
+			"item": [
+				{
+					"name": "/devices",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"no\": \"admin\",\r\n    \"password\": \"Aa123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/devices/apps/{{id}}/reserve",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"password\": \"Aa123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/apps/1/reserve",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"apps",
+								"1",
+								"reserve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/devices/apps/{{id}}/reserve Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"password\": \"Aa123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/apps/1/reserve",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"apps",
+								"1",
+								"reserve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/devices/apps/{{id}}/reserve token keyin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "57a28772-a629-4e1d-91fd-193d8a844696",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"password\": \"Aa123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/apps/1/reserve",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"apps",
+								"1",
+								"reserve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/devices/apps/2/reserve",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"password\": \"Aa123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/apps/2/reserve",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"apps",
+								"2",
+								"reserve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/devices/apps/{{id}}/reserve Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"password\": \"Aa123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/apps/996/reserve",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"apps",
+								"996",
+								"reserve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/devices/reserve",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"password\": \"Aa123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/reserve",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"reserve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dev resume",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{server}}/devices/resume?=",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"resume"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "status change",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \r\n    \"device_status\": 120\r\n \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/status",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "status change know token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \r\n    \"device_status\": 120\r\n \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/status",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "status change xr connect",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \r\n    \"device_status\": 130\r\n \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/status",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dev start_app",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"password\": \"Aa123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/start_app?=",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"start_app"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dev stopt_app",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"password\": \"Aa123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/stop_app?=",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"stop_app"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dev login admin",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var resp = pm.response.json();\r",
+									"\r",
+									"pm.globals.set(\"httpCode\", pm.response.code);\r",
+									"if ( pm.response.code !== 200) {\r",
+									"    console.error(\"API 執行失敗\");\r",
+									"    return;\r",
+									"}\r",
+									"\r",
+									"pm.globals.set(\"respCode\", resp.resp_code);\r",
+									"if ( resp.resp_code !== 0) {\r",
+									"    console.error(\"respCode != 0\");\r",
+									"    return;\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.globals.set(\"accessToken\", resp.data.token);\r",
+									"console.log(pm.variables.get(\"accessToken\"))\r",
+									"\r",
+									"    \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"account\": \"admin\",\r\n    \"password\": \"super123456\",\r\n    \"uuid\": \"{{UUID1}}\",\r\n    \"type\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/login",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dev login player1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var resp = pm.response.json();\r",
+									"\r",
+									"pm.globals.set(\"httpCode\", pm.response.code);\r",
+									"if ( pm.response.code !== 200) {\r",
+									"    console.error(\"API 執行失敗\");\r",
+									"    return;\r",
+									"}\r",
+									"\r",
+									"pm.globals.set(\"respCode\", resp.resp_code);\r",
+									"if ( resp.resp_code !== 0) {\r",
+									"    console.error(\"respCode != 0\");\r",
+									"    return;\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.globals.set(\"accessToken\", resp.data.token);\r",
+									"console.log(pm.variables.get(\"accessToken\"))\r",
+									"\r",
+									"    \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"account\": \"Player1\",\r\n    \"password\": \"p1234561\",\r\n    \"uuid\": \"{{UUID1}}\",\r\n    \"device_type\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/login",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dev login player1 UUID 3",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var resp = pm.response.json();\r",
+									"\r",
+									"pm.globals.set(\"httpCode\", pm.response.code);\r",
+									"if ( pm.response.code !== 200) {\r",
+									"    console.error(\"API 執行失敗\");\r",
+									"    return;\r",
+									"}\r",
+									"\r",
+									"pm.globals.set(\"respCode\", resp.resp_code);\r",
+									"if ( resp.resp_code !== 0) {\r",
+									"    console.error(\"respCode != 0\");\r",
+									"    return;\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.globals.set(\"accessToken\", resp.data.token);\r",
+									"console.log(pm.variables.get(\"accessToken\"))\r",
+									"\r",
+									"    \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"account\": \"Player1\",\r\n    \"password\": \"p1234561\",\r\n    \"uuid\": \"{{UUID3}}\",\r\n    \"device_type\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/login",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dev login player2 same uuid play1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var resp = pm.response.json();\r",
+									"\r",
+									"pm.globals.set(\"httpCode\", pm.response.code);\r",
+									"if ( pm.response.code !== 200) {\r",
+									"    console.error(\"API 執行失敗\");\r",
+									"    return;\r",
+									"}\r",
+									"\r",
+									"pm.globals.set(\"respCode\", resp.resp_code);\r",
+									"if ( resp.resp_code !== 0) {\r",
+									"    console.error(\"respCode != 0\");\r",
+									"    return;\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.globals.set(\"accessToken\", resp.data.token);\r",
+									"console.log(pm.variables.get(\"accessToken\"))\r",
+									"\r",
+									"    \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"account\": \"Player2\",\r\n    \"password\": \"p1234562\",\r\n    \"uuid\": \"{{UUID1}}\",\r\n    \"device_type\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/login",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dev login player8 UUID2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var resp = pm.response.json();\r",
+									"\r",
+									"pm.globals.set(\"httpCode\", pm.response.code);\r",
+									"if ( pm.response.code !== 200) {\r",
+									"    console.error(\"API 執行失敗\");\r",
+									"    return;\r",
+									"}\r",
+									"\r",
+									"pm.globals.set(\"respCode\", resp.resp_code);\r",
+									"if ( resp.resp_code !== 0) {\r",
+									"    console.error(\"respCode != 0\");\r",
+									"    return;\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.globals.set(\"accessToken\", resp.data.token);\r",
+									"console.log(pm.variables.get(\"accessToken\"))\r",
+									"\r",
+									"    \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"account\": \"player8\",\r\n    \"password\": \"p1234568\",\r\n    \"uuid\": \"{{UUID2}}\",\r\n    \"device_type\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/login",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dev logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"password\": \"Aa123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/devices/logout",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"devices",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "edges",
+			"item": [
+				{
+					"name": "edge list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{server}}/edges",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"edges"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "app list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{server}}/edges/13/apps",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"edges",
+								"13",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reg",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"apps_id\": [1,2,3],\r\n    \"port\": 3100\r\n \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{server}}/edges/reg",
+							"protocol": "http",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"edges",
+								"reg"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"account\": \"player1\",\r\n    \"password\": \"p1234561\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{server}}/login",
+					"protocol": "http",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"login"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "pp1234561",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{server}}/info",
+					"protocol": "http",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"info"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
